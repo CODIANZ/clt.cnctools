@@ -17,15 +17,11 @@
         <v-list-item-group
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item
-            v-for="item in items"
-            :key="item.model"
-            @click="onItemClick(item.model, item.title)"
-          >
+          <v-list-item>
             <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
+              <v-icon>save</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title>POS</v-list-item-title>
           </v-list-item>
 
         </v-list-item-group>
