@@ -129,6 +129,7 @@
             v-model="m.taxOther"
             label="税・その他"
             :rules="[required,range(1,99999)]"
+            :disabled="!bTaxOther"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -136,17 +137,32 @@
             v-model="m.productCode"
             label="商品コード"
             :rules="[required,length(4)]"
+            :disabled="!bProductCode"
           ></v-text-field>
         </v-col>
+      </v-row>
 
+      <v-row>
+        <v-col>
+          <v-btn
+            rounded
+            color="primary"
+            dark
+            @click="onExecute"
+          >
+          実行
+          </v-btn>
+        </v-col>
       </v-row>
     </v-form>
   </v-container>
 </template>
     
 <script lang="ts">
-import { defineComponent, reactive, ref } from "@vue/composition-api";
-import { iform, validations } from "@/codes/FormUtil"
+import { defineComponent, reactive, ref, computed } from "@vue/composition-api";
+import { iform, validations } from "@/codes/FormUtil";
+import { debug } from "debug";
+const LOG = debug("app:POS");
 
 type menus_t      = "Service" | "Journal" | "Reprint";
 type moneytype_t  = "Credit" | "Cup" | "Suica" | "QP" | "ID" | "Waon" | "Nanaco";
@@ -169,7 +185,8 @@ const m = reactive({
   bSelfMode: false,
   amount: "",
   taxOther: "",
-  productCode: ""
+  productCode: "",
+  baseScheme: "pokeposem-pos://"
 });
 
 
@@ -283,6 +300,116 @@ const whens: radio_item<when_t>[] = [
   }
 ];
 
+const computeds  = {
+  bProductCode: computed(() => {
+    const tbl: {[_ in moneytype_t]: boolean} = {
+      Credit: true,
+      Cup:    true,
+      Suica:  false,
+      QP:     true,
+      ID:     true,
+      Waon:   false,
+      Nanaco: false
+    };
+    return m.moneytype ? tbl[m.moneytype] : false;
+  }),
+  bTaxOther: computed(() => {
+    const tbl: {[_ in moneytype_t]: boolean} = {
+      Credit: true,
+      Cup:    true,
+      Suica:  false,
+      QP:     true,
+      ID:     true,
+      Waon:   false,
+      Nanaco: false
+    };
+    return m.moneytype ? tbl[m.moneytype] : false;
+  })
+}
+
+function isEMoney(mt: moneytype_t) {
+  switch(m.moneytype){
+    case "Credit":
+    case "Cup": {
+      return false;
+    }
+    case "Suica":
+    case "QP":
+    case "ID":
+    case "Waon":
+    case "Nanaco": {
+      return true;
+    }
+    default: false;
+  }
+}
+
+function urlCommon() {
+  return  `training=${m.bTraining?"1":"0"}` +
+          `&bPrinting=${m.bPrinting?"1":"0"}` +
+          `&bSelfMode=${m.bSelfMode?"1":"0"}`;
+}
+
+function urlService() {
+  const baseUrl = `${m.baseScheme}Service${m.moneytype}`;
+  const amount = `?amount=${m.amount}`
+  const productCode = (() => {
+    if(computeds.bProductCode.value){
+      if(m.moneytype == "ID") return `&goodsCode=${m.productCode}`;
+      /* TODO: クレジットってProductCode不要？ */
+    }
+    return "";
+  })();
+  const taxOther = (() => {
+    if(computeds.bTaxOther.value){
+      return `&taxOther=${m.taxOther}`;
+    }
+    return "";
+  })();
+  const operationDiv = (() => {
+    if(!m.moneytype) return "";
+
+    if(isEMoney(m.moneytype)){
+      const tbl: {[_ in job_t]: string} = {
+        Sales:    "&operationDiv=1",
+        Refund:   "&operationDiv=2",
+        Confirm:  ""
+      }
+      return m.job ? tbl[m.job] : "";
+    }
+    else{
+      const tbl: {[_ in job_t]: string} = {
+        Sales:    "&operationDiv=0",
+        Refund:   "&operationDiv=1",
+        Confirm:  "&operationDiv=2"
+      }
+      return m.job ? tbl[m.job] : "";
+    }
+  })();
+  return `${baseUrl}${amount}${productCode}${taxOther}${operationDiv}&${urlCommon()}`;
+}
+
+function onExecute() {
+  const url = (() => {
+    switch(m.menu){
+      case "Service": {
+        return urlService();
+      }
+      case "Journal": {
+        return "";
+      }
+      case "Reprint": {
+        return "";
+      }
+      default: {
+        return "";
+      }
+    }
+  })();
+  LOG(`onExecute = ${url}`);
+  location.href = url;
+}
+
 export default defineComponent({
   setup(props, ctx) {
     const form = ref<iform>();
@@ -296,7 +423,9 @@ export default defineComponent({
       whens,
       details,
       form,
-      ...validations
+      ...computeds,
+      ...validations,
+      onExecute
     };
   }
 });
