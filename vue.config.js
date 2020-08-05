@@ -7,5 +7,8 @@ module.exports = {
     start_url: "https://kandenevsimstaging.blob.core.windows.net/cnctools/index.html",
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black'
+  },
+  configureWebpack: {
+    devtool: 'source-map'
   }
 }
