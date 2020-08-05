@@ -3,6 +3,19 @@
     <v-form ref="form">
       <v-row>
         <v-col>
+          <v-radio-group v-model="m.mode" row>
+            <v-radio
+              v-for="it in modes"
+              :key="`modes-${it.value}`"
+              :label=it.label
+              :value=it.value
+            ></v-radio>
+          </v-radio-group>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
           <v-radio-group v-model="m.menu" row>
             <v-radio
               v-for="it in menus"
@@ -114,6 +127,14 @@
             :label="`セルフモード`"
           ></v-switch>
         </v-col>
+        <v-col>
+          <v-switch
+            v-model="m.bTogether"
+            inset
+            :label="`現金併用`"
+            :disabled="!(m.moneytype=='Suica'&&m.job=='Sales')"
+          ></v-switch>
+        </v-col>
       </v-row>
 
       <v-row v-if="m.menu=='Service'&&m.job=='Sales'">
@@ -144,11 +165,32 @@
 
       <v-row>
         <v-col>
+          <v-text-field
+            v-model="m.returnUrl"
+            label="戻りURL"
+            :rules="[required]"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
+          <v-text-field
+            v-model="m.computedUrl"
+            label="生成URL"
+            readonly
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
           <v-btn
             rounded
             color="primary"
             dark
             @click="onExecute"
+            :disabled="m.computedUrl.length==0"
           >
           実行
           </v-btn>
@@ -159,11 +201,12 @@
 </template>
     
 <script lang="ts">
-import { defineComponent, reactive, ref, computed } from "@vue/composition-api";
+import { defineComponent, reactive, ref, computed, watch } from "@vue/composition-api";
 import { iform, validations } from "@/codes/FormUtil";
-import { debug } from "debug";
-const LOG = debug("app:POS");
+//import { debug } from "debug";
+//const LOG = debug("app:POS");
 
+type mode_t       = "pokepos" | "cnc";
 type menus_t      = "Service" | "Journal" | "Reprint";
 type moneytype_t  = "Credit" | "Cup" | "Suica" | "QP" | "ID" | "Waon" | "Nanaco";
 type job_t        = "Sales" | "Refund" | "Confirm";
@@ -173,6 +216,7 @@ type reprint_t    = "Slip" | "Journal";
 type when_t       = "Last" | "BeforeLast";
 
 const m = reactive({
+  mode: undefined as mode_t | undefined,
   menu: undefined as menus_t | undefined,
   moneytype: undefined as moneytype_t | undefined,
   job: undefined as job_t | undefined,
@@ -183,10 +227,12 @@ const m = reactive({
   bTraining: false,
   bPrinting: false,
   bSelfMode: false,
+  bTogether: false,
   amount: "",
   taxOther: "",
   productCode: "",
-  baseScheme: "pokeposem-pos://"
+  returnUrl: "https://kandenevsimstaging.blob.core.windows.net/cnctools/index.html",
+  computedUrl: ""
 });
 
 
@@ -194,6 +240,17 @@ interface radio_item<T> {
   label: string;
   value: T;
 }
+
+const modes: radio_item<mode_t>[] = [
+  {
+    label: "pokepos（互換）",
+    value: "pokepos"
+  },
+  {
+    label: "cnc",
+    value: "cnc"
+  }
+];
 
 const menus: radio_item<menus_t>[] = [
   {
@@ -327,7 +384,32 @@ const computeds  = {
   })
 }
 
-function isEMoney(mt: moneytype_t) {
+function onExecute() {
+  location.href = m.computedUrl;
+}
+
+export default defineComponent({
+  setup() {
+    const form = ref<iform>();
+    return {
+      m,
+      modes,
+      menus,
+      moneytypes,
+      jobs,
+      journals,
+      reprints,
+      whens,
+      details,
+      form,
+      ...computeds,
+      ...validations,
+      onExecute
+    };
+  }
+});
+
+function isEMoney() {
   switch(m.moneytype){
     case "Credit":
     case "Cup": {
@@ -344,56 +426,94 @@ function isEMoney(mt: moneytype_t) {
   }
 }
 
+function baseScheme() {
+  if(!m.moneytype) return undefined;
+  if(!m.mode) return undefined;
+  if(m.mode == "pokepos"){
+    if(isEMoney()) return "pokeposem-pos://";
+    else "pokepos://";
+  }
+  else if(m.mode == "cnc"){
+    return "ppcnc://";
+  }
+}
+
 function urlCommon() {
-  return  `training=${m.bTraining?"1":"0"}` +
-          `&bPrinting=${m.bPrinting?"1":"0"}` +
-          `&bSelfMode=${m.bSelfMode?"1":"0"}`;
+  return  `returnUrlScheme=${m.returnUrl}` +
+          (m.bTraining ? "&training=1" : "") +
+          (m.bPrinting ? "&print=1" : "&print=0") +
+          (m.bSelfMode ? "&selfmode=1" : "");
 }
 
-function urlService() {
-  const baseUrl = `${m.baseScheme}Service${m.moneytype}`;
-  const amount = `?amount=${m.amount}`
-  const productCode = (() => {
-    if(computeds.bProductCode.value){
-      if(m.moneytype == "ID") return `&goodsCode=${m.productCode}`;
-      /* TODO: クレジットってProductCode不要？ */
-    }
-    return "";
-  })();
-  const taxOther = (() => {
-    if(computeds.bTaxOther.value){
-      return `&taxOther=${m.taxOther}`;
-    }
-    return "";
-  })();
-  const operationDiv = (() => {
-    if(!m.moneytype) return "";
+function doUrlService() {
+  do {
+    const scheme = baseScheme();
+    if(!scheme) break;
+    if(!m.moneytype) break;
+    if(isNaN(parseInt(m.amount))) break;
 
-    if(isEMoney(m.moneytype)){
-      const tbl: {[_ in job_t]: string} = {
-        Sales:    "&operationDiv=1",
-        Refund:   "&operationDiv=2",
-        Confirm:  ""
+    const path = `Service${m.moneytype}`;
+    const common = urlCommon();
+    const amount = `&amount=${m.amount}`
+
+    const productCode = (() => {
+      if(computeds.bProductCode.value){
+        if(isNaN(parseInt(m.productCode))) undefined;
+        if(m.moneytype == "ID") return `&goodsCode=${m.productCode}`;
+        /* TODO: クレジットってProductCode不要？ */
       }
-      return m.job ? tbl[m.job] : "";
-    }
-    else{
-      const tbl: {[_ in job_t]: string} = {
-        Sales:    "&operationDiv=0",
-        Refund:   "&operationDiv=1",
-        Confirm:  "&operationDiv=2"
+      return "";
+    })();
+    if(productCode === undefined) break;
+
+    const taxOther = (() => {
+      if(computeds.bTaxOther.value){
+        if(isNaN(parseInt(m.taxOther))) undefined;
+        return `&taxOther=${m.taxOther}`;
       }
-      return m.job ? tbl[m.job] : "";
-    }
-  })();
-  return `${baseUrl}${amount}${productCode}${taxOther}${operationDiv}&${urlCommon()}`;
+      return "";
+    })();
+    if(taxOther === undefined) break;
+
+    const operationDiv = (() => {
+      if(isEMoney()){
+        const tbl: {[_ in job_t]: string} = {
+          Sales:    "&operationDiv=1",
+          Refund:   "&operationDiv=2",
+          Confirm:  "&operationDiv=3"
+        }
+        return m.job ? tbl[m.job] : "";
+      }
+      else{
+        const tbl: {[_ in job_t]: string} = {
+          Sales:    "&operationDiv=0",
+          Refund:   "&operationDiv=1",
+          Confirm:  ""
+        }
+        return m.job ? tbl[m.job] : "";
+      }
+    })();
+
+    const together = (() => {
+      if(m.moneytype == "Suica" && m.job == "Sales"){
+        return `&together=${m.bTogether?"1":"0"}`;
+      }
+      return "";
+    })();
+
+    return `${scheme}${path}?${common}${amount}${productCode}${taxOther}${operationDiv}${together}`;
+  // eslint-disable-next-line no-constant-condition
+  } while(false);
+
+  return undefined;
 }
 
-function onExecute() {
+
+function updateUrl() {
   const url = (() => {
     switch(m.menu){
       case "Service": {
-        return urlService();
+        return doUrlService();
       }
       case "Journal": {
         return "";
@@ -406,27 +526,26 @@ function onExecute() {
       }
     }
   })();
-  LOG(`onExecute = ${url}`);
-  location.href = url;
+
+  m.computedUrl = url ?? "";
 }
 
-export default defineComponent({
-  setup(props, ctx) {
-    const form = ref<iform>();
-    return {
-      m,
-      menus,
-      moneytypes,
-      jobs,
-      journals,
-      reprints,
-      whens,
-      details,
-      form,
-      ...computeds,
-      ...validations,
-      onExecute
-    };
-  }
-});
+watch(() => m.mode, ()=> updateUrl());
+watch(() => m.menu, ()=> updateUrl());
+watch(() => m.moneytype, ()=> updateUrl());
+watch(() => m.job, ()=> updateUrl());
+watch(() => m.journal, ()=> updateUrl());
+watch(() => m.detail, ()=> updateUrl());
+watch(() => m.reprint, ()=> updateUrl());
+watch(() => m.when, ()=> updateUrl());
+watch(() => m.bTraining, ()=> updateUrl());
+watch(() => m.bPrinting, ()=> updateUrl());
+watch(() => m.bSelfMode, ()=> updateUrl());
+watch(() => m.bTogether, ()=> updateUrl());
+watch(() => m.amount, ()=> updateUrl());
+watch(() => m.taxOther, ()=> updateUrl());
+watch(() => m.productCode, ()=> updateUrl());
+watch(() => m.returnUrl, ()=> updateUrl());
+
+
 </script>
