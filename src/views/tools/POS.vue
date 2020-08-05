@@ -45,7 +45,7 @@
           <v-radio-group v-model="m.p.job" row>
             <v-radio
               v-for="it in jobs"
-              :key="`jobss-${it.value}`"
+              :key="`jobs-${it.value}`"
               :label=it.label
               :value=it.value
             ></v-radio>
@@ -92,7 +92,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu=='Reprint'&&m.p.reprint=='Journal'">
+      <v-row v-if="m.p.mode=='cnc'&&m.p.menu=='Reprint'&&m.p.reprint=='Journal'">
         <v-col>
           <v-radio-group v-model="m.p.when" row>
             <v-radio
@@ -479,10 +479,27 @@ function baseScheme() {
 }
 
 function urlCommon() {
-  return  `returnUrlScheme=${m.p.returnUrl}` +
-          (m.p.bTraining ? "&training=1" : "") +
-          (m.p.bPrinting ? "&print=1" : "&print=0") +
-          (m.p.bSelfMode ? "&selfmode=1" : "");
+  if(!m.p.moneytype) return undefined;
+
+  const training = (() => {
+    if(isEMoney()){
+      return m.p.bTraining ? "&training=1" : "";
+    }
+    else{
+      return m.p.bTraining ? "&training=1" : "&training=2";
+    }
+  })();
+
+  const print = (() => {
+    return m.p.bPrinting ? "&print=1" : "&print=0";
+  })();
+
+  const selfmode = (() => {
+    if(m.p.job != "Sales") return "";
+    return m.p.bSelfMode ? "&selfmode=1" : "";
+  })();
+
+  return `returnUrlScheme=${m.p.returnUrl}${training}${print}${selfmode}`;
 }
 
 function doUrlService() {
@@ -509,7 +526,7 @@ function doUrlService() {
     const taxOther = (() => {
       if(computeds.bTaxOther.value){
         if(isNaN(parseInt(m.p.taxOther))) undefined;
-        return `&taxOther=${m.p.taxOther}`;
+        return `&taxOther=${m.p.taxOther.length == 0 ? "0" : m.p.taxOther}`;
       }
       return "";
     })();
@@ -548,6 +565,38 @@ function doUrlService() {
   return undefined;
 }
 
+function doUrlJournal() {
+
+  do {
+    if(isEMoney()) break; /* 電子マネーは未サポート */
+
+    const scheme = baseScheme();
+    if(!scheme) break;
+    if(!m.p.moneytype) break;
+
+    const path = `Journal${m.p.moneytype}`;
+    const common = urlCommon();
+
+
+    const operationDiv = (() => {
+      const tbl: {[_ in journal_t]: string} = {
+        Total:        "&operationDiv=0",
+        Intermediate: "&operationDiv=1"
+      }
+      return m.p.journal ? tbl[m.p.journal] : undefined;
+    })();
+    if(operationDiv === undefined) break;
+
+    return `${scheme}${path}?${common}${operationDiv}`;
+  // eslint-disable-next-line no-constant-condition
+  } while(false);
+  
+  return undefined;
+}
+
+function doUrlReprint() {
+  return undefined;
+}
 
 function updateUrl() {
   const url = (() => {
@@ -556,13 +605,13 @@ function updateUrl() {
         return doUrlService();
       }
       case "Journal": {
-        return "";
+        return doUrlJournal();
       }
       case "Reprint": {
-        return "";
+        return doUrlReprint();
       }
       default: {
-        return "";
+        return undefined;
       }
     }
   })();
