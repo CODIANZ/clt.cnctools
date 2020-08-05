@@ -79,7 +79,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="(m.p.menu=='Journal')||(m.p.menu=='Reprint'&&m.p.reprint=='Journal')">
+      <v-row v-if="(m.p.mode=='cnc')&&((m.p.menu=='Journal')||(m.p.menu=='Reprint'&&m.p.reprint=='Journal'))">
         <v-col>
           <v-radio-group v-model="m.p.detail" row>
             <v-radio
@@ -566,7 +566,6 @@ function doUrlService() {
 }
 
 function doUrlJournal() {
-
   do {
     if(isEMoney()) break; /* 電子マネーは未サポート */
 
@@ -595,6 +594,37 @@ function doUrlJournal() {
 }
 
 function doUrlReprint() {
+  do {
+    const scheme = baseScheme();
+    if(!scheme) break;
+    if(!m.p.moneytype) break;
+
+    const path = `Reprint${m.p.moneytype}`;
+    const common = urlCommon();
+
+
+    const operationDiv = (() => {
+      if(isEMoney()){
+        const tbl: {[_ in reprint_t]: string | undefined} = {
+          Slip:     "&operationDiv=2",
+          Journal:  undefined
+        }
+        return m.p.reprint ? tbl[m.p.reprint] : undefined;
+      }
+      else{
+        const tbl: {[_ in reprint_t]: string} = {
+          Slip:     "&operationDiv=1",
+          Journal:  ""
+        }
+        return m.p.reprint ? tbl[m.p.reprint] : undefined;
+      }
+    })();
+    if(operationDiv === undefined) break;
+
+    return `${scheme}${path}?${common}${operationDiv}`;
+  // eslint-disable-next-line no-constant-condition
+  } while(false);
+  
   return undefined;
 }
 
