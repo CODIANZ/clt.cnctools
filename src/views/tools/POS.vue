@@ -110,28 +110,28 @@
           <v-switch
             v-model="m.p.bTraining"
             inset
-            :label="`トレーニング`"
+            label="トレーニング"
           ></v-switch>
         </v-col>
         <v-col>
           <v-switch
             v-model="m.p.bPrinting"
             inset
-            :label="`印字`"
+            label="印字"
           ></v-switch>
         </v-col>
         <v-col>
           <v-switch
             v-model="m.p.bSelfMode"
             inset
-            :label="`セルフモード`"
+            label="セルフモード"
           ></v-switch>
         </v-col>
         <v-col>
           <v-switch
             v-model="m.p.bTogether"
             inset
-            :label="`現金併用`"
+            label="現金併用"
             :disabled="!m.b.together"
           ></v-switch>
         </v-col>
@@ -182,7 +182,7 @@
           <v-switch
             v-model="m.p.manualFlg"
             inset
-            :label="`マニュアル`"
+            label="マニュアル"
           ></v-switch>
         </v-col>
         <v-col>
@@ -200,6 +200,7 @@
             v-model="m.p.returnUrl"
             label="戻りURL"
             :rules="[required]"
+            readonly
           ></v-text-field>
         </v-col>
       </v-row>
@@ -217,6 +218,16 @@
 
       <v-row>
         <v-col>
+          <v-switch
+            v-model="m.useEncode"
+            inset
+            label="URLエンコード"
+          ></v-switch>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
           <v-btn
             rounded
             color="primary"
@@ -224,7 +235,7 @@
             @click="onExecute"
             :disabled="!m.b.valid"
           >
-          実行
+          実行 - {{ m.logid }}
           </v-btn>
         </v-col>
       </v-row>
@@ -236,6 +247,7 @@
 import { defineComponent, reactive, ref, watch } from "@vue/composition-api";
 import { iform, validations } from "@/codes/FormUtil";
 import { UrlBuilder } from "@/codes/UrlBuilder";
+import dateFormat from "dateformat";
 import { debug } from "debug";
 const LOG = debug("app:POS");
 
@@ -247,6 +259,8 @@ const m = reactive({
   mode: undefined as mode_t | undefined,
   p: UrlBuilder.Base.DefaultParams,
   computedUrl: "",
+  logid: "",
+  useEncode: false,
   b: {
     productCode: false,
     taxOther: false,
@@ -400,14 +414,21 @@ function paramsToBuilder() {
   builder.Params.returnUrl   = m.p.returnUrl;
 }
 
+function updateLogIdAndReturnUrl() {
+  const d = dateFormat(new Date(), "yyyymmddHHMMss");
+  m.logid = d;
+  m.p.returnUrl = `${location.protocol}//${location.host}${location.pathname}#/tools/posresult/${d}`;
+}
+
 function updateUrl() {
   if(builder){
+    updateLogIdAndReturnUrl();
     paramsToBuilder();
     m.b.taxOther    = builder.isNeedTaxOther();
     m.b.productCode = builder.isNeedProductCode();
     m.b.together    = builder.isNeedTogether();
 
-    const url = builder.generateUrl();
+    const url = builder.generateUrl(m.useEncode);
     m.b.valid       = url !== undefined;
     m.computedUrl = url ?? "";
   }
@@ -457,14 +478,14 @@ watch(() => m.p.termId      , ()=> updateUrl());
 watch(() => m.p.manualFlg   , ()=> updateUrl());
 watch(() => m.p.pan         , ()=> updateUrl());
 watch(() => m.p.returnUrl   , ()=> updateUrl());
+watch(() => m.useEncode     , ()=> updateUrl());
 
 function onExecute() {
   location.href = m.computedUrl;
 }
 
 export default defineComponent({
-  setup(prop, ctx) {
-    LOG(ctx.root.$route.query);
+  setup() {
     const form = ref<iform>();
     return {
       m,

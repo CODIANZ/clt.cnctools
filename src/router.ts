@@ -16,7 +16,12 @@ const routes: RouteConfig[] = [
         name: "POS",
         path: "pos",
         component: () => import("@/views/tools/POS.vue")
-      }
+      },
+      {
+        name: "POSResult",
+        path: "posresult/:id",
+        component: () => import("@/views/tools/POSResult.vue")
+      },
     ]
   }
 ];

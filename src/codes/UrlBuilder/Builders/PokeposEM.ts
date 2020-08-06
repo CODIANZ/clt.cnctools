@@ -5,7 +5,7 @@ export class PokeposEM extends Pokepos {
 
   /* override */
   protected doTraining() {
-    return {training: this.Params.bTraining ? "0" : "1"};
+    return {training: this.Params.bTraining ? "1" : "0"};
   }
 
   /* override */
@@ -33,9 +33,9 @@ export class PokeposEM extends Pokepos {
         kvs.together = this.Params.bTogether ? "1" : "0";
       }
 
-      if(     this.Params.job == "Sales"    ) kvs.operationDiv = "0";
-      else if(this.Params.job == "Refund"   ) kvs.operationDiv = "1";
-      else if(this.Params.job == "Confirm"  ) kvs.operationDiv = "2";
+      if(     this.Params.job == "Sales"    ) kvs.operationDiv = "1";
+      else if(this.Params.job == "Refund"   ) kvs.operationDiv = "2";
+      else if(this.Params.job == "Confirm"  ) kvs.operationDiv = "3";
       else break;
 
       return kvs;

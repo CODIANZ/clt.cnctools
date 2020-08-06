@@ -7,7 +7,7 @@ export abstract class  Base {
   protected abstract  generateBaseUrlSelf(): string | undefined;
   protected abstract  generateGetParameterSelf(): keyvalue_t | undefined;
 
-  public generateUrl(): string | undefined{
+  public generateUrl(bEndode: boolean): string | undefined{
     const urlbase = this.generateBaseUrlSelf();
     const kvs = this.generateGetParameterSelf();
 
@@ -15,7 +15,7 @@ export abstract class  Base {
     if(!kvs) return undefined;
 
     const getp = Object.keys(kvs).reduce((p, c) => {
-      return `${p}${p.length > 0 ? "&" : ""}${c}=${kvs[c]}`;
+      return `${p}${p.length > 0 ? "&" : ""}${c}=${bEndode ? encodeURIComponent(kvs[c]) : kvs[c]}`;
     }, "");
 
     return `${urlbase}?${getp}`;
@@ -79,7 +79,7 @@ export abstract class  Base {
       termId:       "",
       manualFlg:    false,
       pan:          "",
-      returnUrl:    `${location.protocol}//${location.host}${location.pathname}`
+      returnUrl:    ""
     } as params_t;
   }
 }
