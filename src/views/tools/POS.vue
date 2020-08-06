@@ -3,7 +3,7 @@
     <v-form ref="form">
       <v-row>
         <v-col>
-          <v-radio-group v-model="m.p.mode" row>
+          <v-radio-group v-model="m.mode" row>
             <v-radio
               v-for="it in modes"
               :key="`modes-${it.value}`"
@@ -132,7 +132,7 @@
             v-model="m.p.bTogether"
             inset
             :label="`現金併用`"
-            :disabled="!(m.p.moneytype=='Suica'&&m.p.job=='Sales')"
+            :disabled="!m.b.together"
           ></v-switch>
         </v-col>
       </v-row>
@@ -150,7 +150,7 @@
             v-model="m.p.taxOther"
             label="税・その他"
             :rules="[required,range(0,99999)]"
-            :disabled="!bTaxOther"
+            :disabled="!m.b.taxOther"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -158,7 +158,7 @@
             v-model="m.p.productCode"
             label="商品コード"
             :rules="[required,length(4)]"
-            :disabled="!bProductCode"
+            :disabled="!m.b.productCode"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -206,11 +206,12 @@
 
       <v-row>
         <v-col>
-          <v-text-field
+          <v-textarea
             v-model="m.computedUrl"
             label="生成URL"
+            outlined
             readonly
-          ></v-text-field>
+          ></v-textarea>
         </v-col>
       </v-row>
 
@@ -221,7 +222,7 @@
             color="primary"
             dark
             @click="onExecute"
-            :disabled="m.computedUrl.length==0"
+            :disabled="!m.b.valid"
           >
           実行
           </v-btn>
@@ -232,69 +233,26 @@
 </template>
     
 <script lang="ts">
-import { defineComponent, reactive, ref, computed, watch } from "@vue/composition-api";
+import { defineComponent, reactive, ref, watch } from "@vue/composition-api";
 import { iform, validations } from "@/codes/FormUtil";
+import { UrlBuilder } from "@/codes/UrlBuilder";
 import { debug } from "debug";
 const LOG = debug("app:POS");
 
-type mode_t       = "pokepos" | "cnc";
-type menus_t      = "Service" | "Journal" | "Reprint";
-type moneytype_t  = "Credit" | "Cup" | "Suica" | "QP" | "ID" | "Waon" | "Nanaco";
-type job_t        = "Sales" | "Refund" | "Confirm";
-type journal_t    = "Total" | "Intermediate";
-type detail_t     = "Summary" | "Detail";
-type reprint_t    = "Slip" | "Journal";
-type when_t       = "Last" | "BeforeLast";
+let builder: UrlBuilder.Base | undefined = undefined;
 
-type params_t = {
-  mode?:        mode_t;
-  menu?:        menus_t;
-  moneytype?:   moneytype_t;
-  job?:         job_t;
-  journal?:     journal_t;
-  detail?:      detail_t;
-  reprint?:     reprint_t;
-  when?:        when_t;
-  bTraining:    boolean;
-  bPrinting:    boolean;
-  bSelfMode:    boolean;
-  bTogether:    boolean;
-  amount:       string;
-  taxOther:     string;
-  productCode:  string;
-  slipNo:       string;
-  termId:       string;
-  manualFlg:    boolean;
-  pan:          string;
-  returnUrl:    string;
-};
-
-const params_default: params_t = {
-  mode:         undefined,
-  menu:         undefined,
-  moneytype:    undefined ,
-  job:          undefined,
-  journal:      undefined,
-  detail:       undefined,
-  reprint:      undefined,
-  when:         undefined,
-  bTraining:    false,
-  bPrinting:    false,
-  bSelfMode:    false,
-  bTogether:    false,
-  amount:       "",
-  taxOther:     "",
-  productCode:  "",
-  slipNo:       "",
-  termId:       "",
-  manualFlg:    false,
-  pan:          "",
-  returnUrl:    `${location.protocol}//${location.host}${location.pathname}`
-};
+type mode_t = "pokepos" | "cnc";
 
 const m = reactive({
-  p: params_default,
-  computedUrl: ""
+  mode: undefined as mode_t | undefined,
+  p: UrlBuilder.Base.DefaultParams,
+  computedUrl: "",
+  b: {
+    productCode: false,
+    taxOther: false,
+    together: false,
+    valid: false
+  }
 });
 
 
@@ -314,7 +272,7 @@ const modes: radio_item<mode_t>[] = [
   }
 ];
 
-const menus: radio_item<menus_t>[] = [
+const menus: radio_item<UrlBuilder.menus_t>[] = [
   {
     label: "決済",
     value: "Service"
@@ -329,7 +287,7 @@ const menus: radio_item<menus_t>[] = [
   }
 ];
 
-const moneytypes: radio_item<moneytype_t>[] = [
+const moneytypes: radio_item<UrlBuilder.moneytype_t>[] = [
   {
     label: "クレジット" ,
     value: "Credit"
@@ -360,7 +318,7 @@ const moneytypes: radio_item<moneytype_t>[] = [
   }
 ];
 
-const jobs: radio_item<job_t>[] = [
+const jobs: radio_item<UrlBuilder.job_t>[] = [
   {
     label: "売上",
     value: "Sales"
@@ -375,7 +333,7 @@ const jobs: radio_item<job_t>[] = [
   }
 ];
 
-const journals: radio_item<journal_t>[] = [
+const journals: radio_item<UrlBuilder.journal_t>[] = [
   {
     label: "日計",
     value: "Total"
@@ -386,7 +344,7 @@ const journals: radio_item<journal_t>[] = [
   }
 ];
 
-const details: radio_item<detail_t>[] = [
+const details: radio_item<UrlBuilder.detail_t>[] = [
   {
     label: "簡易",
     value: "Summary"
@@ -397,7 +355,7 @@ const details: radio_item<detail_t>[] = [
   }
 ];
 
-const reprints: radio_item<reprint_t>[] = [
+const reprints: radio_item<UrlBuilder.reprint_t>[] = [
   {
     label: "伝票",
     value: "Slip"
@@ -408,7 +366,7 @@ const reprints: radio_item<reprint_t>[] = [
   }
 ];
 
-const whens: radio_item<when_t>[] = [
+const whens: radio_item<UrlBuilder.when_t>[] = [
   {
     label: "前回",
     value: "Last"
@@ -419,239 +377,69 @@ const whens: radio_item<when_t>[] = [
   }
 ];
 
-const computeds  = {
-  bProductCode: computed(() => {
-    const tbl: {[_ in moneytype_t]: boolean} = {
-      Credit: true,
-      Cup:    true,
-      Suica:  false,
-      QP:     true,
-      ID:     true,
-      Waon:   false,
-      Nanaco: false
-    };
-    return m.p.moneytype ? tbl[m.p.moneytype] : false;
-  }),
-  bTaxOther: computed(() => {
-    const tbl: {[_ in moneytype_t]: boolean} = {
-      Credit: true,
-      Cup:    true,
-      Suica:  false,
-      QP:     true,
-      ID:     true,
-      Waon:   false,
-      Nanaco: false
-    };
-    return m.p.moneytype ? tbl[m.p.moneytype] : false;
-  })
-}
-
-function onExecute() {
-  location.href = m.computedUrl;
-}
-
-function isEMoney() {
-  switch(m.p.moneytype){
-    case "Credit":
-    case "Cup": {
-      return false;
-    }
-    case "Suica":
-    case "QP":
-    case "ID":
-    case "Waon":
-    case "Nanaco": {
-      return true;
-    }
-    default: false;
-  }
-}
-
-function baseScheme() {
-  if(!m.p.moneytype) return undefined;
-  if(!m.p.mode) return undefined;
-  if(m.p.mode == "pokepos"){
-    return isEMoney() ? "pokeposem-pos://" : "pokepos://";
-  }
-  else if(m.p.mode == "cnc"){
-    return "ppcnc://";
-  }
-}
-
-function urlCommon() {
-  if(!m.p.moneytype) return undefined;
-
-  const training = (() => {
-    if(isEMoney()){
-      return m.p.bTraining ? "&training=1" : "";
-    }
-    else{
-      return m.p.bTraining ? "&training=1" : "&training=2";
-    }
-  })();
-
-  const print = (() => {
-    return m.p.bPrinting ? "&print=1" : "&print=0";
-  })();
-
-  const selfmode = (() => {
-    if(m.p.job != "Sales") return "";
-    return m.p.bSelfMode ? "&selfmode=1" : "";
-  })();
-
-  return `returnUrlScheme=${m.p.returnUrl}${training}${print}${selfmode}`;
-}
-
-function doUrlService() {
-  do {
-    const scheme = baseScheme();
-    if(!scheme) break;
-    if(!m.p.moneytype) break;
-    if(isNaN(parseInt(m.p.amount))) break;
-
-    const path = `Service${m.p.moneytype}`;
-    const common = urlCommon();
-    const amount = `&amount=${m.p.amount}`
-
-    const productCode = (() => {
-      if(computeds.bProductCode.value){
-        if(isNaN(parseInt(m.p.productCode))) undefined;
-        if(m.p.moneytype == "ID") return `&goodsCode=${m.p.productCode}`;
-        /* TODO: クレジットってProductCode不要？ */
-      }
-      return "";
-    })();
-    if(productCode === undefined) break;
-
-    const taxOther = (() => {
-      if(computeds.bTaxOther.value){
-        if(isNaN(parseInt(m.p.taxOther))) undefined;
-        return `&taxOther=${m.p.taxOther.length == 0 ? "0" : m.p.taxOther}`;
-      }
-      return "";
-    })();
-    if(taxOther === undefined) break;
-
-    const operationDiv = (() => {
-      if(isEMoney()){
-        const tbl: {[_ in job_t]: string} = {
-          Sales:    "&operationDiv=1",
-          Refund:   "&operationDiv=2",
-          Confirm:  "&operationDiv=3"
-        }
-        return m.p.job ? tbl[m.p.job] : "";
-      }
-      else{
-        const tbl: {[_ in job_t]: string} = {
-          Sales:    "&operationDiv=0",
-          Refund:   "&operationDiv=1",
-          Confirm:  ""
-        }
-        return m.p.job ? tbl[m.p.job] : "";
-      }
-    })();
-
-    const together = (() => {
-      if(m.p.moneytype == "Suica" && m.p.job == "Sales"){
-        return `&together=${m.p.bTogether?"1":"0"}`;
-      }
-      return "";
-    })();
-
-    return `${scheme}${path}?${common}${amount}${productCode}${taxOther}${operationDiv}${together}`;
-  // eslint-disable-next-line no-constant-condition
-  } while(false);
-
-  return undefined;
-}
-
-function doUrlJournal() {
-  do {
-    if(isEMoney()) break; /* 電子マネーは未サポート */
-
-    const scheme = baseScheme();
-    if(!scheme) break;
-    if(!m.p.moneytype) break;
-
-    const path = `Journal${m.p.moneytype}`;
-    const common = urlCommon();
-
-
-    const operationDiv = (() => {
-      const tbl: {[_ in journal_t]: string} = {
-        Total:        "&operationDiv=0",
-        Intermediate: "&operationDiv=1"
-      }
-      return m.p.journal ? tbl[m.p.journal] : undefined;
-    })();
-    if(operationDiv === undefined) break;
-
-    return `${scheme}${path}?${common}${operationDiv}`;
-  // eslint-disable-next-line no-constant-condition
-  } while(false);
-  
-  return undefined;
-}
-
-function doUrlReprint() {
-  do {
-    const scheme = baseScheme();
-    if(!scheme) break;
-    if(!m.p.moneytype) break;
-
-    const path = `Reprint${m.p.moneytype}`;
-    const common = urlCommon();
-
-
-    const operationDiv = (() => {
-      if(isEMoney()){
-        const tbl: {[_ in reprint_t]: string | undefined} = {
-          Slip:     "&operationDiv=2",
-          Journal:  undefined
-        }
-        return m.p.reprint ? tbl[m.p.reprint] : undefined;
-      }
-      else{
-        const tbl: {[_ in reprint_t]: string} = {
-          Slip:     "&operationDiv=1",
-          Journal:  ""
-        }
-        return m.p.reprint ? tbl[m.p.reprint] : undefined;
-      }
-    })();
-    if(operationDiv === undefined) break;
-
-    return `${scheme}${path}?${common}${operationDiv}`;
-  // eslint-disable-next-line no-constant-condition
-  } while(false);
-  
-  return undefined;
+function paramsToBuilder() {
+  if(!builder) return;
+  builder.Params.menu        = m.p.menu;
+  builder.Params.moneytype   = m.p.moneytype;
+  builder.Params.job         = m.p.job;
+  builder.Params.journal     = m.p.journal;
+  builder.Params.detail      = m.p.detail;
+  builder.Params.reprint     = m.p.reprint;
+  builder.Params.when        = m.p.when;
+  builder.Params.bTraining   = m.p.bTraining;
+  builder.Params.bPrinting   = m.p.bPrinting;
+  builder.Params.bSelfMode   = m.p.bSelfMode;
+  builder.Params.bTogether   = m.p.bTogether;
+  builder.Params.amount      = m.p.amount;
+  builder.Params.taxOther    = m.p.taxOther;
+  builder.Params.productCode = m.p.productCode;
+  builder.Params.slipNo      = m.p.slipNo;
+  builder.Params.termId      = m.p.termId;
+  builder.Params.manualFlg   = m.p.manualFlg;
+  builder.Params.pan         = m.p.pan;
+  builder.Params.returnUrl   = m.p.returnUrl;
 }
 
 function updateUrl() {
-  const url = (() => {
-    switch(m.p.menu){
-      case "Service": {
-        return doUrlService();
-      }
-      case "Journal": {
-        return doUrlJournal();
-      }
-      case "Reprint": {
-        return doUrlReprint();
-      }
-      default: {
-        return undefined;
-      }
-    }
-  })();
+  if(builder){
+    paramsToBuilder();
+    m.b.taxOther    = builder.isNeedTaxOther();
+    m.b.productCode = builder.isNeedProductCode();
+    m.b.together    = builder.isNeedTogether();
 
-  m.computedUrl = url ?? "";
+    const url = builder.generateUrl();
+    m.b.valid       = url !== undefined;
+    m.computedUrl = url ?? "";
+  }
+  else{
+    m.computedUrl = "";
+  }
 }
 
-watch(() => m.p.mode        , ()=> updateUrl());
+function changeMode() {
+  switch(m.mode){
+    case "pokepos":{
+      if(UrlBuilder.Base.isEMoney(m.p.moneytype)){
+        builder = new UrlBuilder.PokeposEM();
+      }
+      else{
+        builder = new UrlBuilder.Pokepos();
+      }
+      break;
+    }
+    case "cnc":     builder = undefined; break;
+    default:        builder = undefined; break;
+  }
+  if(builder){
+    paramsToBuilder();
+  }
+  updateUrl();
+}
+
+watch(() => m.mode          , ()=> changeMode());
+
 watch(() => m.p.menu        , ()=> updateUrl());
-watch(() => m.p.moneytype   , ()=> updateUrl());
+watch(() => m.p.moneytype   , ()=> changeMode());
 watch(() => m.p.job         , ()=> updateUrl());
 watch(() => m.p.journal     , ()=> updateUrl());
 watch(() => m.p.detail      , ()=> updateUrl());
@@ -670,6 +458,10 @@ watch(() => m.p.manualFlg   , ()=> updateUrl());
 watch(() => m.p.pan         , ()=> updateUrl());
 watch(() => m.p.returnUrl   , ()=> updateUrl());
 
+function onExecute() {
+  location.href = m.computedUrl;
+}
+
 export default defineComponent({
   setup(prop, ctx) {
     LOG(ctx.root.$route.query);
@@ -685,7 +477,6 @@ export default defineComponent({
       whens,
       details,
       form,
-      ...computeds,
       ...validations,
       onExecute
     };

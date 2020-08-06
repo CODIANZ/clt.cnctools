@@ -21,6 +21,8 @@ module.exports = {
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/class-name-casing': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
-    '@typescript-eslint/adjacent-overload-signatures': 'off'
+    '@typescript-eslint/adjacent-overload-signatures': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off'
+
   }
 }
