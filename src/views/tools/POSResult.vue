@@ -1,5 +1,16 @@
 <template>
   <v-container>
+    <v-col>
+      <v-btn
+        rounded
+        color="warning"
+        dark
+        @click="onEraseAll"
+      >
+        全て削除
+      </v-btn>
+    </v-col>
+
     <v-treeview
       :items="items"
     ></v-treeview>
@@ -64,6 +75,7 @@ function generateItems(data: resultstore_t[]) {
   });
 }
 
+
 export default defineComponent({
   setup(props, ctx) {
     const stor = ResultStore.create();
@@ -74,7 +86,15 @@ export default defineComponent({
       stor.setReceive(new_id, fullpath, ctx.root.$route.query);
     }
     const items = generateItems(stor.list());
-    return { items }
+    return {
+      items,
+      onEraseAll: () => {
+        if(confirm("全てのログを削除します。よろしいですか？")){
+          stor.eraseAll();
+          ctx.root.$router.replace("/");
+        }
+      }
+    };
   }
 });
 
