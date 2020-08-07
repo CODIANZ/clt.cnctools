@@ -417,7 +417,7 @@ function paramsToBuilder() {
 function updateLogIdAndReturnUrl() {
   const d = dateFormat(new Date(), "yyyymmddHHMMss");
   m.logid = d;
-  m.p.returnUrl = `${location.protocol}//${location.host}${location.pathname}#/tools/posresult/${d}`;
+  m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}`;
 }
 
 function updateUrl() {

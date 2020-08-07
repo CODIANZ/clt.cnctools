@@ -2,9 +2,9 @@ module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
-  publicPath: '/cnctools/',
+  publicPath: '/',
   pwa: {
-    start_url: "https://kandenevsimstaging.blob.core.windows.net/cnctools/index.html",
+    start_url: "https://pensive-villani-5ff91b.netlify.app/",
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black'
   },
