@@ -416,7 +416,15 @@ function paramsToBuilder() {
 function updateLogIdAndReturnUrl() {
   const d = dateFormat(new Date(), "yyyymmddHHMMss");
   m.p.logid = d;
-  m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}`;
+
+  if(builder){
+    if((!builder.isEMoney()) && (m.p.mode == "pokepos")){
+      m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}?escape=`;
+    }
+    else{
+      m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}`;
+    }
+  }
 }
 
 function updateUrl() {
@@ -428,7 +436,7 @@ function updateUrl() {
     m.b.together    = builder.isNeedTogether();
 
     const url = builder.generateUrl(m.useEncode);
-    m.b.valid       = url !== undefined;
+    m.b.valid     = url !== undefined;
     m.computedUrl = url ?? "";
   }
   else{
