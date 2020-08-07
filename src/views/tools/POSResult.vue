@@ -32,43 +32,83 @@ type item_t = {
   children?: item_t[];
 };
 
-function generateString(key: string, value: string | undefined): item_t | undefined {
-  if(value === undefined) return undefined;
+function generateString(key: string, value: string): item_t {
   return {
     id: item_id++,
     name: `${key} : ${value}`
   };
 }
 
-function generateMap(key: string, value: unknown | undefined): item_t | undefined {
-  if(value === undefined) return undefined;
-  if(typeof value !== "object") return undefined;
-  if(value === null) return undefined;
-
+function generateArray(key: string, value: any[]): item_t {
+  let i = 0;
   return {
     id: item_id++,
     name: key,
-    children: Object.keys(value)
-              .map(k => generateString(k, (value as any)[k]))
-              .filter(x => x !== undefined) as item_t[]
-  }
+    children:
+      Object.keys(value)
+      .map((k) => {
+        const si = value[parseInt(k)];
+        if(typeof si === "string"){
+          return generateString(`[${k}]`, si);
+        }
+        else if(typeof si === "number"){
+          return generateString(`[${k}]`, `${si}`);
+        }
+        else if(typeof si === "boolean"){
+          return generateString(`[${k}]`, `${si}`);
+        }
+        else if(Array.isArray(value)){
+          return generateArray(`[${k}]`, value);
+        }
+        else {
+          return generateMap(`[${k}]`, value);
+        }
+      })
+  };
+}
+
+function generateMap(key: string, value: any): item_t {
+  return {
+    id: item_id++,
+    name: key,
+    children:
+      Object.keys(value)
+      .map((k) => {
+        const si = value[k];
+        if(typeof si === "string"){
+          return generateString(k, si);
+        }
+        else if(typeof si === "number"){
+          return generateString(k, `${si}`);
+        }
+        else if(typeof si === "boolean"){
+          return generateString(k, `${si}`);
+        }
+        else if(Array.isArray(value)){
+          return generateArray(k, value);
+        }
+        else {
+          return generateMap(k, value);
+        }
+      })
+  };
 }
 
 function generateItems(data: resultstore_t[]) {
   return data.map((it) => {
     const d = {
       id: item_id++,
-      name: `${it.param.logid}${(it.param.logid == new_id) ? "  *" : ""}`,
+      name: `${it.param.logid}${(it.param.logid == new_id) ? "  *new" : ""}`,
       children: new Array<item_t>()
     }
 
-    const sendUrl       = generateString("send url", it.sendUrl);
-    const receiveUrl    = generateString("receive url", it.receiveUrl);
     const param         = generateMap("param", it.param);
-    const receiveData   = generateMap("receive data", it.receiveData);
+    const sendUrl       = generateString("send url", it.sendUrl);
+    const receiveUrl    = it.receiveUrl ? generateString("receive url", it.receiveUrl) : undefined;
+    const receiveData   = it.receiveData ? generateMap("receive data", it.receiveData) : undefined;
 
-    if(param      ) d.children.push(param);
-    if(sendUrl    ) d.children.push(sendUrl);
+    d.children.push(param);
+    d.children.push(sendUrl);
     if(receiveUrl ) d.children.push(receiveUrl);
     if(receiveData) d.children.push(receiveData);
     return d;
