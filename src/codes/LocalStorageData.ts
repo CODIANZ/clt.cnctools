@@ -32,7 +32,7 @@ export class LocalStoargeData<TYPE> {
   public list() {
     const d = this.loadAll();
     return Object.keys(d)
-    .sort()
+    .sort((a, b) => { return b.localeCompare(a); })
     .map((id) => {
       return d[id];
     });
