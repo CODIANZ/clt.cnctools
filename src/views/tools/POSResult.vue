@@ -36,10 +36,10 @@ type item_t = {
 
 function generateString(key: string, value: string): item_t {
   if(mode == "pokepos"){
-    if(value.charAt(0) == '{'){
+    if(value.length > 0 && value.charAt(0) == '{'){
       return generateMap(key, JSON.parse(value));
     }
-    else if(value.charAt(0) == '['){
+    else if(value.length > 0 && value.charAt(0) == '['){
       return generateArray(key, JSON.parse(value));
     }
   }
@@ -58,20 +58,17 @@ function generateArray(key: string, value: any[]): item_t {
       Object.keys(value)
       .map((k) => {
         const si = value[parseInt(k)];
-        if(typeof si === "string"){
-          return generateString(`[${k}]`, si);
+        if(Array.isArray(si)){
+          return generateArray(`[${k}]`, si);
         }
-        else if(typeof si === "number"){
+        else if(si === null){
+          return generateString(`[${k}]`, "null");
+        }
+        else if(typeof si ==="object"){
+          return generateMap(`[${k}]`, si);
+        }
+        else{
           return generateString(`[${k}]`, `${si}`);
-        }
-        else if(typeof si === "boolean"){
-          return generateString(`[${k}]`, `${si}`);
-        }
-        else if(Array.isArray(value)){
-          return generateArray(`[${k}]`, value);
-        }
-        else {
-          return generateMap(`[${k}]`, value);
         }
       })
   };
@@ -85,57 +82,60 @@ function generateMap(key: string, value: any): item_t {
       Object.keys(value)
       .map((k) => {
         const si = value[k];
-        if(typeof si === "string"){
-          return generateString(k, si);
+        if(Array.isArray(si)){
+          return generateArray(`${k}`, si);
         }
-        else if(typeof si === "number"){
-          return generateString(k, `${si}`);
+        else if(si === null){
+          return generateString(`${k}`, "null");
         }
-        else if(typeof si === "boolean"){
-          return generateString(k, `${si}`);
+        else if(typeof si ==="object"){
+          return generateMap(`${k}`, si);
         }
-        else if(Array.isArray(value)){
-          return generateArray(k, value);
-        }
-        else {
-          return generateMap(k, value);
+        else{
+          return generateString(`${k}`, `${si}`);
         }
       })
   };
 }
 
 function generateItems(data: resultstore_t[]) {
-  return data.map((it) => {
-    const title =
-        it.param.logid
-      + " ( "
-      + it.param.mode
-      + " / "
-      + it.param.menu
-      + " / "
-      + it.param.moneytype
-      + " )"
-      + ((it.param.logid == new_id) ? "  **NEW" : "");
+  try{
+    return data.map((it) => {
+      const title =
+          it.param.logid
+        + " ( "
+        + it.param.mode
+        + " / "
+        + it.param.menu
+        + " / "
+        + it.param.moneytype
+        + " )"
+        + ((it.param.logid == new_id) ? "  **NEW" : "");
 
-    mode = it.param.mode;
+      mode = it.param.mode;
 
-    const d = {
-      id: item_id++,
-      name: title,
-      children: new Array<item_t>()
-    };
+      const d = {
+        id: item_id++,
+        name: title,
+        children: new Array<item_t>()
+      };
 
-    const param         = generateMap("param", it.param);
-    const sendUrl       = generateString("send url", it.sendUrl);
-    const receiveUrl    = it.receiveUrl ? generateString("receive url", it.receiveUrl) : undefined;
-    const receiveData   = it.receiveData ? generateMap("receive data", it.receiveData) : undefined;
+      const param         = generateMap("param", it.param);
+      const sendUrl       = generateString("send url", it.sendUrl);
+      const receiveUrl    = it.receiveUrl ? generateString("receive url", it.receiveUrl) : undefined;
+      const receiveData   = it.receiveData ? generateMap("receive data", it.receiveData) : undefined;
 
-    d.children.push(param);
-    d.children.push(sendUrl);
-    if(receiveUrl ) d.children.push(receiveUrl);
-    if(receiveData) d.children.push(receiveData);
-    return d;
-  });
+      d.children.push(param);
+      d.children.push(sendUrl);
+      if(receiveUrl ) d.children.push(receiveUrl);
+      if(receiveData) d.children.push(receiveData);
+      return d;
+    });
+  }
+  catch{
+    alert("データが破損しています。「全て削除」を実行してください。");
+    return [];
+  }
 }
 
 export default defineComponent({
