@@ -235,7 +235,7 @@
             @click="onExecute"
             :disabled="!m.b.valid"
           >
-          実行 - {{ m.logid }}
+          実行 - {{ m.p.logid }}
           </v-btn>
         </v-col>
       </v-row>
@@ -247,6 +247,7 @@
 import { defineComponent, reactive, ref, watch } from "@vue/composition-api";
 import { iform, validations } from "@/codes/FormUtil";
 import { UrlBuilder } from "@/codes/UrlBuilder";
+import { ResultStore } from "@/codes/ResultStore";
 import dateFormat from "dateformat";
 import { debug } from "debug";
 const LOG = debug("app:POS");
@@ -259,7 +260,6 @@ const m = reactive({
   mode: undefined as mode_t | undefined,
   p: UrlBuilder.Base.DefaultParams,
   computedUrl: "",
-  logid: "",
   useEncode: false,
   b: {
     productCode: false,
@@ -416,7 +416,7 @@ function paramsToBuilder() {
 
 function updateLogIdAndReturnUrl() {
   const d = dateFormat(new Date(), "yyyymmddHHMMss");
-  m.logid = d;
+  m.p.logid = d;
   m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}`;
 }
 
@@ -481,6 +481,8 @@ watch(() => m.p.returnUrl   , ()=> updateUrl());
 watch(() => m.useEncode     , ()=> updateUrl());
 
 function onExecute() {
+  const stor = ResultStore.create();
+  stor.setSend(m.p.logid, m.p, m.computedUrl);
   location.href = m.computedUrl;
 }
 

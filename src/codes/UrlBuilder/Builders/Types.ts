@@ -8,6 +8,7 @@ export type reprint_t    = "Slip" | "Journal";
 export type when_t       = "Last" | "BeforeLast";
 
 export type params_t = {
+  logid:        string;   /** 内部で使用 */
   menu?:        menus_t;
   moneytype?:   moneytype_t;
   job?:         job_t;
