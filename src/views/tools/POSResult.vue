@@ -19,12 +19,14 @@
     
 <script lang="ts">
 import { defineComponent, reactive } from "@vue/composition-api";
-import { debug } from "debug";
+import { mode_t } from '@/codes/UrlBuilder/Builders';
 import { ResultStore, resultstore_t } from "@/codes/ResultStore";
+import { debug } from "debug";
 const LOG = debug("app:POSResult");
 
 let item_id = 0;
 let new_id: string | undefined = undefined;
+let mode: mode_t | undefined = undefined;
 
 type item_t = {
   id: number,
@@ -33,6 +35,14 @@ type item_t = {
 };
 
 function generateString(key: string, value: string): item_t {
+  if(mode == "pokepos"){
+    if(value.charAt(0) == '{'){
+      return generateMap(key, JSON.parse(value));
+    }
+    else if(value.charAt(0) == '['){
+      return generateArray(key, JSON.parse(value));
+    }
+  }
   return {
     id: item_id++,
     name: `${key} : ${value}`
@@ -96,11 +106,24 @@ function generateMap(key: string, value: any): item_t {
 
 function generateItems(data: resultstore_t[]) {
   return data.map((it) => {
+    const title =
+        it.param.logid
+      + " ( "
+      + it.param.mode
+      + " / "
+      + it.param.menu
+      + " / "
+      + it.param.moneytype
+      + " )"
+      + ((it.param.logid == new_id) ? "  **NEW" : "");
+
+    mode = it.param.mode;
+
     const d = {
       id: item_id++,
-      name: `${it.param.logid}${(it.param.logid == new_id) ? "  *new" : ""}`,
+      name: title,
       children: new Array<item_t>()
-    }
+    };
 
     const param         = generateMap("param", it.param);
     const sendUrl       = generateString("send url", it.sendUrl);
@@ -115,16 +138,36 @@ function generateItems(data: resultstore_t[]) {
   });
 }
 
-
 export default defineComponent({
   setup(props, ctx) {
     const stor = ResultStore.create();
-    if(ctx.root.$route.params.id != "-"){
-      new_id          = ctx.root.$route.params.id;
-      const query     = JSON.stringify(ctx.root.$route.query);
-      const fullpath  = ctx.root.$route.fullPath;
-      stor.setReceive(new_id, fullpath, ctx.root.$route.query);
+    if(ctx.root.$route.params.id == "-"){
+      /* nothing to do */
     }
+    else{
+      if(ctx.root.$route.query.escape){
+        const s = decodeURIComponent(ctx.root.$route.fullPath);
+        const m = s.match(/:\/\/pokepos\?(.+)/);
+        if(m){
+          const query:{[_: string]: string} = {};
+          [...m[1].matchAll(/&{0,1}([^=]+)=([^&$]*)/g)]
+          .forEach((x, i) => {
+            if(i == 0) return;
+            query[x[1]] = x[2];
+          });
+        }
+        new_id          = ctx.root.$route.params.id;
+        const fullpath  = ctx.root.$route.fullPath;
+        stor.setReceive(new_id, fullpath, ctx.root.$route.query);
+      }
+      else{
+        new_id          = ctx.root.$route.params.id;
+        const query     = JSON.stringify(ctx.root.$route.query);
+        const fullpath  = ctx.root.$route.fullPath;
+        stor.setReceive(new_id, fullpath, ctx.root.$route.query);
+      }
+    }
+
     const items = generateItems(stor.list());
     return {
       items,

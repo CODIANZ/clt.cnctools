@@ -3,7 +3,7 @@
     <v-form ref="form">
       <v-row>
         <v-col>
-          <v-radio-group v-model="m.mode" row>
+          <v-radio-group v-model="m.p.mode" row>
             <v-radio
               v-for="it in modes"
               :key="`modes-${it.value}`"
@@ -257,7 +257,6 @@ let builder: UrlBuilder.Base | undefined = undefined;
 type mode_t = "pokepos" | "cnc";
 
 const m = reactive({
-  mode: undefined as mode_t | undefined,
   p: UrlBuilder.Base.DefaultParams,
   computedUrl: "",
   useEncode: false,
@@ -438,7 +437,7 @@ function updateUrl() {
 }
 
 function changeMode() {
-  switch(m.mode){
+  switch(m.p.mode){
     case "pokepos":{
       if(UrlBuilder.Base.isEMoney(m.p.moneytype)){
         builder = new UrlBuilder.PokeposEM();
@@ -457,7 +456,7 @@ function changeMode() {
   updateUrl();
 }
 
-watch(() => m.mode          , ()=> changeMode());
+watch(() => m.p.mode        , ()=> changeMode());
 
 watch(() => m.p.menu        , ()=> updateUrl());
 watch(() => m.p.moneytype   , ()=> changeMode());
