@@ -4,7 +4,7 @@ module.exports = {
   ],
   publicPath: '/',
   pwa: {
-    start_url: "https://pensive-villani-5ff91b.netlify.app/",
+    start_url: "https://clt-cnctools.netlify.app/",
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black'
   },
