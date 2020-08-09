@@ -9,6 +9,14 @@
       >
         全て削除
       </v-btn>
+      <v-btn
+        rounded
+        color="primary"
+        dark
+        @click="onSave"
+      >
+        ファイルに保存
+      </v-btn>
     </v-col>
 
     <v-treeview
@@ -21,6 +29,8 @@
 import { defineComponent, reactive } from "@vue/composition-api";
 import { mode_t } from '@/codes/UrlBuilder/Builders';
 import { ResultStore, resultstore_t } from "@/codes/ResultStore";
+import FileSaver from "file-saver";
+import dateFormat from "dateformat";
 import { debug } from "debug";
 const LOG = debug("app:POSResult");
 
@@ -176,6 +186,11 @@ export default defineComponent({
           stor.eraseAll();
           ctx.root.$router.replace("/");
         }
+      },
+      onSave: () => {
+        const l = stor.list();
+        var blob = new Blob([JSON.stringify(l)], {type: "application/json;charset=utf-8"});
+        FileSaver.saveAs(blob, `${dateFormat(new Date(), "yyyymmddHHMMss")}.json`)
       }
     };
   }
