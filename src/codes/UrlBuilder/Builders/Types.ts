@@ -5,7 +5,7 @@ export type job_t        = "Sales" | "Refund" | "Confirm";
 export type journal_t    = "Total" | "Intermediate";
 export type detail_t     = "Summary" | "Detail";
 export type reprint_t    = "Slip" | "Journal";
-export type when_t       = "Last" | "BeforeLast";
+export type when_t       = "Last" | "BeforeLast" | "SlipNo";
 
 export type params_t = {
   logid:        string;

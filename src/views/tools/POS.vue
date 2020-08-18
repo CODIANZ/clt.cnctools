@@ -459,7 +459,10 @@ function changeMode() {
       }
       break;
     }
-    case "cnc":     builder = undefined; break;
+    case "cnc":{
+      builder = new UrlBuilder.Cnc();
+      break;
+    }     
     default:        builder = undefined; break;
   }
   if(builder){
