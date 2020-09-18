@@ -27,7 +27,7 @@
         </v-col>
       </v-row>
 
-      <v-row> 
+      <v-row>
         <v-col>
           <v-radio-group v-model="m.p.moneytype" row>
             <v-radio
@@ -207,6 +207,13 @@
             readonly
           ></v-text-field>
         </v-col>
+        <v-col cols="2">
+          <v-switch
+            v-model="m.useEncode"
+            inset
+            label="URLエンコード"
+          ></v-switch>
+        </v-col>
       </v-row>
 
       <v-row>
@@ -222,11 +229,21 @@
 
       <v-row>
         <v-col>
-          <v-switch
-            v-model="m.useEncode"
-            inset
-            label="URLエンコード"
-          ></v-switch>
+          <v-text-field
+            v-model="m.baseUrlForNuxt"
+            label="検証用baseURL"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+            <v-row>
+        <v-col>
+          <v-textarea
+            v-model="m.computedUrlForNuxt"
+            label="生成URL(検証用)"
+            outlined
+            readonly
+          ></v-textarea>
         </v-col>
       </v-row>
 
@@ -242,11 +259,22 @@
           実行 - {{ m.p.logid }}
           </v-btn>
         </v-col>
+        <v-col>
+          <v-btn
+            rounded
+            color="info"
+            dark
+            @click="onExecuteForNuxt"
+            :disabled="!m.b.valid"
+          >
+          実行(検証用) - {{ m.p.logid }}
+          </v-btn>
+        </v-col>
       </v-row>
     </v-form>
   </v-container>
 </template>
-    
+
 <script lang="ts">
 import { defineComponent, reactive, ref, watch } from "@vue/composition-api";
 import { iform, validations } from "@/codes/FormUtil";
@@ -263,6 +291,8 @@ type mode_t = "pokepos" | "cnc";
 const m = reactive({
   p: UrlBuilder.Base.DefaultParams,
   computedUrl: "",
+  baseUrlForNuxt: "http://localhost:3000/#/pos/",
+  computedUrlForNuxt: "",
   useEncode: false,
   b: {
     productCode: false,
@@ -442,9 +472,12 @@ function updateUrl() {
     const url = builder.generateUrl(m.useEncode);
     m.b.valid     = url !== undefined;
     m.computedUrl = url ?? "";
+
+    m.computedUrlForNuxt =m.baseUrlForNuxt+ m.computedUrl.replace(/^[a-z\-]+:\/\//, "") ;
   }
   else{
     m.computedUrl = "";
+    m.computedUrlForNuxt = ""
   }
 }
 
@@ -462,7 +495,7 @@ function changeMode() {
     case "cnc":{
       builder = new UrlBuilder.Cnc();
       break;
-    }     
+    }
     default:        builder = undefined; break;
   }
   if(builder){
@@ -500,6 +533,12 @@ function onExecute() {
   location.href = m.computedUrl;
 }
 
+function onExecuteForNuxt() {
+  const stor = ResultStore.create();
+  stor.setSend(m.p.logid, m.p, m.computedUrl);
+  open(m.computedUrlForNuxt, "_blank")
+}
+
 export default defineComponent({
   setup() {
     const form = ref<iform>();
@@ -515,7 +554,8 @@ export default defineComponent({
       details,
       form,
       ...validations,
-      onExecute
+      onExecute,
+      onExecuteForNuxt
     };
   }
 });
