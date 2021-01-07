@@ -58,7 +58,7 @@ export class Cnc extends Base {
       if(!this.Params.moneytype) break;
       if(!this.Params.job) break;
 
-      const path = `${this.m_moneytypes[this.Params.moneytype]}/${this.m_jobs[this.Params.job]}`;
+      const path = `${this.m_moneytypes[this.Params.moneytype]}-${this.m_jobs[this.Params.job]}`;
       const kvs: keyvalue_t = {};
 
       switch(this.Params.job){
@@ -113,7 +113,7 @@ export class Cnc extends Base {
       if(!this.Params.journal) break;
       if(!this.Params.detail) break;
 
-      const path = `${this.m_moneytypes[this.Params.moneytype]}/journal/${this.m_journals[this.Params.journal]}`;
+      const path = `${this.m_moneytypes[this.Params.moneytype]}-journal-${this.m_journals[this.Params.journal]}`;
       const kvs: keyvalue_t = {};
 
       kvs.type = (this.Params.detail == "Summary") ? "summary" : "detail";
@@ -131,7 +131,7 @@ export class Cnc extends Base {
       if(!this.Params.reprint) break;
       if(!this.Params.when) break;
 
-      const path = `${this.m_moneytypes[this.Params.moneytype]}/reprint/${this.m_reprints[this.Params.reprint]}`;
+      const path = `${this.m_moneytypes[this.Params.moneytype]}-reprint-${this.m_reprints[this.Params.reprint]}`;
       const kvs: keyvalue_t = {};
 
       switch(this.Params.reprint){
