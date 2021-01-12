@@ -71,7 +71,7 @@ export class Cnc extends Base {
           }
           if(this.isNeedTaxOther()){
             if(!this.isNumber(this.Params.taxOther)) break;
-            kvs.taxOther = this.Params.taxOther;
+            kvs.taxOtherAmount = this.Params.taxOther;
           }
           break;
         }
