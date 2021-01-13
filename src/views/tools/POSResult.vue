@@ -172,9 +172,15 @@ export default defineComponent({
       }
       else{
         new_id          = ctx.root.$route.params.id;
-        const query     = JSON.stringify(ctx.root.$route.query);
+        const query     = (() => {
+          const jsonresp = ctx.root.$route.query["jsonresp"];
+          if(jsonresp && (typeof jsonresp === "string")){
+            return JSON.parse(jsonresp);
+          }
+          return ctx.root.$route.query;
+        })();
         const fullpath  = ctx.root.$route.fullPath;
-        stor.setReceive(new_id, fullpath, ctx.root.$route.query);
+        stor.setReceive(new_id, fullpath, query);
       }
     }
 
