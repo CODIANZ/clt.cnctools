@@ -364,13 +364,6 @@ const m = reactive({
     { name: '取消', value: '1' },
     { name: '返品', value: '2' }
   ],
-  paymentMethodItems: [
-    { name: '分割', value: '1' },
-    { name: 'ボーナス', value: '2' },
-    { name: 'ボーナス併用', value: '3' },
-    { name: '一括', value: '4' },
-    { name: 'リボ', value: '5' }
-  ],
   b: {
     productCode: false,
     taxOther: false,
