@@ -264,6 +264,72 @@
           ></v-text-field>
         </v-col>
       </v-row>
+      <v-row v-if="m.p.moneytype=='Cup'&&m.p.job=='Sales'">
+        <v-col>
+          <v-text-field
+            v-model="m.p.amount"
+            label="金額"
+            type="number"
+            :rules="[required,range(1,99999)]"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row v-if="m.p.moneytype=='Cup'&&m.p.job=='Refund'">
+        <v-col>
+          <v-text-field
+            v-model="m.p.slipNo"
+            label="伝票番号"
+            type="number"
+            :rules="[required,length(5)]"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.approvalNo"
+            label="承認番号"
+            type="number"
+            :rules="[required,range(1,99999)]"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.cupNo"
+            label="銀聯番号"
+            type="number"
+            :rules="(/^[0-9]+$/)"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.SendDate"
+            label="銀聯送信日時"
+            type="number"
+            :rules="(/^[0-9]{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$ ^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.amount"
+            label="金額"
+            type="number"
+            :rules="[required,range(1,99999)]"
+          ></v-text-field>
+        </v-col>
+        <v-col
+          class="d-flex"
+          cols="12"
+          sm="2"
+        >
+          <v-select
+            v-model="m.p.transactionType"
+            :items="m.transactionTypeItems"
+            item-text="name"
+            item-value="value"
+            label="取引区分"
+            dense
+          ></v-select>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col>
           <v-text-field
