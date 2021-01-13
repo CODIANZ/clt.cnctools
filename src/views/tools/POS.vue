@@ -264,7 +264,7 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="(m.p.moneytype=='Cup'||m.p.moneytype=='Suica')&&m.p.job=='Sales'">
+      <v-row v-if="(m.p.moneytype=='Cup'||m.p.moneytype=='Suica'||m.p.moneytype=='QP')&&m.p.job=='Sales'">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
@@ -328,6 +328,24 @@
             label="取引区分"
             dense
           ></v-select>
+        </v-col>
+      </v-row>
+      <v-row v-if="m.p.moneytype=='QP'&&m.p.job=='Cancel'">
+        <v-col>
+          <v-text-field
+            v-model="m.p.slipNo"
+            label="伝票番号"
+            type="number"
+            :rules="[required,length(5)]"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.termId"
+            label="端末ID"
+            type="number"
+            :rules="[required,length(9)]"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
