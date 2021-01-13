@@ -50,7 +50,7 @@ export class Cnc extends Base {
   }
 
   protected doSelfmode() {
-    return {"selfMode": this.Params.bSelfMode ? "true" : "false"};
+    return {"self": this.Params.bSelfMode ? "true" : "false"};
   }
 
   protected doService() {
