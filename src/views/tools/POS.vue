@@ -226,6 +226,32 @@
           ></v-select>
         </v-col>
       </v-row>
+      <v-row v-if="m.p.menu=='Service'&&m.p.job=='AuthorizedReservations'">
+        <v-col>
+          <v-text-field
+            v-model="m.p.amount"
+            label="金額"
+            type="number"
+            :rules="[required,range(1,99999)]"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.taxOther"
+            label="税・その他"
+            type="number"
+            :rules="[required,range(0,99999)]"
+            :disabled="!m.b.taxOther"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-switch
+            v-model="m.p.lump"
+            inset
+            label="一括払優先"
+          ></v-switch>
+        </v-col>
+      </v-row>
 
       <v-row>
         <v-col>
@@ -329,10 +355,10 @@ const m = reactive({
   ],
   paymentMethodItems: [
     { name: '分割', value: '1' },
-    { name: '返品', value: '2' },
-    { name: '返品', value: '3' },
-    { name: '返品', value: '4' },
-    { name: '返品', value: '5' }
+    { name: 'ボーナス', value: '2' },
+    { name: 'ボーナス併用', value: '3' },
+    { name: '一括', value: '4' },
+    { name: 'リボ', value: '5' }
   ],
   b: {
     productCode: false,
