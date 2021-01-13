@@ -237,7 +237,33 @@
           ></v-switch>
         </v-col>
       </v-row>
-
+      <v-row v-if="m.p.menu=='Service'&&m.p.job=='ApprovedSales'">
+        <v-col>
+          <v-text-field
+            v-model="m.p.approvalNo"
+            label="承認番号"
+            type="number"
+            :rules="[required,range(1,99999)]"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.amount"
+            label="金額"
+            type="number"
+            :rules="[required,range(1,99999)]"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.taxOther"
+            label="税・その他"
+            type="number"
+            :rules="[required,range(0,99999)]"
+            :disabled="!m.b.taxOther"
+          ></v-text-field>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col>
           <v-text-field
