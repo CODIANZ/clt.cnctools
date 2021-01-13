@@ -264,7 +264,7 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="m.p.moneytype=='Cup'&&m.p.job=='Sales'">
+      <v-row v-if="(m.p.moneytype=='Cup'||m.p.moneytype=='Suica')&&m.p.job=='Sales'">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
@@ -546,17 +546,9 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
         value: "Sales"
       },
       {
-        label: "取消",
-        value: "Cancel"
-      },
-      {
         label: "残高照会",
         value: "BalanceInquiry"
       },
-      {
-        label: "前回取引確認",
-        value: "Confirm"
-      }
     ];
   }
   if(m.p.moneytype == "QP" || m.p.moneytype == "ID" ){
