@@ -210,6 +210,7 @@ export class Cnc extends Base {
     const tbl: {[_ in moneytype_t]: boolean} = {
       Credit: true,
       Cup:    true,
+      NFC:    true,
       Suica:  false,
       QP:     true,
       ID:     true,
@@ -223,6 +224,7 @@ export class Cnc extends Base {
     const tbl: {[_ in moneytype_t]: boolean} = {
       Credit: true,
       Cup:    true,
+      NFC:    true,
       Suica:  false,
       QP:     true,
       ID:     true,

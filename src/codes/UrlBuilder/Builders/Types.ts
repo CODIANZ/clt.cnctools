@@ -1,7 +1,7 @@
 export type mode_t       = "pokepos" | "cnc";
 export type menus_t      = "Service" | "Journal" | "Reprint";
-export type moneytype_t  = "Credit" | "Cup" | "Suica" | "QP" | "ID" | "Waon" | "Nanaco";
-export type job_t        = "Sales" | "Refund" | "Confirm";
+export type moneytype_t  = "Credit" | "Cup" | "NFC" | "Suica" | "QP" | "ID" | "Waon" | "Nanaco";
+export type job_t        = "Sales" | "Refund" | "AuthorizedReservations" | "ApprovedSales" | "CardCheck" | "Cancel" | "BalanceInquiry" | "Confirm" | "Payment" | "HistoryInquiry" | "PointCharge";
 export type journal_t    = "Total" | "Intermediate";
 export type detail_t     = "Summary" | "Detail";
 export type reprint_t    = "Slip" | "Journal";
