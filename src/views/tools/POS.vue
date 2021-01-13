@@ -137,7 +137,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu=='Service'&&(m.p.job=='Sales'||m.p.job=='Refund')">
+      <v-row v-if="m.p.moneytype=='Credit'&&(m.p.job=='Sales'||m.p.job=='Refund')">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
@@ -166,7 +166,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu=='Service'&&m.p.job=='Refund'">
+      <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='Refund'">
         <v-col>
           <v-text-field
             v-model="m.p.slipNo"
