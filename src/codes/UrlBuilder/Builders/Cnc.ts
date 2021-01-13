@@ -181,7 +181,7 @@ export class Cnc extends Base {
       ...this.doTraining(),
       ...this.doPrint(),
       ...this.doSelfmode(),
-      returnUrlScheme: this.Params.returnUrl
+      returnUrl: this.Params.returnUrl
     };
   }
 
