@@ -196,21 +196,6 @@
             :rules="[required,length(16)]"
           ></v-text-field>
         </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.transactionDate"
-            label="取引日時"
-            :rules="(/^[0-9]{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$ ^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)"
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.totalAmount"
-            label="合計金額"
-            type="number"
-            :rules="(/^[0-9]+$/)"
-          ></v-text-field>
-        </v-col>
         <v-col
           class="d-flex"
           cols="12"
