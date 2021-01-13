@@ -196,6 +196,35 @@
             :rules="[required,length(16)]"
           ></v-text-field>
         </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.transactionDate"
+            label="取引日時"
+            :rules="(/^[0-9]{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$ ^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.totalAmount"
+            label="合計金額"
+            type="number"
+            :rules="(/^[0-9]+$/)"
+          ></v-text-field>
+        </v-col>
+        <v-col
+          class="d-flex"
+          cols="12"
+          sm="2"
+        >
+          <v-select
+            v-model="m.p.transactionType"
+            :items="m.transactionTypeItems"
+            item-text="name"
+            item-value="value"
+            label="取引区分"
+            dense
+          ></v-select>
+        </v-col>
       </v-row>
 
       <v-row>
@@ -276,7 +305,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, watch } from "@vue/composition-api";
+import { defineComponent, computed, reactive, ref, watch } from "@vue/composition-api";
 import { iform, validations } from "@/codes/FormUtil";
 import { UrlBuilder } from "@/codes/UrlBuilder";
 import { ResultStore } from "@/codes/ResultStore";
@@ -294,6 +323,17 @@ const m = reactive({
   baseUrlForNuxt: "http://localhost:3000/#/pos/",
   computedUrlForNuxt: "",
   useEncode: false,
+  transactionTypeItems: [
+    { name: '取消', value: '1' },
+    { name: '返品', value: '2' }
+  ],
+  paymentMethodItems: [
+    { name: '分割', value: '1' },
+    { name: '返品', value: '2' },
+    { name: '返品', value: '3' },
+    { name: '返品', value: '4' },
+    { name: '返品', value: '5' }
+  ],
   b: {
     productCode: false,
     taxOther: false,
@@ -307,6 +347,7 @@ interface radio_item<T> {
   label: string;
   value: T;
 }
+
 
 const modes: radio_item<mode_t>[] = [
   {
@@ -325,10 +366,6 @@ const menus: radio_item<UrlBuilder.menus_t>[] = [
     value: "Service"
   },
   {
-    label: "集計",
-    value: "Journal"
-  },
-  {
     label: "再印字",
     value: "Reprint"
   }
@@ -336,12 +373,16 @@ const menus: radio_item<UrlBuilder.menus_t>[] = [
 
 const moneytypes: radio_item<UrlBuilder.moneytype_t>[] = [
   {
-    label: "クレジット" ,
+    label: "クレジット",
     value: "Credit"
   },
   {
     label: "銀聯",
     value: "Cup"
+  },
+  {
+    label: "NFC",
+    value: "NFC"
   },
   {
     label: "交通系IC",
@@ -365,20 +406,124 @@ const moneytypes: radio_item<UrlBuilder.moneytype_t>[] = [
   }
 ];
 
-const jobs: radio_item<UrlBuilder.job_t>[] = [
-  {
-    label: "売上",
-    value: "Sales"
-  },
-  {
-    label: "取消",
-    value: "Refund"
-  },
-  {
-    label: "前回取引確認",
-    value: "Confirm"
+const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
+  if(m.p.moneytype == "Credit"){
+    return [
+      {
+        label: "売上",
+        value: "Sales"
+      },
+      {
+        label: "取消返品",
+        value: "Refund"
+      },
+      {
+        label: "オーソリ予約",
+        value: "AuthorizedReservations"
+      },
+      {
+        label: "承認後売上",
+        value: "ApprovedSales"
+      },
+      {
+        label: "カードチェック",
+        value: "CardCheck"
+      }
+    ];
   }
-];
+  if(m.p.moneytype == "Cup" || m.p.moneytype == "NFC" ){
+    return [
+      {
+        label: "売上",
+        value: "Sales"
+      },
+      {
+        label: "取消返品",
+        value: "Refund"
+      }
+    ];
+  }
+  if(m.p.moneytype == "Suica" ){
+    return [
+      {
+        label: "売上",
+        value: "Sales"
+      },
+      {
+        label: "取消",
+        value: "Cancel"
+      },
+      {
+        label: "残高照会",
+        value: "BalanceInquiry"
+      },
+      {
+        label: "前回取引確認",
+        value: "Confirm"
+      }
+    ];
+  }
+  if(m.p.moneytype == "QP" || m.p.moneytype == "ID" ){
+    return [
+      {
+        label: "売上",
+        value: "Sales"
+      },
+      {
+        label: "取消",
+        value: "Cancel"
+      },
+      {
+        label: "前回取引確認",
+        value: "Confirm"
+      }
+    ];
+  }
+  if(m.p.moneytype == "Nanaco" ){
+    return [
+      {
+        label: "支払",
+        value: "Payment"
+      },
+      {
+        label: "残高照会",
+        value: "BalanceInquiry"
+      },
+      {
+        label: "前回取引確認",
+        value: "Confirm"
+      }
+    ];
+  }
+  if(m.p.moneytype == "Waon" ){
+    return [
+      {
+        label: "売上",
+        value: "Sales"
+      },
+      {
+        label: "取消",
+        value: "Cancel"
+      },
+      {
+        label: "残高照会",
+        value: "BalanceInquiry"
+      },
+      {
+        label: "履歴照会",
+        value: "HistoryInquiry"
+      },
+      {
+        label: "ポイントチャージ",
+        value: "PointCharge"
+      },
+      {
+        label: "前回取引確認",
+        value: "Confirm"
+      }
+    ];
+  };
+});
 
 const journals: radio_item<UrlBuilder.journal_t>[] = [
   {
@@ -556,7 +701,7 @@ export default defineComponent({
       ...validations,
       onExecute,
       onExecuteForNuxt
-    };
+    }
   }
 });
 

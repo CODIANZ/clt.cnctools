@@ -79,7 +79,8 @@ export abstract class  Base {
       termId:       "",
       manualFlg:    false,
       pan:          "",
-      returnUrl:    ""
+      returnUrl:    "",
+      transactionType: undefined
     } as params_t;
   }
 }

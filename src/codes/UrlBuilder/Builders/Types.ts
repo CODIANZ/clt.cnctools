@@ -28,6 +28,7 @@ export type params_t = {
   termId:       string;
   manualFlg:    boolean;
   pan:          string;
+  transactionType?: "1" | "2";
   returnUrl:    string;
 };
 
