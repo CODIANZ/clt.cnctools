@@ -518,6 +518,10 @@ const menus: radio_item<UrlBuilder.menus_t>[] = [
     value: "Service"
   },
   {
+    label: "集計",
+    value: "Journal"
+  },
+  {
     label: "再印字",
     value: "Reprint"
   }
