@@ -701,7 +701,7 @@ const reprints: radio_item<UrlBuilder.reprint_t>[] = [
     value: "Slip"
   },
   {
-    label: "集計",
+    label: "日計",
     value: "Journal"
   }
 ];
