@@ -211,7 +211,7 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row v-if="m.p.menu=='Service'&&m.p.job=='AuthorizedReservations'">
+      <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='AuthorizedReservations'">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
@@ -237,7 +237,7 @@
           ></v-switch>
         </v-col>
       </v-row>
-      <v-row v-if="m.p.menu=='Service'&&m.p.job=='ApprovedSales'">
+      <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='ApprovedSales'">
         <v-col>
           <v-text-field
             v-model="m.p.approvalNo"
