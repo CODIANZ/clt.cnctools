@@ -348,6 +348,52 @@
           ></v-text-field>
         </v-col>
       </v-row>
+      <v-row v-if="m.p.moneytype=='ID'&&m.p.job=='Cancel'">
+        <v-col>
+          <v-text-field
+            v-model="m.p.slipNo"
+            label="伝票番号"
+            type="number"
+            :rules="[required,length(5)]"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.termId"
+            label="端末ID"
+            type="number"
+            :rules="[required,length(9)]"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row v-if="m.p.moneytype=='ID'&&(m.p.job=='Sales'||m.p.job=='Cancel')">
+        <v-col>
+          <v-text-field
+            v-model="m.p.amount"
+            label="金額"
+            type="number"
+            :rules="[required,range(1,99999)]"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.taxOther"
+            label="税・その他"
+            type="number"
+            :rules="[required,range(0,99999)]"
+            :disabled="!m.b.taxOther"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="m.p.productCode"
+            label="商品コード"
+            type="number"
+            :rules="[required,length(4)]"
+            :disabled="!m.b.productCode"
+          ></v-text-field>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col>
           <v-text-field
