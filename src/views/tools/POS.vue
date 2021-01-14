@@ -264,7 +264,7 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="(m.p.moneytype=='Cup'||m.p.moneytype=='Suica'||m.p.moneytype=='QP')&&m.p.job=='Sales'">
+      <v-row v-if="(m.p.moneytype=='Cup'||m.p.moneytype=='Suica'||m.p.moneytype=='QP'||m.p.moneytype=='Waon')&&m.p.job=='Sales'">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
