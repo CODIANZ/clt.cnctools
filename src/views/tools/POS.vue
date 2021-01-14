@@ -394,6 +394,16 @@
           ></v-text-field>
         </v-col>
       </v-row>
+      <v-row v-if="m.p.moneytype=='Nanaco'&&m.p.job=='Payment'">
+        <v-col>
+          <v-text-field
+            v-model="m.p.amount"
+            label="金額"
+            type="number"
+            :rules="[required,range(1,99999)]"
+          ></v-text-field>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col>
           <v-text-field
