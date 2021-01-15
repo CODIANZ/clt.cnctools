@@ -211,7 +211,7 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='AuthorizedReservations'">
+      <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='ReservedAuthority'">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
@@ -575,7 +575,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
       },
       {
         label: "オーソリ予約",
-        value: "AuthorizedReservations"
+        value: "ReservedAuthority"
       },
       {
         label: "承認後売上",
