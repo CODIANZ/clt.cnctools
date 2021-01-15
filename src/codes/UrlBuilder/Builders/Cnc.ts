@@ -11,6 +11,7 @@ export class Cnc extends Base {
   private m_moneytypes: {[_ in moneytype_t]: string} = {
     Credit: "credit",
     Cup:    "cup",
+    NFC:    "NFC",
     Suica:  "suica",
     QP:     "quickpay",
     ID:     "id",
@@ -21,7 +22,15 @@ export class Cnc extends Base {
   private m_jobs: {[_ in job_t]: string} = {
     "Sales": "settlement",
     "Refund": "refund",
-    "Confirm": "confirm"
+    "Cancel": "cancel",
+    "ReservedAuthority": "reservedAuthority",
+    "ApprovedSales": "approvedSales",
+    "CardCheck": "cardCheck",
+    "BalanceInquiry": "balanceInquiry",
+    "Confirm": "confirm",
+    "Payment": "payment",
+    "HistoryInquiry": "historyInquiry",
+    "PointCharge": "pointCharge"
   };
 
   private m_journals: {[_ in journal_t]: string} = {
