@@ -182,14 +182,12 @@
             :rules="[required,length(9)]"
           ></v-text-field>
         </v-col>
-        <v-col>
+        <v-col v-if="m.p.mode=='pokepos'">
           <v-switch
             v-model="m.p.manualFlg"
             inset
             label="マニュアル"
           ></v-switch>
-        </v-col>
-        <v-col>
           <v-text-field
             v-model="m.p.pan"
             label="カード番号"
