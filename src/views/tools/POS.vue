@@ -587,7 +587,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
       }
     ];
   }
-  if(m.p.moneytype == "Cup" || m.p.moneytype == "NFC" ){
+  else if(m.p.moneytype == "Cup" || m.p.moneytype == "NFC" ){
     return [
       {
         label: "売上",
@@ -599,7 +599,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
       }
     ];
   }
-  if(m.p.moneytype == "Suica" ){
+  else if(m.p.moneytype == "Suica" ){
     return [
       {
         label: "売上",
@@ -611,7 +611,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
       },
     ];
   }
-  if(m.p.moneytype == "QP" || m.p.moneytype == "ID" ){
+  else if(m.p.moneytype == "QP" || m.p.moneytype == "ID" ){
     return [
       {
         label: "売上",
@@ -627,7 +627,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
       }
     ];
   }
-  if(m.p.moneytype == "Nanaco" ){
+  else if(m.p.moneytype == "Nanaco" ){
     return [
       {
         label: "支払",
@@ -643,7 +643,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
       }
     ];
   }
-  if(m.p.moneytype == "Waon" ){
+  else if(m.p.moneytype == "Waon" ){
     return [
       {
         label: "売上",
@@ -670,7 +670,10 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
         value: "Confirm"
       }
     ];
-  };
+  }
+  else{
+    return [];
+  }
 });
 
 const journals: radio_item<UrlBuilder.journal_t>[] = [
