@@ -48,6 +48,7 @@ export abstract class  Base {
 
   public abstract isNeedProductCode(): boolean;
   public abstract isNeedTaxOther(): boolean;
+  public abstract isNeedLump(): boolean;
 
   public isNumber(s: string | undefined): boolean {
     if(s === undefined) return false;
@@ -72,6 +73,7 @@ export abstract class  Base {
       bPrinting:    false,
       bSelfMode:    false,
       bTogether:    false,
+      bLump:        false,
       amount:       "",
       taxOther:     "",
       productCode:  "",

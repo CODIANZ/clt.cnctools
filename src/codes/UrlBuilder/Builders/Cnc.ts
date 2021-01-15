@@ -61,6 +61,9 @@ export class Cnc extends Base {
   protected doSelfmode() {
     return {"selfMode": this.Params.bSelfMode ? "true" : "false"};
   }
+  protected doLump() {
+    return {"Lump": this.Params.bLump ? "true" : "false"};
+  }
 
   protected doService() {
     do {
@@ -190,6 +193,7 @@ export class Cnc extends Base {
       ...this.doTraining(),
       ...this.doPrint(),
       ...this.doSelfmode(),
+      ...this.doLump(),
       returnUrlScheme: this.Params.returnUrl
     };
   }

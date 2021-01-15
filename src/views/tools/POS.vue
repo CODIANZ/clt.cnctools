@@ -229,7 +229,7 @@
         </v-col>
         <v-col>
           <v-switch
-            v-model="m.p.lump"
+            v-model="m.p.bLump"
             inset
             label="一括払優先"
           ></v-switch>
@@ -488,6 +488,7 @@ const m = reactive({
     productCode: false,
     taxOther: false,
     together: false,
+    lump: false,
     valid: false
   }
 });
@@ -731,6 +732,7 @@ function paramsToBuilder() {
   builder.Params.bPrinting   = m.p.bPrinting;
   builder.Params.bSelfMode   = m.p.bSelfMode;
   builder.Params.bTogether   = m.p.bTogether;
+  builder.Params.bLump       = m.p.bLump;
   builder.Params.amount      = m.p.amount;
   builder.Params.taxOther    = m.p.taxOther;
   builder.Params.productCode = m.p.productCode;
@@ -811,6 +813,7 @@ watch(() => m.p.bTraining   , ()=> updateUrl());
 watch(() => m.p.bPrinting   , ()=> updateUrl());
 watch(() => m.p.bSelfMode   , ()=> updateUrl());
 watch(() => m.p.bTogether   , ()=> updateUrl());
+watch(() => m.p.bLump       , ()=> updateUrl());
 watch(() => m.p.amount      , ()=> updateUrl());
 watch(() => m.p.taxOther    , ()=> updateUrl());
 watch(() => m.p.productCode , ()=> updateUrl());
