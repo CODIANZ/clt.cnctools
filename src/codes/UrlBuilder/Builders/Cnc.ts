@@ -11,7 +11,7 @@ export class Cnc extends Base {
   private m_moneytypes: {[_ in moneytype_t]: string} = {
     Credit: "credit",
     Cup:    "cup",
-    NFC:    "NFC",
+    NFC:    "nfc",
     Suica:  "suica",
     QP:     "quickpay",
     ID:     "id",
