@@ -246,4 +246,18 @@ export class Cnc extends Base {
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
   }
+
+  public /* abstract */ isNeedLump() {
+    const tbl: {[_ in moneytype_t]: boolean} = {
+      Credit: true,
+      Cup:    false,
+      NFC:    false,
+      Suica:  false,
+      QP:     false,
+      ID:     false,
+      Waon:   false,
+      Nanaco: false
+    };
+    return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
+  }
 }
