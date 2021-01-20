@@ -12,6 +12,7 @@ export class Pokepos extends Base {
     const moneytypes: {[_ in moneytype_t]: string} = {
       Credit: "Credit",
       Cup:    "Cup",
+      NFC:    "Nfc",
       Suica:  "Suica",
       QP:     "QP",
       ID:     "ID",
@@ -137,6 +138,7 @@ export class Pokepos extends Base {
     const tbl: {[_ in moneytype_t]: boolean} = {
       Credit: true,
       Cup:    true,
+      NFC:    true,
       Suica:  false,
       QP:     true,
       ID:     true,
@@ -150,6 +152,7 @@ export class Pokepos extends Base {
     const tbl: {[_ in moneytype_t]: boolean} = {
       Credit: true,
       Cup:    true,
+      NFC:    true,
       Suica:  false,
       QP:     true,
       ID:     true,
