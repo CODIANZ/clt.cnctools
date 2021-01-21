@@ -24,6 +24,7 @@ export abstract class  Base {
   public static isEMoney(moneytype: moneytype_t | undefined): boolean {
     switch(moneytype){
       case "Credit":
+      case "NFC":
       case "Cup": {
         return false;
       }
