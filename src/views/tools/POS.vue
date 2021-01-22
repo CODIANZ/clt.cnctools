@@ -472,7 +472,7 @@ const LOG = debug("app:POS");
 
 let builder: UrlBuilder.Base | undefined = undefined;
 
-type mode_t = "pokepos" | "cnc";
+type mode_t = "Pokepos" | "Cnc";
 
 const m = reactive({
   p: UrlBuilder.Base.DefaultParams,
@@ -503,11 +503,11 @@ interface radio_item<T> {
 const modes: radio_item<mode_t>[] = [
   {
     label: "pokepos（互換）",
-    value: "pokepos"
+    value: "Pokepos"
   },
   {
     label: "cnc",
-    value: "cnc"
+    value: "Cnc"
   }
 ];
 
@@ -748,7 +748,7 @@ function updateLogIdAndReturnUrl() {
   m.p.logid = d;
 
   if(builder){
-    if((!builder.isEMoney()) && (m.p.mode == "pokepos")){
+    if((!builder.isEMoney()) && (m.p.mode == "Pokepos")){
       m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}?escape=`;
     }
     else{
@@ -779,7 +779,7 @@ function updateUrl() {
 
 function changeMode() {
   switch(m.p.mode){
-    case "pokepos":{
+    case "Pokepos":{
       if(UrlBuilder.Base.isEMoney(m.p.moneytype)){
         builder = new UrlBuilder.PokeposEM();
       }
@@ -788,7 +788,7 @@ function changeMode() {
       }
       break;
     }
-    case "cnc":{
+    case "Cnc":{
       builder = new UrlBuilder.Cnc();
       break;
     }

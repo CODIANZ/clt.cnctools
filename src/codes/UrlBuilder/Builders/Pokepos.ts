@@ -131,7 +131,8 @@ export class Pokepos extends Base {
 
   protected  /* abstract */ generateBaseUrlSelf(): string | undefined {
     const path = this.doPath();
-    return path ? `pokepos://${path}` : undefined;
+    return path ? `Pokepos://${path}` : undefined;
+  }
   }
 
   public /* abstract */ isNeedProductCode() {
