@@ -1,4 +1,4 @@
-export type mode_t       = "pokepos" | "cnc";
+export type mode_t       = "Pokepos" | "Cnc";
 export type menus_t      = "Service" | "Journal" | "Reprint";
 export type moneytype_t  = "Credit" | "Cup" | "NFC" | "Suica" | "QP" | "ID" | "Waon" | "Nanaco";
 export type job_t        = "Sales" | "Refund" | "ReservedAuthority" | "ApprovedSales" | "CardCheck" | "Cancel" | "BalanceInquiry" | "Confirm" | "Payment" | "HistoryInquiry" | "PointCharge";
