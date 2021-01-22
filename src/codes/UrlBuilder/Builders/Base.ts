@@ -1,4 +1,4 @@
-import { keyvalue_t, params_t, moneytype_t } from "./Types";
+import { keyvalue_t, params_t, mode_t, moneytype_t } from "./Types";
 
 export abstract class  Base {
   private m_params = Base.DefaultParams;
@@ -60,6 +60,8 @@ export abstract class  Base {
   public isValidProductCode(): boolean {
     return this.Params.productCode.match(/^[0-9]{4}$/) != null;
   }
+
+  public abstract isNeedSelfMode(): boolean;
 
   static get DefaultParams() {
     return {

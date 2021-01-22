@@ -1,8 +1,14 @@
 import { Base } from "./Base";
-import { menus_t, moneytype_t, keyvalue_t } from "./Types";
+import { mode_t, menus_t, moneytype_t, keyvalue_t } from "./Types";
 
 export class Pokepos extends Base {
   protected doPath() {
+
+    const modes: {[_ in mode_t]: string} = {
+      Pokepos: "Pokepos",
+      Cnc: "Cnc"
+    };
+
     const menus: {[_ in menus_t]: string} = {
       Service: "Service",
       Journal: "Journal",
@@ -133,6 +139,10 @@ export class Pokepos extends Base {
     const path = this.doPath();
     return path ? `Pokepos://${path}` : undefined;
   }
+
+
+  public /* abstract */ isNeedSelfMode() {
+    return true;
   }
 
   public /* abstract */ isNeedProductCode() {
