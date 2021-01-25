@@ -270,6 +270,6 @@ export class Cnc extends Base {
   }
 
   public /* abstract */ isNeedSelfMode() {
-    return true;
+    return false;
   }
 }
