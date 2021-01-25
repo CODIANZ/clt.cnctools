@@ -79,7 +79,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="(m.p.mode=='cnc')&&((m.p.menu=='Journal')||(m.p.menu=='Reprint'&&m.p.reprint=='Journal'))">
+      <v-row v-if="(m.p.mode=='Cnc')&&((m.p.menu=='Journal')||(m.p.menu=='Reprint'&&m.p.reprint=='Journal'))">
         <v-col>
           <v-radio-group v-model="m.p.detail" row>
             <v-radio
@@ -92,7 +92,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.mode=='cnc'&&m.p.menu=='Reprint'&&m.p.reprint=='Journal'">
+      <v-row v-if="m.p.mode=='Cnc'&&m.p.menu=='Reprint'&&m.p.reprint=='Journal'">
         <v-col>
           <v-radio-group v-model="m.p.when" row>
             <v-radio
@@ -125,6 +125,7 @@
             v-model="m.p.bSelfMode"
             inset
             label="セルフモード"
+            :disabled="!m.b.selfMode"
           ></v-switch>
         </v-col>
         <v-col>
@@ -182,12 +183,14 @@
             :rules="[required,length(9)]"
           ></v-text-field>
         </v-col>
-        <v-col v-if="m.p.mode=='pokepos'">
+        <v-col>
           <v-switch
             v-model="m.p.manualFlg"
             inset
             label="マニュアル"
           ></v-switch>
+        </v-col>
+        <v-col>
           <v-text-field
             v-model="m.p.pan"
             label="カード番号"
@@ -489,7 +492,8 @@ const m = reactive({
     taxOther: false,
     together: false,
     lump: false,
-    valid: false
+    valid: false,
+    selfMode: false
   }
 });
 
@@ -796,6 +800,7 @@ function changeMode() {
   }
   if(builder){
     paramsToBuilder();
+    m.b.selfMode = builder.isNeedSelfMode();
   }
   updateUrl();
 }

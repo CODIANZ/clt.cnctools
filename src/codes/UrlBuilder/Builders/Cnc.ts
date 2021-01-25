@@ -1,7 +1,13 @@
 import { Base } from "./Base";
-import { menus_t, moneytype_t, keyvalue_t, job_t, journal_t, when_t, reprint_t } from "./Types";
+import { mode_t, menus_t, moneytype_t, keyvalue_t, job_t, journal_t, when_t, reprint_t } from "./Types";
 
 export class Cnc extends Base {
+
+  private m_modes: {[_ in mode_t]: string} = {
+    Pokepos: "pokepos",
+    Cnc:     "cnc"
+  };
+
   private m_menus: {[_ in menus_t]: string} = {
     Service: "service",
     Journal: "journal",
@@ -31,6 +37,7 @@ export class Cnc extends Base {
     "Payment": "payment",
     "HistoryInquiry": "historyInquiry",
     "PointCharge": "pointCharge"
+
   };
 
   private m_journals: {[_ in journal_t]: string} = {
@@ -61,6 +68,7 @@ export class Cnc extends Base {
   protected doSelfmode() {
     return {"selfMode": this.Params.bSelfMode ? "true" : "false"};
   }
+
   protected doLump() {
     return {"Lump": this.Params.bLump ? "true" : "false"};
   }
@@ -259,5 +267,9 @@ export class Cnc extends Base {
       Nanaco: false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
+  }
+
+  public /* abstract */ isNeedSelfMode() {
+    return true;
   }
 }
