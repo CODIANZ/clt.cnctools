@@ -138,6 +138,16 @@
         </v-col>
       </v-row>
 
+      <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='Sales'">
+        <v-col>
+          <v-switch
+            v-model="m.p.bLump"
+            inset
+            label="一括払優先"
+          ></v-switch>
+        </v-col>
+      </v-row>
+
       <v-row v-if="m.p.moneytype=='Credit'&&(m.p.job=='Sales'||m.p.job=='Refund')">
         <v-col>
           <v-text-field
@@ -230,13 +240,6 @@
             :disabled="!m.b.taxOther"
           ></v-text-field>
         </v-col>
-        <v-col>
-          <v-switch
-            v-model="m.p.bLump"
-            inset
-            label="一括払優先"
-          ></v-switch>
-        </v-col>
       </v-row>
       <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='ApprovedSales'">
         <v-col>
@@ -263,6 +266,13 @@
             :rules="[required,range(0,99999)]"
             :disabled="!m.b.taxOther"
           ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-switch
+            v-model="m.p.bLump"
+            inset
+            label="一括払優先"
+          ></v-switch>
         </v-col>
       </v-row>
       <v-row v-if="(m.p.moneytype=='Cup'||m.p.moneytype=='Suica'||m.p.moneytype=='QP'||m.p.moneytype=='Waon')&&m.p.job=='Sales'">
