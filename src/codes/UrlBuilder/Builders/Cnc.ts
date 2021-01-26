@@ -66,7 +66,7 @@ export class Cnc extends Base {
   }
 
   protected doSelfmode() {
-    return {"selfMode": this.Params.bSelfMode ? "true" : "false"};
+    return {"self": this.Params.bSelfMode ? "true" : "false"};
   }
 
   protected doLump() {
@@ -91,7 +91,7 @@ export class Cnc extends Base {
           }
           if(this.isNeedTaxOther()){
             if(!this.isNumber(this.Params.taxOther)) break;
-            kvs.taxOther = this.Params.taxOther;
+            kvs.taxOtherAmount = this.Params.taxOther;
           }
           break;
         }
@@ -202,7 +202,7 @@ export class Cnc extends Base {
       ...this.doPrint(),
       ...this.doSelfmode(),
       ...this.doLump(),
-      returnUrlScheme: this.Params.returnUrl
+      return: this.Params.returnUrl
     };
   }
 
