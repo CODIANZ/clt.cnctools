@@ -540,40 +540,75 @@ const menus: radio_item<UrlBuilder.menus_t>[] = [
   }
 ];
 
-const moneytypes: radio_item<UrlBuilder.moneytype_t>[] = [
-  {
-    label: "クレジット",
-    value: "Credit"
-  },
-  {
-    label: "銀聯",
-    value: "Cup"
-  },
-  {
-    label: "NFC",
-    value: "NFC"
-  },
-  {
-    label: "交通系IC",
-    value: "Suica"
-  },
-  {
-    label: "QUICPay",
-    value: "QP"
-  },
-  {
-    label: "iD",
-    value: "ID"
-  },
-  {
-    label: "WAON",
-    value: "Waon"
-  },
-  {
-    label: "nanaco",
-    value: "Nanaco"
+const moneytypes = computed<radio_item<UrlBuilder.moneytype_t>[]>(() =>  {
+  if(m.p.mode == "Pokepos"){
+    return [
+      {
+        label: "クレジット",
+        value: "Credit"
+      },
+      {
+        label: "銀聯",
+        value: "Cup"
+      },
+      {
+        label: "NFC",
+        value: "NFC"
+      },
+      {
+        label: "交通系IC",
+        value: "Suica"
+      },
+      {
+        label: "QUICPay",
+        value: "QP"
+      },
+      {
+        label: "iD",
+        value: "ID"
+      }
+    ];
   }
-];
+  else if(m.p.mode == "Cnc"){
+    return [
+      {
+        label: "クレジット",
+        value: "Credit"
+      },
+      {
+        label: "銀聯",
+        value: "Cup"
+      },
+      {
+        label: "NFC",
+        value: "NFC"
+      },
+      {
+        label: "交通系IC",
+        value: "Suica"
+      },
+      {
+        label: "QUICPay",
+        value: "QP"
+      },
+      {
+        label: "iD",
+        value: "ID"
+      },
+      {
+        label: "WAON",
+        value: "Waon"
+      },
+      {
+        label: "nanaco",
+        value: "Nanaco"
+      }
+    ];
+  }
+  else{
+    return [];
+  }
+});
 
 const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   if(m.p.moneytype == "Credit"){
