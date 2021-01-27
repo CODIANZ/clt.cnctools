@@ -128,12 +128,14 @@
             :disabled="!m.b.selfMode"
           ></v-switch>
         </v-col>
+      </v-row>
+
+      <v-row v-if="m.p.menu=='Service'&&m.p.moneytype=='Suica'&&m.p.job=='Sales'">
         <v-col>
           <v-switch
             v-model="m.p.bTogether"
             inset
             label="現金併用"
-            :disabled="!m.b.together"
           ></v-switch>
         </v-col>
       </v-row>
@@ -859,7 +861,7 @@ function changeMode() {
 
 watch(() => m.p.mode        , ()=> changeMode());
 
-watch(() => m.p.menu        , ()=> updateUrl());
+watch(() => m.p.menu        , ()=> { m.p.bTogether= false; updateUrl(); });
 watch(() => m.p.moneytype   , ()=> changeMode());
 watch(() => m.p.job         , ()=> updateUrl());
 watch(() => m.p.journal     , ()=> updateUrl());
