@@ -855,8 +855,8 @@ function changeMode() {
 watch(() => m.p.mode        , ()=> changeMode());
 
 watch(() => m.p.menu        , ()=> { m.p.bTogether= false; m.p.bLump= false; updateUrl(); });
-watch(() => m.p.moneytype   , ()=> changeMode());
-watch(() => m.p.job         , ()=> updateUrl());
+watch(() => m.p.moneytype   , ()=> { m.p.bTogether= false; m.p.bLump= false; changeMode(); });
+watch(() => m.p.job         , ()=> { m.p.bTogether= false; m.p.bLump= false; updateUrl(); });
 watch(() => m.p.journal     , ()=> updateUrl());
 watch(() => m.p.detail      , ()=> updateUrl());
 watch(() => m.p.reprint     , ()=> updateUrl());
