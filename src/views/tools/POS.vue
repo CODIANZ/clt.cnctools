@@ -242,13 +242,6 @@
             :disabled="!m.b.taxOther"
           ></v-text-field>
         </v-col>
-        <v-col>
-          <v-switch
-            v-model="m.p.bLump"
-            inset
-            label="一括払優先"
-          ></v-switch>
-        </v-col>
       </v-row>
       <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='ApprovedSales'">
         <v-col>
