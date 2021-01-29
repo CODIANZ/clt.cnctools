@@ -72,4 +72,8 @@ export class PokeposEM extends Pokepos {
     const path = this.doPath();
     return path ? `pokeposem-pos://${path}` : undefined;
   }
+
+  public /* abstract */ isNeedSelfMode() {
+    return true;
+  }
 }

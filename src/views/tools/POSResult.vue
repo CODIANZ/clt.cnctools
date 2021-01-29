@@ -45,7 +45,7 @@ type item_t = {
 };
 
 function generateString(key: string, value: string): item_t {
-  if(mode == "pokepos"){
+  if(mode == "Pokepos"){
     if(value.length > 0 && value.charAt(0) == '{'){
       return generateMap(key, JSON.parse(value));
     }

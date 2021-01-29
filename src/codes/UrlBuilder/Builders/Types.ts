@@ -1,7 +1,7 @@
-export type mode_t       = "pokepos" | "cnc";
+export type mode_t       = "Pokepos" | "Cnc";
 export type menus_t      = "Service" | "Journal" | "Reprint";
-export type moneytype_t  = "Credit" | "Cup" | "Suica" | "QP" | "ID" | "Waon" | "Nanaco";
-export type job_t        = "Sales" | "Refund" | "Confirm";
+export type moneytype_t  = "Credit" | "Cup" | "NFC" | "Suica" | "QP" | "ID" | "Waon" | "Nanaco";
+export type job_t        = "Sales" | "Refund" | "Cancel" | "ReservedAuthority" | "ApprovedSales" | "CardCheck" | "BalanceInquiry" | "Confirm" | "Payment" | "HistoryInquiry" | "PointCharge";
 export type journal_t    = "Total" | "Intermediate";
 export type detail_t     = "Summary" | "Detail";
 export type reprint_t    = "Slip" | "Journal";
@@ -21,6 +21,7 @@ export type params_t = {
   bPrinting:    boolean;
   bSelfMode:    boolean;
   bTogether:    boolean;
+  bLump:        boolean;
   amount:       string;
   taxOther:     string;
   productCode:  string;
@@ -28,6 +29,7 @@ export type params_t = {
   termId:       string;
   manualFlg:    boolean;
   pan:          string;
+  transactionType?: "1" | "2";
   returnUrl:    string;
 };
 

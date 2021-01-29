@@ -1,4 +1,4 @@
-import { keyvalue_t, params_t, moneytype_t } from "./Types";
+import { keyvalue_t, params_t, mode_t, moneytype_t } from "./Types";
 
 export abstract class  Base {
   private m_params = Base.DefaultParams;
@@ -24,6 +24,7 @@ export abstract class  Base {
   public static isEMoney(moneytype: moneytype_t | undefined): boolean {
     switch(moneytype){
       case "Credit":
+      case "NFC":
       case "Cup": {
         return false;
       }
@@ -48,6 +49,7 @@ export abstract class  Base {
 
   public abstract isNeedProductCode(): boolean;
   public abstract isNeedTaxOther(): boolean;
+  public abstract isNeedLump(): boolean;
 
   public isNumber(s: string | undefined): boolean {
     if(s === undefined) return false;
@@ -58,6 +60,8 @@ export abstract class  Base {
   public isValidProductCode(): boolean {
     return this.Params.productCode.match(/^[0-9]{4}$/) != null;
   }
+
+  public abstract isNeedSelfMode(): boolean;
 
   static get DefaultParams() {
     return {
@@ -72,6 +76,7 @@ export abstract class  Base {
       bPrinting:    false,
       bSelfMode:    false,
       bTogether:    false,
+      bLump:        false,
       amount:       "",
       taxOther:     "",
       productCode:  "",
@@ -79,7 +84,8 @@ export abstract class  Base {
       termId:       "",
       manualFlg:    false,
       pan:          "",
-      returnUrl:    ""
+      returnUrl:    "",
+      transactionType: undefined
     } as params_t;
   }
 }

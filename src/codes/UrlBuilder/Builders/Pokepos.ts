@@ -1,8 +1,14 @@
 import { Base } from "./Base";
-import { menus_t, moneytype_t, keyvalue_t } from "./Types";
+import { mode_t, menus_t, moneytype_t, keyvalue_t } from "./Types";
 
 export class Pokepos extends Base {
   protected doPath() {
+
+    const modes: {[_ in mode_t]: string} = {
+      Pokepos: "Pokepos",
+      Cnc: "Cnc"
+    };
+
     const menus: {[_ in menus_t]: string} = {
       Service: "Service",
       Journal: "Journal",
@@ -12,6 +18,7 @@ export class Pokepos extends Base {
     const moneytypes: {[_ in moneytype_t]: string} = {
       Credit: "Credit",
       Cup:    "Cup",
+      NFC:    "Nfc",
       Suica:  "Suica",
       QP:     "QP",
       ID:     "ID",
@@ -130,13 +137,19 @@ export class Pokepos extends Base {
 
   protected  /* abstract */ generateBaseUrlSelf(): string | undefined {
     const path = this.doPath();
-    return path ? `pokepos://${path}` : undefined;
+    return path ? `Pokepos://${path}` : undefined;
+  }
+
+
+  public /* abstract */ isNeedSelfMode() {
+    return true;
   }
 
   public /* abstract */ isNeedProductCode() {
     const tbl: {[_ in moneytype_t]: boolean} = {
       Credit: true,
       Cup:    true,
+      NFC:    true,
       Suica:  false,
       QP:     true,
       ID:     true,
@@ -150,9 +163,24 @@ export class Pokepos extends Base {
     const tbl: {[_ in moneytype_t]: boolean} = {
       Credit: true,
       Cup:    true,
+      NFC:    true,
       Suica:  false,
       QP:     true,
       ID:     true,
+      Waon:   false,
+      Nanaco: false
+    };
+    return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
+  }
+
+  public /* abstract */ isNeedLump() {
+    const tbl: {[_ in moneytype_t]: boolean} = {
+      Credit: true,
+      Cup:    false,
+      NFC:    false,
+      Suica:  false,
+      QP:     false,
+      ID:     false,
       Waon:   false,
       Nanaco: false
     };

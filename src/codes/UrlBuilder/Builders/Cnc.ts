@@ -1,7 +1,13 @@
 import { Base } from "./Base";
-import { menus_t, moneytype_t, keyvalue_t, job_t, journal_t, when_t, reprint_t } from "./Types";
+import { mode_t, menus_t, moneytype_t, keyvalue_t, job_t, journal_t, when_t, reprint_t } from "./Types";
 
 export class Cnc extends Base {
+
+  private m_modes: {[_ in mode_t]: string} = {
+    Pokepos: "pokepos",
+    Cnc:     "cnc"
+  };
+
   private m_menus: {[_ in menus_t]: string} = {
     Service: "service",
     Journal: "journal",
@@ -11,6 +17,7 @@ export class Cnc extends Base {
   private m_moneytypes: {[_ in moneytype_t]: string} = {
     Credit: "credit",
     Cup:    "cup",
+    NFC:    "nfc",
     Suica:  "suica",
     QP:     "quickpay",
     ID:     "id",
@@ -21,7 +28,16 @@ export class Cnc extends Base {
   private m_jobs: {[_ in job_t]: string} = {
     "Sales": "settlement",
     "Refund": "refund",
-    "Confirm": "confirm"
+    "Cancel": "cancel",
+    "ReservedAuthority": "reservedAuthority",
+    "ApprovedSales": "approvedSales",
+    "CardCheck": "cardCheck",
+    "BalanceInquiry": "balanceInquiry",
+    "Confirm": "confirm",
+    "Payment": "payment",
+    "HistoryInquiry": "historyInquiry",
+    "PointCharge": "pointCharge"
+
   };
 
   private m_journals: {[_ in journal_t]: string} = {
@@ -51,6 +67,10 @@ export class Cnc extends Base {
 
   protected doSelfmode() {
     return {"self": this.Params.bSelfMode ? "true" : "false"};
+  }
+
+  protected doLump() {
+    return {"Lump": this.Params.bLump ? "true" : "false"};
   }
 
   protected doService() {
@@ -181,6 +201,7 @@ export class Cnc extends Base {
       ...this.doTraining(),
       ...this.doPrint(),
       ...this.doSelfmode(),
+      ...this.doLump(),
       return: this.Params.returnUrl
     };
   }
@@ -210,6 +231,7 @@ export class Cnc extends Base {
     const tbl: {[_ in moneytype_t]: boolean} = {
       Credit: true,
       Cup:    true,
+      NFC:    true,
       Suica:  false,
       QP:     true,
       ID:     true,
@@ -223,6 +245,7 @@ export class Cnc extends Base {
     const tbl: {[_ in moneytype_t]: boolean} = {
       Credit: true,
       Cup:    true,
+      NFC:    true,
       Suica:  false,
       QP:     true,
       ID:     true,
@@ -230,5 +253,23 @@ export class Cnc extends Base {
       Nanaco: false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
+  }
+
+  public /* abstract */ isNeedLump() {
+    const tbl: {[_ in moneytype_t]: boolean} = {
+      Credit: true,
+      Cup:    false,
+      NFC:    false,
+      Suica:  false,
+      QP:     false,
+      ID:     false,
+      Waon:   false,
+      Nanaco: false
+    };
+    return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
+  }
+
+  public /* abstract */ isNeedSelfMode() {
+    return false;
   }
 }
