@@ -861,7 +861,7 @@ function changeMode() {
 
 watch(() => m.p.mode        , ()=> changeMode());
 
-watch(() => m.p.menu        , ()=> { m.p.bTogether= false; updateUrl(); });
+watch(() => m.p.menu        , ()=> { m.p.bTogether= false; m.p.bLump= false; updateUrl(); });
 watch(() => m.p.moneytype   , ()=> changeMode());
 watch(() => m.p.job         , ()=> updateUrl());
 watch(() => m.p.journal     , ()=> updateUrl());
