@@ -156,7 +156,7 @@
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,99999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -164,8 +164,7 @@
             v-model="m.p.taxOther"
             label="税・その他"
             type="number"
-            :rules="[required,range(0,99999)]"
-            :disabled="!m.b.taxOther"
+            :rules="[range(0,99999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -173,8 +172,7 @@
             v-model="m.p.productCode"
             label="商品コード"
             type="number"
-            :rules="[required,length(4)]"
-            :disabled="!m.b.productCode"
+            :rules="[length(4)]"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -230,7 +228,7 @@
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,99999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -238,7 +236,7 @@
             v-model="m.p.taxOther"
             label="税・その他"
             type="number"
-            :rules="[required,range(0,99999)]"
+            :rules="[range(0,99999999)]"
             :disabled="!m.b.taxOther"
           ></v-text-field>
         </v-col>
@@ -249,7 +247,7 @@
             v-model="m.p.approvalNo"
             label="承認番号"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -257,7 +255,7 @@
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,99999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -265,7 +263,7 @@
             v-model="m.p.taxOther"
             label="税・その他"
             type="number"
-            :rules="[required,range(0,99999)]"
+            :rules="[range(0,99999999)]"
             :disabled="!m.b.taxOther"
           ></v-text-field>
         </v-col>
@@ -301,7 +299,7 @@
             v-model="m.p.approvalNo"
             label="承認番号"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -325,7 +323,7 @@
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,99999999)]"
           ></v-text-field>
         </v-col>
         <v-col
@@ -367,7 +365,7 @@
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,9999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -375,7 +373,7 @@
             v-model="m.p.taxOther"
             label="税・その他"
             type="number"
-            :rules="[required,range(0,99999)]"
+            :rules="[range(0,9999999)]"
             :disabled="!m.b.taxOther"
           ></v-text-field>
         </v-col>
@@ -384,12 +382,12 @@
             v-model="m.p.productCode"
             label="商品コード"
             type="number"
-            :rules="[required,length(4)]"
+            :rules="[length(4)]"
             :disabled="!m.b.productCode"
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="m.p.moneytype=='Nanaco'&&m.p.job=='Payment'">
+      <v-row v-if="m.p.moneytype=='Nanaco'&&m.p.job=='Sales'">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
@@ -652,12 +650,12 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if(m.p.moneytype == "Suica" ){
     return [
       {
-        label: "売上",
+        label: "支払",
         value: "Sales"
       },
       {
         label: "残高照会",
-        value: "BalanceInquiry"
+        value: "Balance"
       },
     ];
   }
@@ -681,11 +679,11 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
     return [
       {
         label: "支払",
-        value: "Payment"
+        value: "Sales"
       },
       {
         label: "残高照会",
-        value: "BalanceInquiry"
+        value: "Balance"
       },
       {
         label: "前回取引確認",
@@ -696,7 +694,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if(m.p.moneytype == "Waon" ){
     return [
       {
-        label: "売上",
+        label: "支払",
         value: "Sales"
       },
       {
@@ -705,11 +703,11 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
       },
       {
         label: "残高照会",
-        value: "BalanceInquiry"
+        value: "Balance"
       },
       {
         label: "履歴照会",
-        value: "HistoryInquiry"
+        value: "History"
       },
       {
         label: "ポイントチャージ",
@@ -771,7 +769,9 @@ const whens: radio_item<UrlBuilder.when_t>[] = [
 ];
 
 function paramsToBuilder() {
-  if(!builder) return;
+  if (!builder) {
+    return;
+  }
   builder.Params.menu        = m.p.menu;
   builder.Params.moneytype   = m.p.moneytype;
   builder.Params.job         = m.p.job;
@@ -798,13 +798,16 @@ function updateLogIdAndReturnUrl() {
   const d = dateFormat(new Date(), "yyyymmddHHMMss");
   m.p.logid = d;
 
-  if(builder){
-    if((!builder.isEMoney()) && (m.p.mode == "Pokepos")){
+  if (builder) {
+    if(!builder.isEMoney() && (m.p.mode == "Pokepos")) {
       m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}?escape=`;
     }
-    else{
+    else {
       m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}`;
     }
+  }
+  else {
+    m.p.returnUrl = "";
   }
 }
 
@@ -830,15 +833,14 @@ function updateUrl() {
 
 function changeMode() {
   switch(m.p.mode){
-    case "Pokepos":{
-      if(UrlBuilder.Base.isEMoney(m.p.moneytype)){
+    case "Pokepos":
+      if (UrlBuilder.Base.isEMoney(m.p.moneytype)) {
         builder = new UrlBuilder.PokeposEM();
       }
-      else{
+      else {
         builder = new UrlBuilder.Pokepos();
       }
       break;
-    }
     case "Cnc":{
       builder = new UrlBuilder.Cnc();
       break;

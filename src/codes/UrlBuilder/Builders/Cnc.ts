@@ -19,9 +19,10 @@ export class Cnc extends Base {
     Cup:    "cup",
     NFC:    "nfc",
     Suica:  "suica",
-    QP:     "quickpay",
     ID:     "id",
+    QP:     "quicpay",
     Waon:   "waon",
+    Edy:    "edy",
     Nanaco: "nanaco"
   };
 
@@ -29,15 +30,13 @@ export class Cnc extends Base {
     "Sales": "settlement",
     "Refund": "refund",
     "Cancel": "cancel",
-    "ReservedAuthority": "reservedAuthority",
-    "ApprovedSales": "approvedSales",
-    "CardCheck": "cardCheck",
-    "BalanceInquiry": "balanceInquiry",
+    "ReservedAuthority": "preapproval",
+    "ApprovedSales": "afterapproval",
+    "CardCheck": "cardcheck",
+    "Balance": "balance",
     "Confirm": "confirm",
-    "Payment": "payment",
-    "HistoryInquiry": "historyInquiry",
-    "PointCharge": "pointCharge"
-
+    "History": "history",
+    "PointCharge": "pointcharge"
   };
 
   private m_journals: {[_ in journal_t]: string} = {
@@ -74,127 +73,110 @@ export class Cnc extends Base {
   }
 
   protected doService() {
-    do {
-      if(!this.Params.moneytype) break;
-      if(!this.Params.job) break;
-
+    if (this.Params.moneytype && this.Params.job) {
       const path = `${this.m_moneytypes[this.Params.moneytype]}-${this.m_jobs[this.Params.job]}`;
       const kvs: keyvalue_t = {};
 
-      switch(this.Params.job){
-        case "Sales":{
-          if(isNaN(parseInt(this.Params.amount))) break;
-          kvs.amount = this.Params.amount;
-          if(this.isNeedProductCode()){
-            if(!this.isValidProductCode()) break;
-            kvs.productCode = this.Params.productCode;
-          }
-          if(this.isNeedTaxOther()){
-            if(!this.isNumber(this.Params.taxOther)) break;
-            kvs.taxOtherAmount = this.Params.taxOther;
-          }
-          break;
+      switch(this.Params.job) {
+      case "Sales":
+        if (isNaN(parseInt(this.Params.amount))) {
+          return undefined;
         }
-        case "Refund":{
-          if(isNaN(parseInt(this.Params.amount))) break;
-          switch(this.Params.moneytype){
-            case "Suica":{
-              kvs.amount  = this.Params.amount;
-              break;
-            }
-            default:{
-              kvs.amount  = this.Params.amount;
-              kvs.slipNo  = this.Params.slipNo;
-              kvs.termId  = this.Params.termId;
-              kvs.manual  = this.Params.manualFlg ? "true" : "false";
-              if(this.Params.manualFlg){
-                kvs.pan = this.Params.pan;
-              }
-              break;
-            }
-          }
-          break;
-        }
-        case "Confirm":{
-          break;
-        }
-      }
 
+        kvs.amount = this.Params.amount;
+        if (this.isNeedProductCode() && this.isValidProductCode()) {
+          kvs.productCode = this.Params.productCode;
+        }
+        if (this.isNeedTaxOther() && this.isNumber(this.Params.taxOther)) {
+          kvs.taxOtherAmount = this.Params.taxOther;
+        }
+        break;
+
+      case "Refund":
+        if (isNaN(parseInt(this.Params.amount))) {
+          return undefined;
+        }
+
+        switch(this.Params.moneytype) {
+        case "Suica":
+          kvs.amount  = this.Params.amount;
+          break;
+
+        default:
+          kvs.amount  = this.Params.amount;
+          kvs.slipNo  = this.Params.slipNo;
+          kvs.termId  = this.Params.termId;
+          kvs.manual  = this.Params.manualFlg ? "true" : "false";
+          if (this.Params.manualFlg) {
+            kvs.pan = this.Params.pan;
+          }
+          break;
+        }
+        break;
+
+      case "Confirm":
+        break;
+      }
       return {path, kvs};
-    // eslint-disable-next-line no-constant-condition
-    } while(false);
-  
+    }
     return undefined;
   }
 
   protected doJournal() {
-    do {
-      if(!this.Params.moneytype) break;
-      if(!this.Params.journal) break;
-      if(!this.Params.detail) break;
-
+    if (this.Params.moneytype && this.Params.journal && this.Params.detail) {
       const path = `${this.m_moneytypes[this.Params.moneytype]}-journal-${this.m_journals[this.Params.journal]}`;
       const kvs: keyvalue_t = {};
 
       kvs.type = (this.Params.detail == "Summary") ? "summary" : "detail";
 
       return {path, kvs};
-      // eslint-disable-next-line no-constant-condition
-    } while(false);
-    
+    }
     return undefined;
   }
 
   protected doReprint() {
-    do {
-      if(!this.Params.moneytype) break;
-      if(!this.Params.reprint) break;
-      if(!this.Params.when) break;
-
+    if (this.Params.moneytype && this.Params.reprint && this.Params.when) {
       const path = `${this.m_moneytypes[this.Params.moneytype]}-reprint-${this.m_reprints[this.Params.reprint]}`;
       const kvs: keyvalue_t = {};
 
-      switch(this.Params.reprint){
-        case "Journal":{
-          if(this.Params.when == "SlipNo") break;
+      switch (this.Params.reprint) {
+      case "Journal":
+        if (this.Params.when != "SlipNo") {
           kvs.when = this.m_whens[this.Params.when];
-
-          break;
         }
-        case "Slip":{
-          kvs.when = this.m_whens[this.Params.when];
-          if(this.Params.when =="SlipNo"){
-            kvs.slipNo = this.Params.slipNo;
-          }
-          break;
+        break;
+      case "Slip":
+        kvs.when = this.m_whens[this.Params.when];
+        if (this.Params.when =="SlipNo") {
+          kvs.slipNo = this.Params.slipNo;
         }
+        break;
       }
-
       return {path, kvs};
-    // eslint-disable-next-line no-constant-condition
-    } while(false);
-    
+    }
     return undefined;
   }
 
   protected /* abstract */ generateGetParameterSelf(): keyvalue_t | undefined {
     const re  = (() => {
       switch(this.Params.menu){
-        case "Service": {
-          return this.doService();
-        }
-        case "Journal": {
-          return this.doJournal();
-        }
-        case "Reprint": {
-          return this.doReprint();
-        }
-        default: {
-          return undefined;
-        }
+      case "Service":
+        return this.doService();
+
+      case "Journal":
+        return this.doJournal();
+
+      case "Reprint":
+        return this.doReprint();
+
+      default:
+        return undefined;
       }
     })();
-    if(!re) return undefined;
+
+    if (!re) {
+      return undefined;
+    }
 
     return {
       ...re.kvs,
@@ -233,9 +215,10 @@ export class Cnc extends Base {
       Cup:    true,
       NFC:    true,
       Suica:  false,
-      QP:     true,
       ID:     true,
+      QP:     true,
       Waon:   false,
+      Edy:    false,
       Nanaco: false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
@@ -247,9 +230,10 @@ export class Cnc extends Base {
       Cup:    true,
       NFC:    true,
       Suica:  false,
-      QP:     true,
       ID:     true,
+      QP:     true,
       Waon:   false,
+      Edy:    false,
       Nanaco: false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
@@ -261,9 +245,10 @@ export class Cnc extends Base {
       Cup:    false,
       NFC:    false,
       Suica:  false,
-      QP:     false,
       ID:     false,
+      QP:     false,
       Waon:   false,
+      Edy:    false,
       Nanaco: false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;

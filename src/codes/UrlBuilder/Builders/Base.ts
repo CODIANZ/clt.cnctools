@@ -11,8 +11,9 @@ export abstract class  Base {
     const urlbase = this.generateBaseUrlSelf();
     const kvs = this.generateGetParameterSelf();
 
-    if(!urlbase) return undefined;
-    if(!kvs) return undefined;
+    if (!urlbase || !kvs) {
+      return undefined;
+    }
 
     const getp = Object.keys(kvs).reduce((p, c) => {
       return `${p}${p.length > 0 ? "&" : ""}${c}=${bEndode ? encodeURIComponent(kvs[c]) : kvs[c]}`;
@@ -25,17 +26,19 @@ export abstract class  Base {
     switch(moneytype){
       case "Credit":
       case "NFC":
-      case "Cup": {
+      case "Cup":
         return false;
-      }
+
       case "Suica":
-      case "QP":
       case "ID":
+      case "QP":
       case "Waon":
-      case "Nanaco": {
+      case "Edy":
+      case "Nanaco":
         return true;
-      }
-      default: return false;
+
+      default:
+        return false;
     }
   }
 
