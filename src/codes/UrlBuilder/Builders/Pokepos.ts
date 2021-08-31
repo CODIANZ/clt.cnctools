@@ -12,7 +12,8 @@ export class Pokepos extends Base {
     const menus: {[_ in menus_t]: string} = {
       Service: "Service",
       Journal: "Journal",
-      Reprint: "Reprint"
+      Reprint: "Reprint",
+      Settings: "Settings"
     };
 
     const moneytypes: {[_ in moneytype_t]: string} = {
@@ -24,15 +25,20 @@ export class Pokepos extends Base {
       QP:     "QP",
       Waon:   "Waon",
       Edy:    "Edy",
-      Nanaco: "Nanaco"
+      Nanaco: "Nanaco",
+      All:    "All"
     };
 
-    return  (this.Params.menu ? menus[this.Params.menu] : "") + 
-            (this.Params.moneytype ? moneytypes[this.Params.moneytype] : "");
+    let params = this.Params;
+    if (params.moneytype === "All" && (params.reprint === "Journal" || params.journal)) {
+      return "AllJournalPrint";
+    }
+
+    return (params.menu ? menus[params.menu] : "") + (params.moneytype ? moneytypes[params.moneytype] : "");
   }
 
   protected doTraining() {
-    return {training: this.Params.bTraining ? "1" : "2"};
+    return this.Params.bTraining ? {training:"1"} : undefined;
   }
 
   protected doPrint() {
@@ -44,30 +50,26 @@ export class Pokepos extends Base {
   }
 
   protected doService() {
-    if (this.Params.moneytype) {
+    const params = this.Params;
+    if (params.moneytype && params.job) {
       const kvs: keyvalue_t = {};
 
-      if (isNaN(parseInt(this.Params.amount))) {
-        return undefined;
+      if (!isNaN(parseInt(params.amount))) {
+        kvs.amount = params.amount;
       }
-      kvs.amount = this.Params.amount;
   
-      if (this.isNeedProductCode()) {
-        if (this.isValidProductCode()) {
-          kvs.productCode = this.Params.productCode;
-        }
+      if (this.isNeedProductCode() && this.isValidProductCode()) {
+        kvs.productCode = params.productCode;
       }
 
-      if (this.isNeedTaxOther()) {
-        if (this.isNumber(this.Params.taxOther)) {
-          kvs.taxOther = this.Params.taxOther;
-        }
+      if (this.isNeedTaxOther() && this.isNumber(params.taxOther)) {
+        kvs.taxOther = params.taxOther;
       }
       
-      if (this.Params.job == "Sales") {
+      if (params.job === "Sales") {
         kvs.operationDiv = "0";
       }
-      else if (this.Params.job == "Refund") {
+      else if (params.job === "Refund") {
         kvs.operationDiv = "1";
       }
 
@@ -78,35 +80,73 @@ export class Pokepos extends Base {
   }
 
   protected doJournal() {
-    if (this.Params.journal) {
+    const params = this.Params;
+    if (params.journal && params.moneytype) {
       const kvs: keyvalue_t = {};
 
-      switch(this.Params.journal) {
-      case "Total":
-        kvs.operationDiv = "0";
-        break;
-      case "Intermediate":
-        kvs.operationDiv = "1";
-        break;
+      if (params.moneytype === "All") {
+        kvs.reprint = "0";
+        if (params.journal === "Total") {
+          kvs.type = "0";
+        }
+        else if (params.journal === "Intermediate") {
+          kvs.type = "1";
+        }
+      }
+      else {
+        if (params.journal === "Total") {
+          kvs.operationDiv = "0";
+        }
+        else if (params.journal === "Intermediate") {
+          kvs.operationDiv = "1";
+        }
+      }
+
+      if (params.detail === "Summary") {
+        kvs.detail = "0";
+      }
+      else if (params.detail === "Detail") {
+        kvs.detail = "1";
+      }
+      else {
+        return undefined;
       }
 
       return kvs;
     }
+
     return undefined;
   }
 
   protected doReprint() {
-    if (this.Params.reprint) {
+    const params = this.Params;
+    if (params.reprint && params.moneytype) {
       const kvs: keyvalue_t = {};
 
-      switch (this.Params.reprint) {
-      case "Journal":
-        break;
-      case "Slip":
+      if (params.reprint === "Slip") {
         kvs.operationDiv = "1";
-        break;
       }
+      else if (params.reprint === "Journal") {
+        if (params.when === "Last") {
+          kvs.reprint = "1";
+        }
+        else if (params.when === "BeforeLast") {
+          kvs.reprint = "2";
+        }
+        else {
+          return undefined;
+        }
 
+        if (params.detail === "Summary") {
+          kvs.detail = "0";
+        }
+        else if (params.detail === "Detail") {
+          kvs.detail = "1";
+        }
+        else {
+          return undefined;
+        }
+      }
       return kvs;
     }
     return undefined;
@@ -162,7 +202,8 @@ export class Pokepos extends Base {
       QP:     true,
       Waon:   false,
       Edy:    false,
-      Nanaco: false
+      Nanaco: false,
+      All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
   }
@@ -177,7 +218,8 @@ export class Pokepos extends Base {
       QP:     true,
       Waon:   false,
       Edy:    false,
-      Nanaco: false
+      Nanaco: false,
+      All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
   }
@@ -192,7 +234,8 @@ export class Pokepos extends Base {
       QP:     false,
       Waon:   false,
       Edy:    false,
-      Nanaco: false
+      Nanaco: false,
+      All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
   }

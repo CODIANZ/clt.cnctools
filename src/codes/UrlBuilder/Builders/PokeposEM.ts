@@ -5,65 +5,133 @@ export class PokeposEM extends Pokepos {
 
   /* override */
   protected doTraining() {
-    return {training: this.Params.bTraining ? "1" : "0"};
+    return this.Params.bTraining ? {training:"1"} : undefined;
   }
 
   /* override */
   protected doService() {
-    do {
+    const params = this.Params;
+    if (params.moneytype && params.job) {
       const kvs: keyvalue_t = {};
 
-      if(!this.Params.moneytype) break;
-
-      if(isNaN(parseInt(this.Params.amount))) break;
-      kvs.amount = this.Params.amount;
-
+      if (params.job === "Sales" || params.job === "Refund") {
+        if (!isNaN(parseInt(params.amount))) {
+          kvs.amount = params.amount;
+        }
+    
+        if (this.isNeedProductCode() && this.isValidProductCode()) {
+          kvs.productCode = params.productCode;
+        }
   
-      if(this.isNeedProductCode()){
-        if(!this.isValidProductCode()) break;
-        kvs.productCode = this.Params.productCode;
+        if (this.isNeedTaxOther() && this.isNumber(params.taxOther)) {
+          kvs.taxOther = params.taxOther;
+        }
+  
+        if (this.isNeedTogether()) {
+          kvs.together = params.bTogether ? "1" : "0";
+        }
       }
 
-      if(this.isNeedTaxOther()){
-        if(!this.isNumber(this.Params.taxOther)) break;
-        kvs.taxOther = this.Params.taxOther;
+      if (params.moneytype === "Suica") {
+        if (params.job === "Sales") {
+          if (isNaN(parseInt(params.amount))) {
+            return undefined;
+          }
+          kvs.operationDiv = "1";
+        }
+        else if (params.job === "Balance") {
+          kvs.operationDiv = "2";
+        }
+        else if (params.job === "Confirm") {
+          kvs.operationDiv = "3";
+        }
       }
-
-      if(this.isNeedTogether()){
-        kvs.together = this.Params.bTogether ? "1" : "0";
+      else if (params.moneytype === "ID" || params.moneytype === "QP") {
+        if (params.job === "Sales") {
+          if (isNaN(parseInt(params.amount))) {
+            return undefined;
+          }
+          kvs.operationDiv = "1";
+        }
+        else if (params.job === "Refund") {
+          if (isNaN(parseInt(params.amount)) || params.slipNo.length === 0 || params.termId.length === 0) {
+            return undefined;
+          }
+          kvs.operationDiv = "2";
+          kvs.slipNo = params.slipNo;
+          kvs.termId = params.termId;
+        }
+        else if (params.job === "Confirm") {
+          kvs.operationDiv = "3";
+        }
       }
-
-      if(     this.Params.job == "Sales"    ) kvs.operationDiv = "1";
-      else if(this.Params.job == "Refund"   ) kvs.operationDiv = "2";
-      else if(this.Params.job == "Confirm"  ) kvs.operationDiv = "3";
-      else break;
 
       return kvs;
-    // eslint-disable-next-line no-constant-condition
-    } while(false);
+    }
   
     return undefined;
   }
 
   /* override */
   protected doJournal() {
+    let params = this.Params;
+    if (params.moneytype && params.journal && params.detail) {
+      const kvs: keyvalue_t = {};
+
+      if (params.journal === "Total") {
+        kvs.operationDiv = "1";
+      }
+      else if (params.journal === "Intermediate") {
+        kvs.operationDiv = "2";
+      }
+
+      if (params.detail === "Summary") {
+        kvs.detail = "0";
+      }
+      else if (params.detail === "Detail") {
+        kvs.detail = "1";
+      }
+
+      return kvs;
+    }
+
     return undefined;
   }
 
   /* override */
   protected doReprint() {
-    do {
+    const params = this.Params;
+    if (params.reprint && params.moneytype) {
       const kvs: keyvalue_t = {};
 
-      if(!this.Params.reprint) break;
-      switch(this.Params.reprint){
-        case "Journal":                         break;
-        case "Slip":    kvs.operationDiv = "1"; break;
+      if (params.reprint === "Slip") {
+        kvs.operationDiv = "2";
+      }
+      else if (params.reprint === "Journal") {
+        kvs.operationDiv = "1";
+        if (params.detail === "Summary") {
+          kvs.detail = "0";
+        }
+        else if (params.detail === "Detail") {
+          kvs.detail = "1";
+        }
+        else {
+          return undefined;
+        }
+
+        if (params.when === "Last") {
+          kvs.target = "0";
+        }
+        else if (params.when === "BeforeLast") {
+          kvs.target = "1";
+        }
+        else {
+          return undefined;
+        }
       }
 
       return kvs;
-    // eslint-disable-next-line no-constant-condition
-    } while(false);
+    }
     
     return undefined;
   }
