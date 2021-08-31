@@ -11,7 +11,8 @@ export class Cnc extends Base {
   private m_menus: {[_ in menus_t]: string} = {
     Service: "service",
     Journal: "journal",
-    Reprint: "reprint"
+    Reprint: "reprint",
+    Settings: "settings"
   };
 
   private m_moneytypes: {[_ in moneytype_t]: string} = {
@@ -23,13 +24,13 @@ export class Cnc extends Base {
     QP:     "quicpay",
     Waon:   "waon",
     Edy:    "edy",
-    Nanaco: "nanaco"
+    Nanaco: "nanaco",
+    All:    "all"
   };
 
   private m_jobs: {[_ in job_t]: string} = {
     "Sales": "settlement",
     "Refund": "refund",
-    "Cancel": "cancel",
     "ReservedAuthority": "preapproval",
     "ApprovedSales": "afterapproval",
     "CardCheck": "cardcheck",
@@ -73,49 +74,44 @@ export class Cnc extends Base {
   }
 
   protected doService() {
-    if (this.Params.moneytype && this.Params.job) {
-      const path = `${this.m_moneytypes[this.Params.moneytype]}-${this.m_jobs[this.Params.job]}`;
+    const params = this.Params;
+    if (params.moneytype && params.job) {
+      const path = `${this.m_moneytypes[params.moneytype]}-${this.m_jobs[params.job]}`;
       const kvs: keyvalue_t = {};
 
-      switch(this.Params.job) {
-      case "Sales":
-        if (isNaN(parseInt(this.Params.amount))) {
+      if (params.job === "Sales") {
+        if (isNaN(parseInt(params.amount))) {
           return undefined;
         }
 
-        kvs.amount = this.Params.amount;
+        kvs.amount = params.amount;
         if (this.isNeedProductCode() && this.isValidProductCode()) {
-          kvs.productCode = this.Params.productCode;
+          kvs.productCode = params.productCode;
         }
-        if (this.isNeedTaxOther() && this.isNumber(this.Params.taxOther)) {
-          kvs.taxOtherAmount = this.Params.taxOther;
+        if (this.isNeedTaxOther() && this.isNumber(params.taxOther)) {
+          kvs.taxOtherAmount = params.taxOther;
         }
-        break;
-
-      case "Refund":
-        if (isNaN(parseInt(this.Params.amount))) {
+      }
+      else if (params.job === "Refund") {
+        if (isNaN(parseInt(params.amount))) {
           return undefined;
         }
 
-        switch(this.Params.moneytype) {
-        case "Suica":
-          kvs.amount  = this.Params.amount;
-          break;
-
-        default:
-          kvs.amount  = this.Params.amount;
-          kvs.slipNo  = this.Params.slipNo;
-          kvs.termId  = this.Params.termId;
-          kvs.manual  = this.Params.manualFlg ? "true" : "false";
-          if (this.Params.manualFlg) {
-            kvs.pan = this.Params.pan;
-          }
-          break;
+        if (params.moneytype === "Suica") {
+          kvs.amount  = params.amount;
         }
-        break;
+        else {
+          kvs.amount  = params.amount;
+          kvs.slipNo  = params.slipNo;
+          kvs.termId  = params.termId;
+          kvs.manual  = params.manualFlg ? "true" : "false";
+          if (params.manualFlg) {
+            kvs.pan = params.pan;
+          }
+        }
+      }
+      else if (params.job === "Confirm") {
 
-      case "Confirm":
-        break;
       }
       return {path, kvs};
     }
@@ -123,8 +119,9 @@ export class Cnc extends Base {
   }
 
   protected doJournal() {
-    if (this.Params.moneytype && this.Params.journal && this.Params.detail) {
-      const path = `${this.m_moneytypes[this.Params.moneytype]}-journal-${this.m_journals[this.Params.journal]}`;
+    const params = this.Params;
+    if (params.moneytype && params.journal && params.detail) {
+      const path = `${this.m_moneytypes[params.moneytype]}-journal-${this.m_journals[params.journal]}`;
       const kvs: keyvalue_t = {};
 
       kvs.type = (this.Params.detail == "Summary") ? "summary" : "detail";
@@ -205,7 +202,9 @@ export class Cnc extends Base {
         }
       }
     })();
-    if(!re) return undefined;
+    if(!re) {
+      return undefined;
+    }
     return `pp-cnc://${re.path}`;
   }
 
@@ -219,7 +218,8 @@ export class Cnc extends Base {
       QP:     true,
       Waon:   false,
       Edy:    false,
-      Nanaco: false
+      Nanaco: false,
+      All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
   }
@@ -234,7 +234,8 @@ export class Cnc extends Base {
       QP:     true,
       Waon:   false,
       Edy:    false,
-      Nanaco: false
+      Nanaco: false,
+      All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
   }
@@ -249,7 +250,8 @@ export class Cnc extends Base {
       QP:     false,
       Waon:   false,
       Edy:    false,
-      Nanaco: false
+      Nanaco: false,
+      All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
   }

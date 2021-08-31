@@ -5,24 +5,11 @@
       <v-toolbar-title>{{ m.title }}</v-toolbar-title>
     </v-app-bar>
 
-    <v-navigation-drawer
-      v-model="m.drawer"
-      absolute
-      temporary
-    >
-      <v-list
-        nav
-        dense
-      >
-        <v-list-item-group
-          active-class="deep-purple--text text--accent-4"
-        >
+    <v-navigation-drawer v-model="m.drawer" absolute temporary>
+      <v-list nav dense>
+        <v-list-item-group active-class="deep-purple--text text--accent-4">
 
-          <v-list-item
-            v-for="item in items"
-            :key="item.model"
-            @click="onItemClick(item.title, item.path)"
-          >
+          <v-list-item v-for="item in items" :key="item.model" @click="onItemClick(item.title, item.path)">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
@@ -62,7 +49,7 @@ const items: {
 
 const m = reactive({
   drawer: false,
-  title: "cnc"
+  title: "POS連携機能テスト"
 });
 
 export default defineComponent({
@@ -71,8 +58,13 @@ export default defineComponent({
       m,
       items,
       onItemClick: (title: string, path: string) => {
-        m.title = title;
-        ctx.root.$router.push(path);
+        if (m.title != title) {
+          m.title = title;
+          ctx.root.$router.replace(path);
+        }
+        else {
+          m.drawer = false;
+        }
       }
     };
   }
