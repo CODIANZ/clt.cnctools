@@ -130,7 +130,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Service' && m.p.moneytype === 'Suica' && m.p.job === 'Sales'">
+      <v-row v-if="m.p.moneytype === 'Suica' && m.p.job === 'Sales'">
         <v-col>
           <v-switch
             v-model="m.p.bTogether"
@@ -140,7 +140,15 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.moneytype === 'Credit' && m.p.job === 'Sales'">
+      <v-row v-if="m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'ApprovedSales')">
+        <v-col v-if="m.p.job === 'ApprovedSales'">
+          <v-text-field
+            v-model="m.p.approvalNo"
+            label="承認番号"
+            type="number"
+            :rules="[required,range(1,999999)]"
+          />
+        </v-col>
         <v-col>
           <v-switch
             v-model="m.p.bLump"
@@ -150,30 +158,51 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund')">
-        <v-col>
+      <v-row v-if="isAmount">
+        <v-col v-if="m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC'">
           <v-text-field
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999999)]"
-          ></v-text-field>
+            single-line
+            :rules="[required,range(1,9999999)]"
+          />
         </v-col>
-        <v-col>
+        <v-col v-if="(m.p.moneytype === 'Suica'|| m.p.moneytype === 'ID')">
+          <v-text-field
+            v-model="m.p.amount"
+            label="金額"
+            type="number"
+            single-line
+            :rules="[required,range(1,99999)]"
+          />
+        </v-col>
+        <v-col v-if="(m.p.moneytype === 'QP' || m.p.moneytype === 'Waon' || m.p.moneytype === 'Nanaco')">
+          <v-text-field
+            v-model="m.p.amount"
+            label="金額"
+            type="number"
+            single-line
+            :rules="[required,range(1,999999)]"
+          />
+        </v-col>
+        <v-col v-if="isTaxOther">
           <v-text-field
             v-model="m.p.taxOther"
-            label="税・その他"
+            label="その他"
             type="number"
+            single-line
             :rules="[range(0,99999999)]"
-          ></v-text-field>
+          />
         </v-col>
-        <v-col>
+        <v-col v-if="isProductCode">
           <v-text-field
             v-model="m.p.productCode"
             label="商品コード"
             type="number"
+            single-line
             :rules="[length(4)]"
-          ></v-text-field>
+          />
         </v-col>
       </v-row>
 
@@ -183,23 +212,19 @@
             v-model="m.p.slipNo"
             label="伝票番号"
             type="number"
+            single-line
             :rules="[required,length(5)]"
-          ></v-text-field>
+          />
         </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.termId"
-            label="端末ID"
-            :rules="[required,length(9)]"
-          ></v-text-field>
-        </v-col>
+        <!--
         <v-col>
           <v-switch
             v-model="m.p.manualFlg"
             inset
             label="マニュアル"
-          ></v-switch>
+          />
         </v-col>
+        -->
         <v-col>
           <v-text-field
             v-model="m.p.pan"
@@ -217,72 +242,9 @@
             :items="m.transactionTypeItems"
             item-text="name"
             item-value="value"
-            label="取引区分"
+            label="取消区分"
             dense
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-row v-if="m.p.moneytype === 'Credit' && m.p.job === 'ReservedAuthority'">
-        <v-col>
-          <v-text-field
-            v-model="m.p.amount"
-            label="金額"
-            type="number"
-            :rules="[required,range(1,99999999)]"
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.taxOther"
-            label="税・その他"
-            type="number"
-            :rules="[range(0,99999999)]"
-            :disabled="!m.b.taxOther"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row v-if="m.p.moneytype === 'Credit' && m.p.job === 'ApprovedSales'">
-        <v-col>
-          <v-text-field
-            v-model="m.p.approvalNo"
-            label="承認番号"
-            type="number"
-            :rules="[required,range(1,999999)]"
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.amount"
-            label="金額"
-            type="number"
-            :rules="[required,range(1,99999999)]"
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.taxOther"
-            label="税・その他"
-            type="number"
-            :rules="[range(0,99999999)]"
-            :disabled="!m.b.taxOther"
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-switch
-            v-model="m.p.bLump"
-            inset
-            label="一括払優先"
-          ></v-switch>
-        </v-col>
-      </v-row>
-      <v-row v-if="(m.p.moneytype === 'Cup' || m.p.moneytype === 'Suica' || m.p.moneytype === 'QP' || m.p.moneytype === 'Waon') && m.p.job === 'Sales'">
-        <v-col>
-          <v-text-field
-            v-model="m.p.amount"
-            label="金額"
-            type="number"
-            :rules="[required,range(1,99999999)]"
-          ></v-text-field>
+          />
         </v-col>
       </v-row>
       <v-row v-if="m.p.moneytype === 'Cup' && m.p.job === 'Refund'">
@@ -291,8 +253,9 @@
             v-model="m.p.slipNo"
             label="伝票番号"
             type="number"
+            single-line
             :rules="[required,length(5)]"
-          ></v-text-field>
+          />
         </v-col>
         <v-col>
           <v-text-field
@@ -300,7 +263,7 @@
             label="承認番号"
             type="number"
             :rules="[required,range(1,999999)]"
-          ></v-text-field>
+          />
         </v-col>
         <v-col>
           <v-text-field
@@ -308,7 +271,7 @@
             label="銀聯番号"
             type="number"
             :rules="(/^[0-9]+$/)"
-          ></v-text-field>
+          />
         </v-col>
         <v-col>
           <v-text-field
@@ -316,15 +279,7 @@
             label="銀聯送信日時"
             type="number"
             :rules="(/^[0-9]{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$ ^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)"
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.amount"
-            label="金額"
-            type="number"
-            :rules="[required,range(1,99999999)]"
-          ></v-text-field>
+          />
         </v-col>
         <v-col
           class="d-flex"
@@ -336,12 +291,12 @@
             :items="m.transactionTypeItems"
             item-text="name"
             item-value="value"
-            label="取引区分"
+            label="取消区分"
             dense
-          ></v-select>
+          />
         </v-col>
       </v-row>
-      <v-row v-if="(m.p.moneytype === 'QP' || m.p.moneytype === 'ID') && m.p.job === 'Cancel'">
+      <v-row v-if="(m.p.moneytype === 'QP' || m.p.moneytype === 'ID') && m.p.job === 'Refund'">
         <v-col>
           <v-text-field
             v-model="m.p.slipNo"
@@ -355,45 +310,7 @@
             v-model="m.p.termId"
             label="端末ID"
             type="number"
-            :rules="[required,length(9)]"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row v-if="m.p.moneytype === 'ID' && (m.p.job === 'Sales' || m.p.job === 'Cancel')">
-        <v-col>
-          <v-text-field
-            v-model="m.p.amount"
-            label="金額"
-            type="number"
-            :rules="[required,range(1,9999999)]"
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.taxOther"
-            label="税・その他"
-            type="number"
-            :rules="[range(0,9999999)]"
-            :disabled="!m.b.taxOther"
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.productCode"
-            label="商品コード"
-            type="number"
-            :rules="[length(4)]"
-            :disabled="!m.b.productCode"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row v-if="m.p.moneytype === 'Nanaco' && m.p.job === 'Sales'">
-        <v-col>
-          <v-text-field
-            v-model="m.p.amount"
-            label="金額"
-            type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,length(13)]"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -878,6 +795,24 @@ function onExecuteForNuxt() {
 export default defineComponent({
   setup() {
     const form = ref<iform>();
+    const isAmount = computed(() => {
+      if (m.p.job === 'CardCheck' || m.p.job === 'Balance' || m.p.job === 'Confirm' || m.p.job === 'History') {
+        return false;
+      }
+      return true;
+    });
+    const isTaxOther = computed(() => {
+      if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
+        return true;
+      }
+      return false;
+    });
+    const isProductCode = computed(() => {
+      if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
+        return true;
+      }
+      return false;
+    });
     return {
       m,
       modes,
@@ -889,6 +824,9 @@ export default defineComponent({
       whens,
       details,
       form,
+      isAmount,
+      isTaxOther,
+      isProductCode,
       ...validations,
       onExecute,
       onExecuteForNuxt

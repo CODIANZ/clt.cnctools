@@ -70,7 +70,11 @@ export class Cnc extends Base {
   }
 
   protected doLump() {
-    return {"Lump": this.Params.bLump ? "true" : "false"};
+    const params = this.Params;
+    if ((params.moneytype === "Credit" || params.moneytype === "NFC") && (params.job === "Sales" || params.job === "ApprovedSales")) {
+      return {"Lump": params.bLump ? "true" : "false"};
+    }
+    return undefined;
   }
 
   protected doService() {
