@@ -11,8 +11,9 @@ export abstract class  Base {
     const urlbase = this.generateBaseUrlSelf();
     const kvs = this.generateGetParameterSelf();
 
-    if(!urlbase) return undefined;
-    if(!kvs) return undefined;
+    if (!urlbase || !kvs) {
+      return undefined;
+    }
 
     const getp = Object.keys(kvs).reduce((p, c) => {
       return `${p}${p.length > 0 ? "&" : ""}${c}=${bEndode ? encodeURIComponent(kvs[c]) : kvs[c]}`;
@@ -22,21 +23,7 @@ export abstract class  Base {
   }
 
   public static isEMoney(moneytype: moneytype_t | undefined): boolean {
-    switch(moneytype){
-      case "Credit":
-      case "NFC":
-      case "Cup": {
-        return false;
-      }
-      case "Suica":
-      case "QP":
-      case "ID":
-      case "Waon":
-      case "Nanaco": {
-        return true;
-      }
-      default: return false;
-    }
+    return !(moneytype === "Credit" || moneytype === "Cup" || moneytype === "NFC");
   }
 
   public isEMoney(): boolean {
@@ -52,8 +39,12 @@ export abstract class  Base {
   public abstract isNeedLump(): boolean;
 
   public isNumber(s: string | undefined): boolean {
-    if(s === undefined) return false;
-    if(s.length == 0) return false;
+    if (s === undefined) {
+      return false;
+    }
+    if (s.length === 0) {
+      return false;
+    }
     return !isNaN(parseInt(s));
   }
 
@@ -66,14 +57,14 @@ export abstract class  Base {
   static get DefaultParams() {
     return {
       menu:         undefined,
-      moneytype:    undefined ,
+      moneytype:    undefined,
       job:          undefined,
       journal:      undefined,
       detail:       undefined,
       reprint:      undefined,
       when:         undefined,
       bTraining:    false,
-      bPrinting:    false,
+      bPrinting:    true,
       bSelfMode:    false,
       bTogether:    false,
       bLump:        false,

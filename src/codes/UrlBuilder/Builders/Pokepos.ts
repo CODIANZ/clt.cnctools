@@ -12,7 +12,8 @@ export class Pokepos extends Base {
     const menus: {[_ in menus_t]: string} = {
       Service: "Service",
       Journal: "Journal",
-      Reprint: "Reprint"
+      Reprint: "Reprint",
+      Settings: "Settings"
     };
 
     const moneytypes: {[_ in moneytype_t]: string} = {
@@ -20,18 +21,24 @@ export class Pokepos extends Base {
       Cup:    "Cup",
       NFC:    "Nfc",
       Suica:  "Suica",
-      QP:     "QP",
       ID:     "ID",
+      QP:     "QP",
       Waon:   "Waon",
-      Nanaco: "Nanaco"
+      Edy:    "Edy",
+      Nanaco: "Nanaco",
+      All:    "All"
     };
 
-    return  (this.Params.menu ? menus[this.Params.menu] : "") + 
-            (this.Params.moneytype ? moneytypes[this.Params.moneytype] : "");
+    let params = this.Params;
+    if (params.moneytype === "All" && (params.reprint === "Journal" || params.journal)) {
+      return "AllJournalPrint";
+    }
+
+    return (params.menu ? menus[params.menu] : "") + (params.moneytype ? moneytypes[params.moneytype] : "");
   }
 
   protected doTraining() {
-    return {training: this.Params.bTraining ? "1" : "2"};
+    return this.Params.bTraining ? {training:"1"} : undefined;
   }
 
   protected doPrint() {
@@ -43,88 +50,128 @@ export class Pokepos extends Base {
   }
 
   protected doService() {
-    do {
+    const params = this.Params;
+    if (params.moneytype && params.job) {
       const kvs: keyvalue_t = {};
 
-      if(!this.Params.moneytype) break;
-
-      if(isNaN(parseInt(this.Params.amount))) break;
-      kvs.amount = this.Params.amount;
-
+      if (!isNaN(parseInt(params.amount))) {
+        kvs.amount = params.amount;
+      }
   
-      if(this.isNeedProductCode()){
-        if(!this.isValidProductCode()) break;
-        kvs.productCode = this.Params.productCode;
+      if (this.isNeedProductCode() && this.isValidProductCode()) {
+        kvs.productCode = params.productCode;
       }
 
-      if(this.isNeedTaxOther()){
-        if(!this.isNumber(this.Params.taxOther)) break;
-        kvs.taxOther = this.Params.taxOther;
+      if (this.isNeedTaxOther() && this.isNumber(params.taxOther)) {
+        kvs.taxOther = params.taxOther;
       }
       
-      if(     this.Params.job == "Sales"  ) kvs.operationDiv = "0";
-      else if(this.Params.job == "Refund" ) kvs.operationDiv = "0";
-      else break;
+      if (params.job === "Sales") {
+        kvs.operationDiv = "0";
+      }
+      else if (params.job === "Refund") {
+        kvs.operationDiv = "1";
+      }
 
       return kvs;
-    // eslint-disable-next-line no-constant-condition
-    } while(false);
+    }
   
     return undefined;
   }
 
   protected doJournal() {
-    do {
+    const params = this.Params;
+    if (params.journal && params.moneytype) {
       const kvs: keyvalue_t = {};
 
-      if(!this.Params.journal) break;
-      switch(this.Params.journal){
-        case "Total":         kvs.operationDiv = "0"; break;
-        case "Intermediate":  kvs.operationDiv = "1"; break;
+      if (params.moneytype === "All") {
+        kvs.reprint = "0";
+        if (params.journal === "Total") {
+          kvs.type = "0";
+        }
+        else if (params.journal === "Intermediate") {
+          kvs.type = "1";
+        }
+      }
+      else {
+        if (params.journal === "Total") {
+          kvs.operationDiv = "0";
+        }
+        else if (params.journal === "Intermediate") {
+          kvs.operationDiv = "1";
+        }
+      }
+
+      if (params.detail === "Summary") {
+        kvs.detail = "0";
+      }
+      else if (params.detail === "Detail") {
+        kvs.detail = "1";
+      }
+      else {
+        return undefined;
       }
 
       return kvs;
-      // eslint-disable-next-line no-constant-condition
-    } while(false);
-    
+    }
+
     return undefined;
   }
 
   protected doReprint() {
-    do {
+    const params = this.Params;
+    if (params.reprint && params.moneytype) {
       const kvs: keyvalue_t = {};
 
-      if(!this.Params.reprint) break;
-      switch(this.Params.reprint){
-        case "Journal":                         break;
-        case "Slip":    kvs.operationDiv = "1"; break;
+      if (params.reprint === "Slip") {
+        kvs.operationDiv = "1";
       }
+      else if (params.reprint === "Journal") {
+        if (params.when === "Last") {
+          kvs.reprint = "1";
+        }
+        else if (params.when === "BeforeLast") {
+          kvs.reprint = "2";
+        }
+        else {
+          return undefined;
+        }
 
+        if (params.detail === "Summary") {
+          kvs.detail = "0";
+        }
+        else if (params.detail === "Detail") {
+          kvs.detail = "1";
+        }
+        else {
+          return undefined;
+        }
+      }
       return kvs;
-    // eslint-disable-next-line no-constant-condition
-    } while(false);
-    
+    }
     return undefined;
   }
 
   protected /* abstract */ generateGetParameterSelf(): keyvalue_t | undefined {
     const kvs  = (() => {
-      switch(this.Params.menu){
-        case "Service": {
-          return this.doService();
-        }
-        case "Journal": {
-          return this.doJournal();
-        }
-        case "Reprint": {
-          return this.doReprint();
-        }
-        default: {
-          return undefined;
-        }
+      switch(this.Params.menu) {
+      case "Service":
+        return this.doService();
+
+      case "Journal":
+        return this.doJournal();
+
+      case "Reprint":
+        return this.doReprint();
+
+      default:
+        return undefined;
       }
     })();
-    if(!kvs) return undefined;
+
+    if (!kvs) {
+      return undefined;
+    }
 
     return {
       ...kvs,
@@ -137,7 +184,7 @@ export class Pokepos extends Base {
 
   protected  /* abstract */ generateBaseUrlSelf(): string | undefined {
     const path = this.doPath();
-    return path ? `Pokepos://${path}` : undefined;
+    return path ? `pokepos://${path}` : undefined;
   }
 
 
@@ -151,10 +198,12 @@ export class Pokepos extends Base {
       Cup:    true,
       NFC:    true,
       Suica:  false,
-      QP:     true,
       ID:     true,
+      QP:     true,
       Waon:   false,
-      Nanaco: false
+      Edy:    false,
+      Nanaco: false,
+      All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
   }
@@ -165,10 +214,12 @@ export class Pokepos extends Base {
       Cup:    true,
       NFC:    true,
       Suica:  false,
-      QP:     true,
       ID:     true,
+      QP:     true,
       Waon:   false,
-      Nanaco: false
+      Edy:    false,
+      Nanaco: false,
+      All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
   }
@@ -179,10 +230,12 @@ export class Pokepos extends Base {
       Cup:    false,
       NFC:    false,
       Suica:  false,
-      QP:     false,
       ID:     false,
+      QP:     false,
       Waon:   false,
-      Nanaco: false
+      Edy:    false,
+      Nanaco: false,
+      All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
   }

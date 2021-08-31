@@ -27,6 +27,19 @@
         </v-col>
       </v-row>
 
+      <v-row v-if="m.p.menu === 'Reprint'">
+        <v-col>
+          <v-radio-group v-model="m.p.reprint" row>
+            <v-radio
+              v-for="it in reprints"
+              :key="`reprints-${it.value}`"
+              :label=it.label
+              :value=it.value
+            ></v-radio>
+          </v-radio-group>
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col>
           <v-radio-group v-model="m.p.moneytype" row>
@@ -40,7 +53,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu=='Service'">
+      <v-row v-if="m.p.menu === 'Service'">
         <v-col>
           <v-radio-group v-model="m.p.job" row>
             <v-radio
@@ -53,20 +66,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu=='Reprint'">
-        <v-col>
-          <v-radio-group v-model="m.p.reprint" row>
-            <v-radio
-              v-for="it in reprints"
-              :key="`reprints-${it.value}`"
-              :label=it.label
-              :value=it.value
-            ></v-radio>
-          </v-radio-group>
-        </v-col>
-      </v-row>
-
-      <v-row v-if="m.p.menu=='Journal'">
+      <v-row v-if="m.p.menu === 'Journal'">
         <v-col>
           <v-radio-group v-model="m.p.journal" row>
             <v-radio
@@ -79,7 +79,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="(m.p.mode=='Cnc')&&((m.p.menu=='Journal')||(m.p.menu=='Reprint'&&m.p.reprint=='Journal'))">
+      <v-row v-if="m.p.menu === 'Journal' || (m.p.menu === 'Reprint' && m.p.reprint ==='Journal')">
         <v-col>
           <v-radio-group v-model="m.p.detail" row>
             <v-radio
@@ -92,7 +92,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.mode=='Cnc'&&m.p.menu=='Reprint'&&m.p.reprint=='Journal'">
+      <v-row v-if="m.p.menu === 'Reprint' && m.p.reprint === 'Journal'">
         <v-col>
           <v-radio-group v-model="m.p.when" row>
             <v-radio
@@ -130,7 +130,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu=='Service'&&m.p.moneytype=='Suica'&&m.p.job=='Sales'">
+      <v-row v-if="m.p.menu === 'Service' && m.p.moneytype === 'Suica' && m.p.job === 'Sales'">
         <v-col>
           <v-switch
             v-model="m.p.bTogether"
@@ -140,7 +140,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='Sales'">
+      <v-row v-if="m.p.moneytype === 'Credit' && m.p.job === 'Sales'">
         <v-col>
           <v-switch
             v-model="m.p.bLump"
@@ -150,13 +150,13 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.moneytype=='Credit'&&(m.p.job=='Sales'||m.p.job=='Refund')">
+      <v-row v-if="m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund')">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,99999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -164,8 +164,7 @@
             v-model="m.p.taxOther"
             label="税・その他"
             type="number"
-            :rules="[required,range(0,99999)]"
-            :disabled="!m.b.taxOther"
+            :rules="[range(0,99999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -173,13 +172,12 @@
             v-model="m.p.productCode"
             label="商品コード"
             type="number"
-            :rules="[required,length(4)]"
-            :disabled="!m.b.productCode"
+            :rules="[length(4)]"
           ></v-text-field>
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='Refund'">
+      <v-row v-if="m.p.moneytype === 'Credit' && m.p.job === 'Refund'">
         <v-col>
           <v-text-field
             v-model="m.p.slipNo"
@@ -224,13 +222,13 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='ReservedAuthority'">
+      <v-row v-if="m.p.moneytype === 'Credit' && m.p.job === 'ReservedAuthority'">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,99999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -238,18 +236,18 @@
             v-model="m.p.taxOther"
             label="税・その他"
             type="number"
-            :rules="[required,range(0,99999)]"
+            :rules="[range(0,99999999)]"
             :disabled="!m.b.taxOther"
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="m.p.moneytype=='Credit'&&m.p.job=='ApprovedSales'">
+      <v-row v-if="m.p.moneytype === 'Credit' && m.p.job === 'ApprovedSales'">
         <v-col>
           <v-text-field
             v-model="m.p.approvalNo"
             label="承認番号"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -257,7 +255,7 @@
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,99999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -265,7 +263,7 @@
             v-model="m.p.taxOther"
             label="税・その他"
             type="number"
-            :rules="[required,range(0,99999)]"
+            :rules="[range(0,99999999)]"
             :disabled="!m.b.taxOther"
           ></v-text-field>
         </v-col>
@@ -277,17 +275,17 @@
           ></v-switch>
         </v-col>
       </v-row>
-      <v-row v-if="(m.p.moneytype=='Cup'||m.p.moneytype=='Suica'||m.p.moneytype=='QP'||m.p.moneytype=='Waon')&&m.p.job=='Sales'">
+      <v-row v-if="(m.p.moneytype === 'Cup' || m.p.moneytype === 'Suica' || m.p.moneytype === 'QP' || m.p.moneytype === 'Waon') && m.p.job === 'Sales'">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,99999999)]"
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="m.p.moneytype=='Cup'&&m.p.job=='Refund'">
+      <v-row v-if="m.p.moneytype === 'Cup' && m.p.job === 'Refund'">
         <v-col>
           <v-text-field
             v-model="m.p.slipNo"
@@ -301,7 +299,7 @@
             v-model="m.p.approvalNo"
             label="承認番号"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -325,7 +323,7 @@
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,99999999)]"
           ></v-text-field>
         </v-col>
         <v-col
@@ -343,7 +341,7 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-row v-if="(m.p.moneytype=='QP'||m.p.moneytype=='ID')&&m.p.job=='Cancel'">
+      <v-row v-if="(m.p.moneytype === 'QP' || m.p.moneytype === 'ID') && m.p.job === 'Cancel'">
         <v-col>
           <v-text-field
             v-model="m.p.slipNo"
@@ -361,13 +359,13 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="m.p.moneytype=='ID'&&(m.p.job=='Sales'||m.p.job=='Cancel')">
+      <v-row v-if="m.p.moneytype === 'ID' && (m.p.job === 'Sales' || m.p.job === 'Cancel')">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
             label="金額"
             type="number"
-            :rules="[required,range(1,99999)]"
+            :rules="[required,range(1,9999999)]"
           ></v-text-field>
         </v-col>
         <v-col>
@@ -375,7 +373,7 @@
             v-model="m.p.taxOther"
             label="税・その他"
             type="number"
-            :rules="[required,range(0,99999)]"
+            :rules="[range(0,9999999)]"
             :disabled="!m.b.taxOther"
           ></v-text-field>
         </v-col>
@@ -384,12 +382,12 @@
             v-model="m.p.productCode"
             label="商品コード"
             type="number"
-            :rules="[required,length(4)]"
+            :rules="[length(4)]"
             :disabled="!m.b.productCode"
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row v-if="m.p.moneytype=='Nanaco'&&m.p.job=='Payment'">
+      <v-row v-if="m.p.moneytype === 'Nanaco' && m.p.job === 'Sales'">
         <v-col>
           <v-text-field
             v-model="m.p.amount"
@@ -472,6 +470,7 @@
           </v-btn>
         </v-col>
       </v-row>
+
     </v-form>
   </v-container>
 </template>
@@ -543,77 +542,62 @@ const menus: radio_item<UrlBuilder.menus_t>[] = [
 ];
 
 const moneytypes = computed<radio_item<UrlBuilder.moneytype_t>[]>(() =>  {
-  if(m.p.mode == "Pokepos"){
-    return [
-      {
-        label: "クレジット",
-        value: "Credit"
-      },
-      {
-        label: "銀聯",
-        value: "Cup"
-      },
-      {
-        label: "NFC",
-        value: "NFC"
-      },
-      {
-        label: "交通系IC",
-        value: "Suica"
-      },
-      {
-        label: "QUICPay",
-        value: "QP"
-      },
-      {
-        label: "iD",
-        value: "ID"
-      }
-    ];
+  var items: radio_item<UrlBuilder.moneytype_t>[] = [
+    {
+      label: "クレジット",
+      value: "Credit"
+    },
+    {
+      label: "銀聯",
+      value: "Cup"
+    },
+    {
+      label: "NFC",
+      value: "NFC"
+    },
+    {
+      label: "交通系IC",
+      value: "Suica"
+    },
+    {
+      label: "QUICPay",
+      value: "QP"
+    },
+    {
+      label: "iD",
+      value: "ID"
+    }
+  ];
+
+  if (m.p.mode === "Cnc") {
+    items.push({
+      label: "WAON",
+      value: "Waon"
+    });
+
+    items.push({
+      label: "Edy",
+      value: "Edy"
+    });
+
+    items.push({
+      label: "nanaco",
+      value: "Nanaco"
+    });
   }
-  else if(m.p.mode == "Cnc"){
-    return [
-      {
-        label: "クレジット",
-        value: "Credit"
-      },
-      {
-        label: "銀聯",
-        value: "Cup"
-      },
-      {
-        label: "NFC",
-        value: "NFC"
-      },
-      {
-        label: "交通系IC",
-        value: "Suica"
-      },
-      {
-        label: "QUICPay",
-        value: "QP"
-      },
-      {
-        label: "iD",
-        value: "ID"
-      },
-      {
-        label: "WAON",
-        value: "Waon"
-      },
-      {
-        label: "nanaco",
-        value: "Nanaco"
-      }
-    ];
+
+  if (m.p.menu === "Journal" || (m.p.menu === "Reprint" && m.p.reprint === "Journal")) {
+    items.push({
+      label: "全取引",
+      value: "All"
+    });
   }
-  else{
-    return [];
-  }
+
+  return items;
 });
 
 const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
-  if(m.p.moneytype == "Credit"){
+  if (m.p.moneytype === "Credit") {
     return [
       {
         label: "売上",
@@ -637,7 +621,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
       }
     ];
   }
-  else if(m.p.moneytype == "Cup" || m.p.moneytype == "NFC" ){
+  else if (m.p.moneytype === "Cup" || m.p.moneytype === "NFC") {
     return [
       {
         label: "売上",
@@ -649,51 +633,19 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
       }
     ];
   }
-  else if(m.p.moneytype == "Suica" ){
-    return [
-      {
-        label: "売上",
-        value: "Sales"
-      },
-      {
-        label: "残高照会",
-        value: "BalanceInquiry"
-      },
-    ];
-  }
-  else if(m.p.moneytype == "QP" || m.p.moneytype == "ID" ){
-    return [
-      {
-        label: "売上",
-        value: "Sales"
-      },
-      {
-        label: "取消",
-        value: "Cancel"
-      },
-      {
-        label: "前回取引確認",
-        value: "Confirm"
-      }
-    ];
-  }
-  else if(m.p.moneytype == "Nanaco" ){
+  else if (m.p.moneytype === "Suica") {
     return [
       {
         label: "支払",
-        value: "Payment"
+        value: "Sales"
       },
       {
         label: "残高照会",
-        value: "BalanceInquiry"
+        value: "Balance"
       },
-      {
-        label: "前回取引確認",
-        value: "Confirm"
-      }
     ];
   }
-  else if(m.p.moneytype == "Waon" ){
+  else if(m.p.moneytype === "QP" || m.p.moneytype === "ID") {
     return [
       {
         label: "売上",
@@ -701,15 +653,47 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
       },
       {
         label: "取消",
-        value: "Cancel"
+        value: "Refund"
+      },
+      {
+        label: "前回取引確認",
+        value: "Confirm"
+      }
+    ];
+  }
+  else if (m.p.moneytype === "Nanaco") {
+    return [
+      {
+        label: "支払",
+        value: "Sales"
       },
       {
         label: "残高照会",
-        value: "BalanceInquiry"
+        value: "Balance"
+      },
+      {
+        label: "前回取引確認",
+        value: "Confirm"
+      }
+    ];
+  }
+  else if (m.p.moneytype === "Waon") {
+    return [
+      {
+        label: "支払",
+        value: "Sales"
+      },
+      {
+        label: "取消",
+        value: "Refund"
+      },
+      {
+        label: "残高照会",
+        value: "Balance"
       },
       {
         label: "履歴照会",
-        value: "HistoryInquiry"
+        value: "History"
       },
       {
         label: "ポイントチャージ",
@@ -771,7 +755,9 @@ const whens: radio_item<UrlBuilder.when_t>[] = [
 ];
 
 function paramsToBuilder() {
-  if(!builder) return;
+  if (!builder) {
+    return;
+  }
   builder.Params.menu        = m.p.menu;
   builder.Params.moneytype   = m.p.moneytype;
   builder.Params.job         = m.p.job;
@@ -798,18 +784,21 @@ function updateLogIdAndReturnUrl() {
   const d = dateFormat(new Date(), "yyyymmddHHMMss");
   m.p.logid = d;
 
-  if(builder){
-    if((!builder.isEMoney()) && (m.p.mode == "Pokepos")){
+  if (builder) {
+    if(!builder.isEMoney() && m.p.mode === "Pokepos") {
       m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}?escape=`;
     }
-    else{
+    else {
       m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}`;
     }
+  }
+  else {
+    m.p.returnUrl = "";
   }
 }
 
 function updateUrl() {
-  if(builder){
+  if (builder) {
     updateLogIdAndReturnUrl();
     paramsToBuilder();
     m.b.taxOther    = builder.isNeedTaxOther();
@@ -820,32 +809,30 @@ function updateUrl() {
     m.b.valid     = url !== undefined;
     m.computedUrl = url ?? "";
 
-    m.computedUrlForNuxt =m.baseUrlForNuxt+ m.computedUrl.replace(/^[a-z\-]+:\/\//, "") ;
+    m.computedUrlForNuxt = m.baseUrlForNuxt+ m.computedUrl.replace(/^[a-z\-]+:\/\//, "") ;
   }
-  else{
+  else {
     m.computedUrl = "";
     m.computedUrlForNuxt = ""
   }
 }
 
 function changeMode() {
-  switch(m.p.mode){
-    case "Pokepos":{
-      if(UrlBuilder.Base.isEMoney(m.p.moneytype)){
-        builder = new UrlBuilder.PokeposEM();
-      }
-      else{
-        builder = new UrlBuilder.Pokepos();
-      }
-      break;
+  if (m.p.mode === "Pokepos") {
+    if (UrlBuilder.Base.isEMoney(m.p.moneytype)) {
+      builder = new UrlBuilder.PokeposEM();
     }
-    case "Cnc":{
-      builder = new UrlBuilder.Cnc();
-      break;
+    else {
+      builder = new UrlBuilder.Pokepos();
     }
-    default:        builder = undefined; break;
   }
-  if(builder){
+  else if (m.p.mode === "Cnc") {
+      builder = new UrlBuilder.Cnc();
+  }
+  else {
+      builder = undefined;
+  }
+  if (builder) {
     paramsToBuilder();
     m.b.selfMode = builder.isNeedSelfMode();
   }
