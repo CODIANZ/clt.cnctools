@@ -2,131 +2,162 @@
   <v-container>
     <v-form ref="form">
       <v-row>
-        <v-col>
-          <v-radio-group v-model="m.p.mode" row>
-            <v-radio
-              v-for="it in modes"
-              :key="`modes-${it.value}`"
-              :label=it.label
-              :value=it.value
-            ></v-radio>
-          </v-radio-group>
-        </v-col>
+        <v-radio-group v-model="m.p.mode" dense :column=isPhone>
+          <v-radio
+            v-for="it in modes"
+            :key="`modes-${it.value}`"
+            :label=it.label
+            :value=it.value
+          />
+        </v-radio-group>
       </v-row>
 
       <v-row>
-        <v-col>
-          <v-radio-group v-model="m.p.menu" row>
-            <v-radio
-              v-for="it in menus"
-              :key="`menus-${it.value}`"
-              :label=it.label
-              :value=it.value
-            ></v-radio>
-          </v-radio-group>
-        </v-col>
+        <v-radio-group v-model="m.p.menu" dense :column=isPhone>
+          <v-radio
+            v-for="it in menus"
+            :key="`menus-${it.value}`"
+            :label=it.label
+            :value=it.value
+          />
+        </v-radio-group>
       </v-row>
 
       <v-row v-if="m.p.menu === 'Reprint'">
-        <v-col>
-          <v-radio-group v-model="m.p.reprint" row>
-            <v-radio
-              v-for="it in reprints"
-              :key="`reprints-${it.value}`"
-              :label=it.label
-              :value=it.value
-            ></v-radio>
-          </v-radio-group>
-        </v-col>
+        <v-radio-group v-model="m.p.reprint" dense :column=isPhone>
+          <v-radio
+            v-for="it in reprints"
+            :key="`reprints-${it.value}`"
+            :label=it.label
+            :value=it.value
+          />
+        </v-radio-group>
       </v-row>
 
       <v-row>
-        <v-col>
-          <v-radio-group v-model="m.p.moneytype" row>
-            <v-radio
-              v-for="it in moneytypes"
-              :key="`moneytypes-${it.value}`"
-              :label=it.label
-              :value=it.value
-            ></v-radio>
-          </v-radio-group>
-        </v-col>
+          <v-select
+            v-model="m.p.moneytype"
+            :items="moneytypes"
+            item-text="label"
+            item-value="value"
+            label="金種"
+          />
+<!--
+        <v-radio-group v-model="m.p.moneytype" dense :column=isPhone>
+          <v-radio
+            v-for="it in moneytypes"
+            :key="`moneytypes-${it.value}`"
+            :label=it.label
+            :value=it.value
+          />
+        </v-radio-group>
+-->
       </v-row>
 
       <v-row v-if="m.p.menu === 'Service'">
         <v-col>
-          <v-radio-group v-model="m.p.job" row>
+          <v-radio-group v-model="m.p.job" dense :column=isPhone>
             <v-radio
               v-for="it in jobs"
               :key="`jobs-${it.value}`"
               :label=it.label
               :value=it.value
-            ></v-radio>
+            />
           </v-radio-group>
         </v-col>
       </v-row>
 
       <v-row v-if="m.p.menu === 'Journal'">
         <v-col>
-          <v-radio-group v-model="m.p.journal" row>
+          <v-radio-group v-model="m.p.journal" dense :column=isPhone>
             <v-radio
               v-for="it in journals"
               :key="`journals-${it.value}`"
               :label=it.label
               :value=it.value
-            ></v-radio>
+            />
           </v-radio-group>
         </v-col>
       </v-row>
 
       <v-row v-if="m.p.menu === 'Journal' || (m.p.menu === 'Reprint' && m.p.reprint ==='Journal')">
         <v-col>
-          <v-radio-group v-model="m.p.detail" row>
+          <v-radio-group v-model="m.p.detail" dense :column=isPhone>
             <v-radio
               v-for="it in details"
               :key="`details-${it.value}`"
               :label=it.label
               :value=it.value
-            ></v-radio>
+            />
           </v-radio-group>
         </v-col>
       </v-row>
 
       <v-row v-if="m.p.menu === 'Reprint' && m.p.reprint === 'Journal'">
         <v-col>
-          <v-radio-group v-model="m.p.when" row>
+          <v-radio-group v-model="m.p.when" dense :column=isPhone>
             <v-radio
               v-for="it in whens"
               :key="`whens-${it.value}`"
               :label=it.label
               :value=it.value
-            ></v-radio>
+            />
           </v-radio-group>
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col>
+      <v-row v-if="isPhone" dense>
+        <v-col cols="4">
+          <v-switch
+            v-model="m.p.bPrinting"
+            inset
+            dense
+            label="印字"
+          />
+        </v-col>
+        <v-col cols="6">
+          <v-switch
+            v-model="m.p.bSelfMode"
+            inset
+            dense
+            label="セルフモード"
+            :disabled="!m.b.selfMode"
+          />
+        </v-col>
+        <v-col cols="6">
           <v-switch
             v-model="m.p.bTraining"
             inset
+            dense
             label="トレーニング"
-          ></v-switch>
+          />
         </v-col>
+      </v-row>
+      <v-row v-else dense>
         <v-col>
           <v-switch
             v-model="m.p.bPrinting"
             inset
+            dense
             label="印字"
-          ></v-switch>
+          />
         </v-col>
         <v-col>
           <v-switch
             v-model="m.p.bSelfMode"
             inset
+            dense
             label="セルフモード"
             :disabled="!m.b.selfMode"
-          ></v-switch>
+          />
+        </v-col>
+        <v-col>
+          <v-switch
+            v-model="m.p.bTraining"
+            inset
+            dense
+            label="トレーニング"
+          />
         </v-col>
       </v-row>
 
@@ -135,8 +166,9 @@
           <v-switch
             v-model="m.p.bTogether"
             inset
+            dense
             label="現金併用"
-          ></v-switch>
+          />
         </v-col>
       </v-row>
 
@@ -146,6 +178,7 @@
             v-model="m.p.approvalNo"
             label="承認番号"
             type="number"
+            dense
             :rules="[required,range(1,999999)]"
           />
         </v-col>
@@ -153,6 +186,7 @@
           <v-switch
             v-model="m.p.bLump"
             inset
+            dense
             label="一括払優先"
           ></v-switch>
         </v-col>
@@ -177,7 +211,7 @@
             :rules="[required,range(1,99999)]"
           />
         </v-col>
-        <v-col v-if="(m.p.moneytype === 'QP' || m.p.moneytype === 'Waon' || m.p.moneytype === 'Nanaco')">
+        <v-col v-if="(m.p.moneytype === 'QP' || m.p.moneytype === 'Waon' || m.p.moneytype === 'Edy' || m.p.moneytype === 'Nanaco')">
           <v-text-field
             v-model="m.p.amount"
             label="金額"
@@ -206,14 +240,22 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.moneytype === 'Credit' && m.p.job === 'Refund'">
-        <v-col>
+      <v-row v-if="m.p.job === 'Refund'">
+        <v-col v-if="isRefundReceiptNumber">
           <v-text-field
             v-model="m.p.slipNo"
             label="伝票番号"
             type="number"
             single-line
             :rules="[required,length(5)]"
+          />
+        </v-col>
+        <v-col v-if="m.p.moneytype === 'QP' || m.p.moneytype === 'ID'">
+          <v-text-field
+            v-model="m.p.termId"
+            label="端末ID"
+            type="number"
+            :rules="[required,length(13)]"
           />
         </v-col>
         <!--
@@ -224,48 +266,15 @@
             label="マニュアル"
           />
         </v-col>
-        -->
         <v-col>
           <v-text-field
             v-model="m.p.pan"
             label="カード番号"
             :rules="[required,length(16)]"
-          ></v-text-field>
-        </v-col>
-        <v-col
-          class="d-flex"
-          cols="12"
-          sm="2"
-        >
-          <v-select
-            v-model="m.p.transactionType"
-            :items="m.transactionTypeItems"
-            item-text="name"
-            item-value="value"
-            label="取消区分"
-            dense
           />
         </v-col>
-      </v-row>
-      <v-row v-if="m.p.moneytype === 'Cup' && m.p.job === 'Refund'">
-        <v-col>
-          <v-text-field
-            v-model="m.p.slipNo"
-            label="伝票番号"
-            type="number"
-            single-line
-            :rules="[required,length(5)]"
-          />
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.approvalNo"
-            label="承認番号"
-            type="number"
-            :rules="[required,range(1,999999)]"
-          />
-        </v-col>
-        <v-col>
+        -->
+        <v-col v-if="m.p.moneytype === 'Cup'">
           <v-text-field
             v-model="m.p.cupNo"
             label="銀聯番号"
@@ -273,7 +282,7 @@
             :rules="(/^[0-9]+$/)"
           />
         </v-col>
-        <v-col>
+        <v-col v-if="m.p.moneytype === 'Cup'">
           <v-text-field
             v-model="m.p.SendDate"
             label="銀聯送信日時"
@@ -281,86 +290,62 @@
             :rules="(/^[0-9]{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$ ^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)"
           />
         </v-col>
-        <v-col
+        <v-col v-if="isRefundType"
           class="d-flex"
           cols="12"
           sm="2"
         >
           <v-select
-            v-model="m.p.transactionType"
-            :items="m.transactionTypeItems"
-            item-text="name"
+            v-model="m.p.cancelType"
+            :items="refundTypeItems"
+            item-text="label"
             item-value="value"
             label="取消区分"
-            dense
           />
         </v-col>
       </v-row>
-      <v-row v-if="(m.p.moneytype === 'QP' || m.p.moneytype === 'ID') && m.p.job === 'Refund'">
-        <v-col>
-          <v-text-field
-            v-model="m.p.slipNo"
-            label="伝票番号"
-            type="number"
-            :rules="[required,length(5)]"
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.termId"
-            label="端末ID"
-            type="number"
-            :rules="[required,length(13)]"
-          ></v-text-field>
-        </v-col>
+
+      <v-row>
+        <v-text-field
+          dense
+          v-model="m.p.returnUrl"
+          label="戻りURL"
+          :rules="[required]"
+          readonly
+        />
       </v-row>
       <v-row>
-        <v-col>
-          <v-text-field
-            v-model="m.p.returnUrl"
-            label="戻りURL"
-            :rules="[required]"
-            readonly
-          ></v-text-field>
-        </v-col>
-        <v-col cols="2">
-          <v-switch
-            v-model="m.useEncode"
-            inset
-            label="URLエンコード"
-          ></v-switch>
-        </v-col>
+        <v-switch
+          dense
+          v-model="m.useEncode"
+          inset
+          label="URLエンコード"
+        />
       </v-row>
 
       <v-row>
-        <v-col>
-          <v-textarea
-            v-model="m.computedUrl"
-            label="生成URL"
-            outlined
-            readonly
-          ></v-textarea>
-        </v-col>
+        <v-textarea
+          v-model="m.computedUrl"
+          label="生成URL"
+          outlined
+          readonly
+        />
       </v-row>
 
       <v-row>
-        <v-col>
-          <v-text-field
-            v-model="m.baseUrlForNuxt"
-            label="検証用baseURL"
-          ></v-text-field>
-        </v-col>
+        <v-text-field
+          v-model="m.baseUrlForNuxt"
+          label="検証用baseURL"
+        />
       </v-row>
 
-            <v-row>
-        <v-col>
-          <v-textarea
-            v-model="m.computedUrlForNuxt"
-            label="生成URL(検証用)"
-            outlined
-            readonly
-          ></v-textarea>
-        </v-col>
+      <v-row>
+        <v-textarea
+          v-model="m.computedUrlForNuxt"
+          label="生成URL(検証用)"
+          outlined
+          readonly
+        />
       </v-row>
 
       <v-row>
@@ -411,10 +396,6 @@ const m = reactive({
   baseUrlForNuxt: "http://localhost:3000/#/pos/",
   computedUrlForNuxt: "",
   useEncode: false,
-  transactionTypeItems: [
-    { name: '取消', value: '1' },
-    { name: '返品', value: '2' }
-  ],
   b: {
     productCode: false,
     taxOther: false,
@@ -434,26 +415,26 @@ interface radio_item<T> {
 
 const modes: radio_item<mode_t>[] = [
   {
-    label: "pokepos（互換）",
-    value: "Pokepos"
+    label: "CNC　",
+    value: "Cnc"
   },
   {
-    label: "cnc",
-    value: "Cnc"
+    label: "pokepos互換　",
+    value: "Pokepos"
   }
 ];
 
 const menus: radio_item<UrlBuilder.menus_t>[] = [
   {
-    label: "決済",
+    label: "決済　",
     value: "Service"
   },
   {
-    label: "集計",
+    label: "集計　",
     value: "Journal"
   },
   {
-    label: "再印字",
+    label: "再印字　",
     value: "Reprint"
   }
 ];
@@ -461,44 +442,44 @@ const menus: radio_item<UrlBuilder.menus_t>[] = [
 const moneytypes = computed<radio_item<UrlBuilder.moneytype_t>[]>(() =>  {
   var items: radio_item<UrlBuilder.moneytype_t>[] = [
     {
-      label: "クレジット",
+      label: "クレジット　",
       value: "Credit"
     },
     {
-      label: "銀聯",
+      label: "銀聯　",
       value: "Cup"
     },
     {
-      label: "NFC",
+      label: "NFC　",
       value: "NFC"
     },
     {
-      label: "交通系IC",
+      label: "交通系IC　",
       value: "Suica"
     },
     {
-      label: "QUICPay",
+      label: "QUICPay　",
       value: "QP"
     },
     {
-      label: "iD",
+      label: "iD　",
       value: "ID"
     }
   ];
 
   if (m.p.mode === "Cnc") {
     items.push({
-      label: "WAON",
+      label: "WAON　",
       value: "Waon"
     });
 
     items.push({
-      label: "Edy",
+      label: "Edy　",
       value: "Edy"
     });
 
     items.push({
-      label: "nanaco",
+      label: "nanaco　",
       value: "Nanaco"
     });
   }
@@ -517,19 +498,19 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   if (m.p.moneytype === "Credit") {
     return [
       {
-        label: "売上",
+        label: "売上　",
         value: "Sales"
       },
       {
-        label: "取消返品",
+        label: "取消返品　",
         value: "Refund"
       },
       {
-        label: "オーソリ予約",
+        label: "オーソリ予約　",
         value: "ReservedAuthority"
       },
       {
-        label: "承認後売上",
+        label: "承認後売上　",
         value: "ApprovedSales"
       },
       {
@@ -541,7 +522,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if (m.p.moneytype === "Cup" || m.p.moneytype === "NFC") {
     return [
       {
-        label: "売上",
+        label: "売上　",
         value: "Sales"
       },
       {
@@ -553,7 +534,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if (m.p.moneytype === "Suica") {
     return [
       {
-        label: "支払",
+        label: "支払　",
         value: "Sales"
       },
       {
@@ -565,28 +546,12 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if(m.p.moneytype === "QP" || m.p.moneytype === "ID") {
     return [
       {
-        label: "売上",
+        label: "売上　",
         value: "Sales"
       },
       {
-        label: "取消",
+        label: "取消　",
         value: "Refund"
-      },
-      {
-        label: "前回取引確認",
-        value: "Confirm"
-      }
-    ];
-  }
-  else if (m.p.moneytype === "Nanaco") {
-    return [
-      {
-        label: "支払",
-        value: "Sales"
-      },
-      {
-        label: "残高照会",
-        value: "Balance"
       },
       {
         label: "前回取引確認",
@@ -597,23 +562,23 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if (m.p.moneytype === "Waon") {
     return [
       {
-        label: "支払",
+        label: "支払　",
         value: "Sales"
       },
       {
-        label: "取消",
+        label: "取消　",
         value: "Refund"
       },
       {
-        label: "残高照会",
+        label: "残高照会　",
         value: "Balance"
       },
       {
-        label: "履歴照会",
+        label: "履歴照会　",
         value: "History"
       },
       {
-        label: "ポイントチャージ",
+        label: "ポイントチャージ　",
         value: "PointCharge"
       },
       {
@@ -622,14 +587,61 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
       }
     ];
   }
-  else{
+  else if (m.p.moneytype === "Edy") {
+    return [
+      {
+        label: "支払　",
+        value: "Sales"
+      },
+      {
+        label: "残高照会　",
+        value: "Balance"
+      },
+      {
+        label: "履歴照会　",
+        value: "History"
+      },
+      {
+        label: "前回取引確認",
+        value: "Confirm"
+      }
+    ];
+  }
+  else if (m.p.moneytype === "Nanaco") {
+    return [
+      {
+        label: "支払　",
+        value: "Sales"
+      },
+      {
+        label: "残高照会　",
+        value: "Balance"
+      },
+      {
+        label: "前回取引確認",
+        value: "Confirm"
+      }
+    ];
+  }
+  else {
     return [];
   }
 });
 
+const refundTypeItems: radio_item<UrlBuilder.refundtype_t>[] = [
+  {
+    label: "取消",
+    value: "1"
+  },
+  {
+    label: "返品",
+    value: "2"
+  }
+];
+
 const journals: radio_item<UrlBuilder.journal_t>[] = [
   {
-    label: "日計",
+    label: "日計　",
     value: "Total"
   },
   {
@@ -640,7 +652,7 @@ const journals: radio_item<UrlBuilder.journal_t>[] = [
 
 const details: radio_item<UrlBuilder.detail_t>[] = [
   {
-    label: "簡易",
+    label: "簡易　",
     value: "Summary"
   },
   {
@@ -651,7 +663,7 @@ const details: radio_item<UrlBuilder.detail_t>[] = [
 
 const reprints: radio_item<UrlBuilder.reprint_t>[] = [
   {
-    label: "伝票",
+    label: "伝票　",
     value: "Slip"
   },
   {
@@ -662,7 +674,7 @@ const reprints: radio_item<UrlBuilder.reprint_t>[] = [
 
 const whens: radio_item<UrlBuilder.when_t>[] = [
   {
-    label: "前回",
+    label: "前回　",
     value: "Last"
   },
   {
@@ -695,6 +707,7 @@ function paramsToBuilder() {
   builder.Params.manualFlg   = m.p.manualFlg;
   builder.Params.pan         = m.p.pan;
   builder.Params.returnUrl   = m.p.returnUrl;
+  builder.Params.cancelType  = m.p.cancelType;
 }
 
 function updateLogIdAndReturnUrl() {
@@ -776,6 +789,7 @@ watch(() => m.p.productCode , ()=> updateUrl());
 watch(() => m.p.slipNo      , ()=> updateUrl());
 watch(() => m.p.termId      , ()=> updateUrl());
 watch(() => m.p.manualFlg   , ()=> updateUrl());
+watch(() => m.p.cancelType  , ()=> updateUrl());
 watch(() => m.p.pan         , ()=> updateUrl());
 watch(() => m.p.returnUrl   , ()=> updateUrl());
 watch(() => m.useEncode     , ()=> updateUrl());
@@ -795,6 +809,14 @@ function onExecuteForNuxt() {
 export default defineComponent({
   setup() {
     const form = ref<iform>();
+    const isPhone = computed(() => {
+      let agent = navigator.userAgent;
+      var result = false;
+      if (agent.indexOf("iPhone") > 1) {
+        result = true;
+      }
+      return result;
+    });
     const isAmount = computed(() => {
       if (m.p.job === 'CardCheck' || m.p.job === 'Balance' || m.p.job === 'Confirm' || m.p.job === 'History') {
         return false;
@@ -805,10 +827,28 @@ export default defineComponent({
       if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
         return true;
       }
+      else if (m.p.moneytype === 'Cup' && (m.p.job === 'Sales' || m.p.job === 'Refund')) {
+        return true;
+      }
+      else if (m.p.moneytype === 'NFC' && (m.p.job === 'Sales' || m.p.job === 'Refund')) {
+        return true;
+      }
       return false;
     });
     const isProductCode = computed(() => {
       if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
+        return true;
+      }
+      return false;
+    });
+    const isRefundReceiptNumber = computed(() => {
+      if ((m.p.job === 'Refund') && (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'ID')) {
+        return true;
+      }
+      return false;
+    });
+    const isRefundType = computed(() => {
+      if ((m.p.job === 'Refund') && (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC')) {
         return true;
       }
       return false;
@@ -819,14 +859,18 @@ export default defineComponent({
       menus,
       moneytypes,
       jobs,
+      refundTypeItems,
       journals,
       reprints,
       whens,
       details,
       form,
+      isPhone,
       isAmount,
       isTaxOther,
       isProductCode,
+      isRefundReceiptNumber,
+      isRefundType,
       ...validations,
       onExecute,
       onExecuteForNuxt
