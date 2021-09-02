@@ -76,7 +76,7 @@ export abstract class  Base {
       manualFlg:    false,
       pan:          "",
       returnUrl:    "",
-      transactionType: undefined
+      cancelType:   undefined
     } as params_t;
   }
 }

@@ -6,6 +6,7 @@ export type journal_t    = "Total" | "Intermediate";
 export type detail_t     = "Summary" | "Detail";
 export type reprint_t    = "Slip" | "Journal";
 export type when_t       = "Last" | "BeforeLast" | "SlipNo";
+export type refundtype_t = "1" | "2";
 
 export type params_t = {
   logid:        string;
@@ -29,7 +30,7 @@ export type params_t = {
   termId:       string;
   manualFlg:    boolean;
   pan:          string;
-  transactionType?: "1" | "2";
+  cancelType?:  refundtype_t;
   returnUrl:    string;
 };
 
