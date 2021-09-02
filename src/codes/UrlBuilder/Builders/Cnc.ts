@@ -70,7 +70,11 @@ export class Cnc extends Base {
   }
 
   protected doLump() {
-    return {"Lump": this.Params.bLump ? "true" : "false"};
+    const params = this.Params;
+    if ((params.moneytype === "Credit" || params.moneytype === "NFC") && (params.job === "Sales" || params.job === "ApprovedSales")) {
+      return {"Lump": params.bLump ? "true" : "false"};
+    }
+    return undefined;
   }
 
   protected doService() {
@@ -79,7 +83,7 @@ export class Cnc extends Base {
       const path = `${this.m_moneytypes[params.moneytype]}-${this.m_jobs[params.job]}`;
       const kvs: keyvalue_t = {};
 
-      if (params.job === "Sales") {
+      if (params.job === "Sales" || params.job === "ApprovedSales" || params.job === "ReservedAuthority") {
         if (isNaN(parseInt(params.amount))) {
           return undefined;
         }
@@ -97,20 +101,24 @@ export class Cnc extends Base {
           return undefined;
         }
 
-        if (params.moneytype === "Suica") {
-          kvs.amount  = params.amount;
-        }
-        else {
-          kvs.amount  = params.amount;
+        kvs.amount  = params.amount;
+        if (params.slipNo) {
           kvs.slipNo  = params.slipNo;
+        }
+        if (params.termId) {
           kvs.termId  = params.termId;
+        }
+        if (params.manualFlg) {
           kvs.manual  = params.manualFlg ? "true" : "false";
-          if (params.manualFlg) {
-            kvs.pan = params.pan;
-          }
+        }
+        if (params.pan) {
+          kvs.pan = params.pan;
+        }
+        if (params.cancelType) {
+          kvs.cancelType = params.cancelType;
         }
       }
-      else if (params.job === "Confirm") {
+      else if (params.job === "Confirm" || params.job === "Balance") {
 
       }
       return {path, kvs};
