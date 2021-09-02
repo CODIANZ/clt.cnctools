@@ -2,7 +2,7 @@
   <v-container>
     <v-form ref="form">
       <v-row>
-        <v-radio-group v-model="m.p.mode" dense :column=isPhone>
+        <v-radio-group v-model="m.p.mode" dense row>
           <v-radio
             v-for="it in modes"
             :key="`modes-${it.value}`"
@@ -13,7 +13,7 @@
       </v-row>
 
       <v-row>
-        <v-radio-group v-model="m.p.menu" dense :column=isPhone>
+        <v-radio-group v-model="m.p.menu" dense row>
           <v-radio
             v-for="it in menus"
             :key="`menus-${it.value}`"
@@ -24,7 +24,7 @@
       </v-row>
 
       <v-row v-if="m.p.menu === 'Reprint'">
-        <v-radio-group v-model="m.p.reprint" dense :column=isPhone>
+        <v-radio-group v-model="m.p.reprint" dense row>
           <v-radio
             v-for="it in reprints"
             :key="`reprints-${it.value}`"
@@ -35,15 +35,7 @@
       </v-row>
 
       <v-row>
-          <v-select
-            v-model="m.p.moneytype"
-            :items="moneytypes"
-            item-text="label"
-            item-value="value"
-            label="金種"
-          />
-<!--
-        <v-radio-group v-model="m.p.moneytype" dense :column=isPhone>
+        <v-radio-group v-model="m.p.moneytype" dense row>
           <v-radio
             v-for="it in moneytypes"
             :key="`moneytypes-${it.value}`"
@@ -51,12 +43,11 @@
             :value=it.value
           />
         </v-radio-group>
--->
       </v-row>
 
       <v-row v-if="m.p.menu === 'Service'">
         <v-col>
-          <v-radio-group v-model="m.p.job" dense :column=isPhone>
+          <v-radio-group v-model="m.p.job" dense row>
             <v-radio
               v-for="it in jobs"
               :key="`jobs-${it.value}`"
@@ -69,7 +60,7 @@
 
       <v-row v-if="m.p.menu === 'Journal'">
         <v-col>
-          <v-radio-group v-model="m.p.journal" dense :column=isPhone>
+          <v-radio-group v-model="m.p.journal" dense row>
             <v-radio
               v-for="it in journals"
               :key="`journals-${it.value}`"
@@ -82,7 +73,7 @@
 
       <v-row v-if="m.p.menu === 'Journal' || (m.p.menu === 'Reprint' && m.p.reprint ==='Journal')">
         <v-col>
-          <v-radio-group v-model="m.p.detail" dense :column=isPhone>
+          <v-radio-group v-model="m.p.detail" dense row>
             <v-radio
               v-for="it in details"
               :key="`details-${it.value}`"
@@ -95,7 +86,7 @@
 
       <v-row v-if="m.p.menu === 'Reprint' && m.p.reprint === 'Journal'">
         <v-col>
-          <v-radio-group v-model="m.p.when" dense :column=isPhone>
+          <v-radio-group v-model="m.p.when" dense row>
             <v-radio
               v-for="it in whens"
               :key="`whens-${it.value}`"
@@ -106,56 +97,25 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="isPhone" dense>
-        <v-col cols="4">
-          <v-switch
+      <v-row>
+        <v-col>
+          <v-checkbox
             v-model="m.p.bPrinting"
-            inset
-            dense
             label="印字"
           />
         </v-col>
-        <v-col cols="6">
-          <v-switch
+<!-- 必要になったら、コメントを削除.
+        <v-col>
+          <v-checkbox
             v-model="m.p.bSelfMode"
-            inset
-            dense
             label="セルフモード"
             :disabled="!m.b.selfMode"
           />
         </v-col>
-        <v-col cols="6">
-          <v-switch
+-->
+        <v-col>
+          <v-checkbox
             v-model="m.p.bTraining"
-            inset
-            dense
-            label="トレーニング"
-          />
-        </v-col>
-      </v-row>
-      <v-row v-else dense>
-        <v-col>
-          <v-switch
-            v-model="m.p.bPrinting"
-            inset
-            dense
-            label="印字"
-          />
-        </v-col>
-        <v-col>
-          <v-switch
-            v-model="m.p.bSelfMode"
-            inset
-            dense
-            label="セルフモード"
-            :disabled="!m.b.selfMode"
-          />
-        </v-col>
-        <v-col>
-          <v-switch
-            v-model="m.p.bTraining"
-            inset
-            dense
             label="トレーニング"
           />
         </v-col>
@@ -163,10 +123,8 @@
 
       <v-row v-if="m.p.moneytype === 'Suica' && m.p.job === 'Sales'">
         <v-col>
-          <v-switch
+          <v-checkbox
             v-model="m.p.bTogether"
-            inset
-            dense
             label="現金併用"
           />
         </v-col>
@@ -177,18 +135,14 @@
           <v-text-field
             v-model="m.p.approvalNo"
             label="承認番号"
-            type="number"
-            dense
             :rules="[required,range(1,999999)]"
           />
         </v-col>
         <v-col>
-          <v-switch
+          <v-checkbox
             v-model="m.p.bLump"
-            inset
-            dense
             label="一括払優先"
-          ></v-switch>
+          />
         </v-col>
       </v-row>
 
@@ -255,22 +209,16 @@
             v-model="m.p.termId"
             label="端末ID"
             type="number"
+            single-line
             :rules="[required,length(13)]"
           />
         </v-col>
-        <!--
+        <!-- iD, QUICPay
         <v-col>
-          <v-switch
+          <v-checkbox
             v-model="m.p.manualFlg"
             inset
-            label="マニュアル"
-          />
-        </v-col>
-        <v-col>
-          <v-text-field
-            v-model="m.p.pan"
-            label="カード番号"
-            :rules="[required,length(16)]"
+            label="マニュアル返品"
           />
         </v-col>
         -->
@@ -279,6 +227,7 @@
             v-model="m.p.cupNo"
             label="銀聯番号"
             type="number"
+            single-line
             :rules="(/^[0-9]+$/)"
           />
         </v-col>
@@ -287,6 +236,7 @@
             v-model="m.p.SendDate"
             label="銀聯送信日時"
             type="number"
+            single-line
             :rules="(/^[0-9]{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$ ^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)"
           />
         </v-col>
@@ -306,20 +256,19 @@
       </v-row>
 
       <v-row>
+        <v-checkbox
+          v-model="m.useEncode"
+          label="URLエンコード"
+        />
+      </v-row>
+
+      <v-row>
         <v-text-field
           dense
           v-model="m.p.returnUrl"
           label="戻りURL"
           :rules="[required]"
           readonly
-        />
-      </v-row>
-      <v-row>
-        <v-switch
-          dense
-          v-model="m.useEncode"
-          inset
-          label="URLエンコード"
         />
       </v-row>
 
@@ -329,6 +278,8 @@
           label="生成URL"
           outlined
           readonly
+          rows=3
+          auto-grow
         />
       </v-row>
 
@@ -345,6 +296,8 @@
           label="生成URL(検証用)"
           outlined
           readonly
+          rows=3
+          auto-grow
         />
       </v-row>
 
@@ -407,79 +360,79 @@ const m = reactive({
 });
 
 
-interface radio_item<T> {
+interface field_item<T> {
   label: string;
   value: T;
 }
 
 
-const modes: radio_item<mode_t>[] = [
+const modes: field_item<mode_t>[] = [
   {
-    label: "CNC　",
+    label: "CNC",
     value: "Cnc"
   },
   {
-    label: "pokepos互換　",
+    label: "pokepos互換",
     value: "Pokepos"
   }
 ];
 
-const menus: radio_item<UrlBuilder.menus_t>[] = [
+const menus: field_item<UrlBuilder.menus_t>[] = [
   {
-    label: "決済　",
+    label: "決済",
     value: "Service"
   },
   {
-    label: "集計　",
+    label: "集計",
     value: "Journal"
   },
   {
-    label: "再印字　",
+    label: "再印字",
     value: "Reprint"
   }
 ];
 
-const moneytypes = computed<radio_item<UrlBuilder.moneytype_t>[]>(() =>  {
-  var items: radio_item<UrlBuilder.moneytype_t>[] = [
+const moneytypes = computed<field_item<UrlBuilder.moneytype_t>[]>(() =>  {
+  var items: field_item<UrlBuilder.moneytype_t>[] = [
     {
-      label: "クレジット　",
+      label: "クレジット",
       value: "Credit"
     },
     {
-      label: "銀聯　",
+      label: "銀聯",
       value: "Cup"
     },
     {
-      label: "NFC　",
+      label: "NFC",
       value: "NFC"
     },
     {
-      label: "交通系IC　",
+      label: "交通系IC",
       value: "Suica"
     },
     {
-      label: "QUICPay　",
+      label: "QUICPay",
       value: "QP"
     },
     {
-      label: "iD　",
+      label: "iD",
       value: "ID"
     }
   ];
 
   if (m.p.mode === "Cnc") {
     items.push({
-      label: "WAON　",
+      label: "WAON",
       value: "Waon"
     });
 
     items.push({
-      label: "Edy　",
+      label: "Edy",
       value: "Edy"
     });
 
     items.push({
-      label: "nanaco　",
+      label: "nanaco",
       value: "Nanaco"
     });
   }
@@ -494,23 +447,23 @@ const moneytypes = computed<radio_item<UrlBuilder.moneytype_t>[]>(() =>  {
   return items;
 });
 
-const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
+const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
   if (m.p.moneytype === "Credit") {
     return [
       {
-        label: "売上　",
+        label: "売上",
         value: "Sales"
       },
       {
-        label: "取消返品　",
+        label: "取消返品",
         value: "Refund"
       },
       {
-        label: "オーソリ予約　",
+        label: "オーソリ予約",
         value: "ReservedAuthority"
       },
       {
-        label: "承認後売上　",
+        label: "承認後売上",
         value: "ApprovedSales"
       },
       {
@@ -522,7 +475,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if (m.p.moneytype === "Cup" || m.p.moneytype === "NFC") {
     return [
       {
-        label: "売上　",
+        label: "売上",
         value: "Sales"
       },
       {
@@ -534,7 +487,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if (m.p.moneytype === "Suica") {
     return [
       {
-        label: "支払　",
+        label: "支払",
         value: "Sales"
       },
       {
@@ -546,11 +499,11 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if(m.p.moneytype === "QP" || m.p.moneytype === "ID") {
     return [
       {
-        label: "売上　",
+        label: "売上",
         value: "Sales"
       },
       {
-        label: "取消　",
+        label: "取消",
         value: "Refund"
       },
       {
@@ -562,23 +515,23 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if (m.p.moneytype === "Waon") {
     return [
       {
-        label: "支払　",
+        label: "支払",
         value: "Sales"
       },
       {
-        label: "取消　",
+        label: "取消",
         value: "Refund"
       },
       {
-        label: "残高照会　",
+        label: "残高照会",
         value: "Balance"
       },
       {
-        label: "履歴照会　",
+        label: "履歴照会",
         value: "History"
       },
       {
-        label: "ポイントチャージ　",
+        label: "ポイントチャージ",
         value: "PointCharge"
       },
       {
@@ -590,15 +543,15 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if (m.p.moneytype === "Edy") {
     return [
       {
-        label: "支払　",
+        label: "支払",
         value: "Sales"
       },
       {
-        label: "残高照会　",
+        label: "残高照会",
         value: "Balance"
       },
       {
-        label: "履歴照会　",
+        label: "履歴照会",
         value: "History"
       },
       {
@@ -610,11 +563,11 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   else if (m.p.moneytype === "Nanaco") {
     return [
       {
-        label: "支払　",
+        label: "支払",
         value: "Sales"
       },
       {
-        label: "残高照会　",
+        label: "残高照会",
         value: "Balance"
       },
       {
@@ -628,7 +581,7 @@ const jobs = computed<radio_item<UrlBuilder.job_t>[]>(() =>  {
   }
 });
 
-const refundTypeItems: radio_item<UrlBuilder.refundtype_t>[] = [
+const refundTypeItems: field_item<UrlBuilder.refundtype_t>[] = [
   {
     label: "取消",
     value: "1"
@@ -639,9 +592,9 @@ const refundTypeItems: radio_item<UrlBuilder.refundtype_t>[] = [
   }
 ];
 
-const journals: radio_item<UrlBuilder.journal_t>[] = [
+const journals: field_item<UrlBuilder.journal_t>[] = [
   {
-    label: "日計　",
+    label: "日計",
     value: "Total"
   },
   {
@@ -650,9 +603,9 @@ const journals: radio_item<UrlBuilder.journal_t>[] = [
   }
 ];
 
-const details: radio_item<UrlBuilder.detail_t>[] = [
+const details: field_item<UrlBuilder.detail_t>[] = [
   {
-    label: "簡易　",
+    label: "簡易",
     value: "Summary"
   },
   {
@@ -661,9 +614,9 @@ const details: radio_item<UrlBuilder.detail_t>[] = [
   }
 ];
 
-const reprints: radio_item<UrlBuilder.reprint_t>[] = [
+const reprints: field_item<UrlBuilder.reprint_t>[] = [
   {
-    label: "伝票　",
+    label: "伝票",
     value: "Slip"
   },
   {
@@ -672,9 +625,9 @@ const reprints: radio_item<UrlBuilder.reprint_t>[] = [
   }
 ];
 
-const whens: radio_item<UrlBuilder.when_t>[] = [
+const whens: field_item<UrlBuilder.when_t>[] = [
   {
-    label: "前回　",
+    label: "前回",
     value: "Last"
   },
   {
@@ -769,11 +722,19 @@ function changeMode() {
   updateUrl();
 }
 
+function resetParam() {
+  m.p.bTogether = false;
+  m.p.bLump = false;
+}
+
 watch(() => m.p.mode        , ()=> changeMode());
 
-watch(() => m.p.menu        , ()=> { m.p.bTogether= false; m.p.bLump= false; updateUrl(); });
-watch(() => m.p.moneytype   , ()=> { m.p.bTogether= false; m.p.bLump= false; changeMode(); });
-watch(() => m.p.job         , ()=> { m.p.bTogether= false; m.p.bLump= false; updateUrl(); });
+watch(() => m.p, ()=> { updateUrl(); });
+watch(() => m.p.moneytype, ()=> { changeMode(); });
+
+watch(() => m.p.menu        , ()=> { resetParam(); updateUrl(); });
+watch(() => m.p.moneytype   , ()=> { resetParam(); changeMode(); });
+watch(() => m.p.job         , ()=> { resetParam(); updateUrl(); });
 watch(() => m.p.journal     , ()=> updateUrl());
 watch(() => m.p.detail      , ()=> updateUrl());
 watch(() => m.p.reprint     , ()=> updateUrl());
@@ -809,14 +770,7 @@ function onExecuteForNuxt() {
 export default defineComponent({
   setup() {
     const form = ref<iform>();
-    const isPhone = computed(() => {
-      let agent = navigator.userAgent;
-      var result = false;
-      if (agent.indexOf("iPhone") > 1) {
-        result = true;
-      }
-      return result;
-    });
+
     const isAmount = computed(() => {
       if (m.p.job === 'CardCheck' || m.p.job === 'Balance' || m.p.job === 'Confirm' || m.p.job === 'History') {
         return false;
@@ -853,6 +807,7 @@ export default defineComponent({
       }
       return false;
     });
+
     return {
       m,
       modes,
@@ -865,7 +820,6 @@ export default defineComponent({
       whens,
       details,
       form,
-      isPhone,
       isAmount,
       isTaxOther,
       isProductCode,
