@@ -30,7 +30,7 @@ export abstract class  Base {
     return Base.isEMoney(this.Params.moneytype);
   }
 
-  public isNeedTogether(): boolean {
+  public isNeedWithCash(): boolean {
     return this.Params.moneytype == "Suica" && this.Params.job == "Sales";
   }
 
@@ -66,8 +66,8 @@ export abstract class  Base {
       bTraining:    false,
       bPrinting:    true,
       bSelfMode:    false,
-      bTogether:    false,
       bLump:        false,
+      bWithCash:    false,
       amount:       "",
       taxOther:     "",
       productCode:  "",
