@@ -95,6 +95,9 @@ export class Cnc extends Base {
         if (this.isNeedTaxOther() && this.isNumber(params.taxOther)) {
           kvs.taxOtherAmount = params.taxOther;
         }
+        if (this.isNeedWithCash()) {
+          kvs.withCash = params.bWithCash ? "true" : "false";
+        }
       }
       else if (params.job === "Refund") {
         if (isNaN(parseInt(params.amount))) {

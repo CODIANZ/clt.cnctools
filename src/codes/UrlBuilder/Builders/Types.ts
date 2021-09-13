@@ -21,8 +21,8 @@ export type params_t = {
   bTraining:    boolean;
   bPrinting:    boolean;
   bSelfMode:    boolean;
-  bTogether:    boolean;
   bLump:        boolean;
+  bWithCash:    boolean;
   amount:       string;
   taxOther:     string;
   productCode:  string;

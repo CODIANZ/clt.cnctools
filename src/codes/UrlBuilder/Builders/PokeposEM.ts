@@ -27,8 +27,8 @@ export class PokeposEM extends Pokepos {
           kvs.taxOther = params.taxOther;
         }
   
-        if (this.isNeedTogether()) {
-          kvs.together = params.bTogether ? "1" : "0";
+        if (this.isNeedWithCash()) {
+          kvs.together = params.bWithCash ? "1" : "0";
         }
       }
 

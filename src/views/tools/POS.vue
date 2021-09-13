@@ -124,7 +124,7 @@
       <v-row v-if="m.p.moneytype === 'Suica' && m.p.job === 'Sales'">
         <v-col>
           <v-checkbox
-            v-model="m.p.bTogether"
+            v-model="m.p.bWithCash"
             label="現金併用"
           />
         </v-col>
@@ -352,7 +352,7 @@ const m = reactive({
   b: {
     productCode: false,
     taxOther: false,
-    together: false,
+    withCash: false,
     lump: false,
     valid: false,
     selfMode: false
@@ -650,7 +650,7 @@ function paramsToBuilder() {
   builder.Params.bTraining   = m.p.bTraining;
   builder.Params.bPrinting   = m.p.bPrinting;
   builder.Params.bSelfMode   = m.p.bSelfMode;
-  builder.Params.bTogether   = m.p.bTogether;
+  builder.Params.bWithCash   = m.p.bWithCash;
   builder.Params.bLump       = m.p.bLump;
   builder.Params.amount      = m.p.amount;
   builder.Params.taxOther    = m.p.taxOther;
@@ -686,7 +686,7 @@ function updateUrl() {
     paramsToBuilder();
     m.b.taxOther    = builder.isNeedTaxOther();
     m.b.productCode = builder.isNeedProductCode();
-    m.b.together    = builder.isNeedTogether();
+    m.b.withCash   = builder.isNeedWithCash();
 
     const url = builder.generateUrl(m.useEncode);
     m.b.valid     = url !== undefined;
@@ -723,7 +723,7 @@ function changeMode() {
 }
 
 function resetParam() {
-  m.p.bTogether = false;
+  m.p.bWithCash = false;
   m.p.bLump = false;
 }
 
@@ -742,8 +742,8 @@ watch(() => m.p.when        , ()=> updateUrl());
 watch(() => m.p.bTraining   , ()=> updateUrl());
 watch(() => m.p.bPrinting   , ()=> updateUrl());
 watch(() => m.p.bSelfMode   , ()=> updateUrl());
-watch(() => m.p.bTogether   , ()=> updateUrl());
 watch(() => m.p.bLump       , ()=> updateUrl());
+watch(() => m.p.bWithCash, ()=> updateUrl());
 watch(() => m.p.amount      , ()=> updateUrl());
 watch(() => m.p.taxOther    , ()=> updateUrl());
 watch(() => m.p.productCode , ()=> updateUrl());
