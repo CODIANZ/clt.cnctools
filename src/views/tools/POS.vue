@@ -194,8 +194,8 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.job === 'Refund'">
-        <v-col v-if="isRefundReceiptNumber">
+      <v-row>
+        <v-col v-if="isReceiptNumber">
           <v-text-field
             v-model="m.p.slipNo"
             label="伝票番号"
@@ -204,6 +204,9 @@
             :rules="[required,length(5)]"
           />
         </v-col>
+      </v-row>
+
+      <v-row v-if="m.p.job === 'Refund'">
         <v-col v-if="m.p.moneytype === 'QP' || m.p.moneytype === 'ID'">
           <v-text-field
             v-model="m.p.termId"
@@ -772,10 +775,7 @@ export default defineComponent({
     const form = ref<iform>();
 
     const isAmount = computed(() => {
-      if (m.p.job === 'CardCheck' || m.p.job === 'Balance' || m.p.job === 'Confirm' || m.p.job === 'History') {
-        return false;
-      }
-      return true;
+      return (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales');
     });
     const isTaxOther = computed(() => {
       if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
@@ -795,8 +795,9 @@ export default defineComponent({
       }
       return false;
     });
-    const isRefundReceiptNumber = computed(() => {
-      if ((m.p.job === 'Refund') && (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'ID')) {
+    const isReceiptNumber = computed(() => {
+      if ((m.p.job === 'Refund' || (m.p.menu === 'Reprint' && m.p.reprint === 'Slip')) &&
+        (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'ID')) {
         return true;
       }
       return false;
@@ -823,7 +824,7 @@ export default defineComponent({
       isAmount,
       isTaxOther,
       isProductCode,
-      isRefundReceiptNumber,
+      isReceiptNumber,
       isRefundType,
       ...validations,
       onExecute,

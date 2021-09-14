@@ -135,7 +135,9 @@ export class Cnc extends Base {
       const path = `${this.m_moneytypes[params.moneytype]}-journal-${this.m_journals[params.journal]}`;
       const kvs: keyvalue_t = {};
 
-      kvs.type = (this.Params.detail == "Summary") ? "summary" : "detail";
+      if (this.Params.detail) {
+        kvs.type = this.Params.detail.toLowerCase();
+      }
 
       return {path, kvs};
     }
@@ -143,22 +145,22 @@ export class Cnc extends Base {
   }
 
   protected doReprint() {
-    if (this.Params.moneytype && this.Params.reprint && this.Params.when) {
+    if (this.Params.moneytype && this.Params.reprint) {
       const path = `${this.m_moneytypes[this.Params.moneytype]}-reprint-${this.m_reprints[this.Params.reprint]}`;
       const kvs: keyvalue_t = {};
 
-      switch (this.Params.reprint) {
-      case "Journal":
-        if (this.Params.when != "SlipNo") {
-          kvs.when = this.m_whens[this.Params.when];
-        }
-        break;
-      case "Slip":
-        kvs.when = this.m_whens[this.Params.when];
-        if (this.Params.when =="SlipNo") {
+      if (this.Params.reprint === 'Slip') {
+        if (this.Params.slipNo) {
           kvs.slipNo = this.Params.slipNo;
         }
-        break;
+      }
+      else if (this.Params.reprint === 'Journal') {
+        if (this.Params.when) {
+          kvs.when = this.m_whens[this.Params.when];
+        }
+        if (this.Params.detail) {
+          kvs.type = this.Params.detail.toLowerCase();
+        }
       }
       return {path, kvs};
     }
