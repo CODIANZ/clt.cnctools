@@ -27,7 +27,7 @@ export type params_t = {
   taxOther:     string;
   productCode:  string;
   slipNo:       string;
-  termId:       string;
+  otherTermJudgeNo: string;
   manualFlg:    boolean;
   pan:          string;
   cancelType?:  refundtype_t;

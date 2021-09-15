@@ -54,12 +54,12 @@ export class PokeposEM extends Pokepos {
           kvs.operationDiv = "1";
         }
         else if (params.job === "Refund") {
-          if (isNaN(parseInt(params.amount)) || params.slipNo.length === 0 || params.termId.length === 0) {
+          if (isNaN(parseInt(params.amount)) || params.slipNo.length === 0 || params.otherTermJudgeNo.length === 0) {
             return undefined;
           }
           kvs.operationDiv = "2";
           kvs.slipNo = params.slipNo;
-          kvs.termId = params.termId;
+          kvs.termId = params.otherTermJudgeNo;
         }
         else if (params.job === "Confirm") {
           kvs.operationDiv = "3";
