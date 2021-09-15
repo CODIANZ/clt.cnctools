@@ -7,7 +7,7 @@ export abstract class  Base {
   protected abstract  generateBaseUrlSelf(): string | undefined;
   protected abstract  generateGetParameterSelf(): keyvalue_t | undefined;
 
-  public generateUrl(bEndode: boolean): string | undefined{
+  public generateUrl(bEndode: boolean): string | undefined {
     const urlbase = this.generateBaseUrlSelf();
     const kvs = this.generateGetParameterSelf();
 

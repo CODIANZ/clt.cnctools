@@ -726,8 +726,11 @@ function changeMode() {
 }
 
 function resetParam() {
+  m.p.amount = "";
+  m.p.taxOther = "";
   m.p.bWithCash = false;
   m.p.bLump = false;
+  m.p.otherTermJudgeNo = "";
 }
 
 watch(() => m.p.mode        , ()=> changeMode());
@@ -775,6 +778,12 @@ export default defineComponent({
     const form = ref<iform>();
 
     const isAmount = computed(() => {
+      if (m.p.moneytype === 'Waon') {
+        if (m.p.job === 'Sales') {
+          return true;
+        }
+        return false;
+      }
       return (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales');
     });
     const isTaxOther = computed(() => {
