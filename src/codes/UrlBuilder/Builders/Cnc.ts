@@ -100,19 +100,23 @@ export class Cnc extends Base {
         }
       }
       else if (params.job === "Refund") {
-        if (isNaN(parseInt(params.amount))) {
-          return undefined;
+        if (params.moneytype === 'Credit' || params.moneytype === 'Cup' || params.moneytype === 'NFC') {
+          if (isNaN(parseInt(params.amount))) {
+            return undefined;
+          }
         }
 
-        kvs.amount  = params.amount;
+        if (params.amount) {
+          kvs.amount = params.amount;
+        }
         if (params.slipNo) {
-          kvs.slipNo  = params.slipNo;
+          kvs.slipNo = params.slipNo;
         }
         if (params.otherTermJudgeNo) {
-          kvs.otherTermJudgeNo  = params.otherTermJudgeNo;
+          kvs.otherTermJudgeNo = params.otherTermJudgeNo;
         }
         if (params.manualFlg) {
-          kvs.manual  = params.manualFlg ? "true" : "false";
+          kvs.manual = params.manualFlg ? "true" : "false";
         }
         if (params.pan) {
           kvs.pan = params.pan;
