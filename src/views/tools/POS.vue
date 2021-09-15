@@ -209,7 +209,7 @@
       <v-row v-if="m.p.job === 'Refund'">
         <v-col v-if="m.p.moneytype === 'QP' || m.p.moneytype === 'ID'">
           <v-text-field
-            v-model="m.p.termId"
+            v-model="m.p.otherTermJudgeNo"
             label="端末ID"
             type="number"
             single-line
@@ -659,7 +659,7 @@ function paramsToBuilder() {
   builder.Params.taxOther    = m.p.taxOther;
   builder.Params.productCode = m.p.productCode;
   builder.Params.slipNo      = m.p.slipNo;
-  builder.Params.termId      = m.p.termId;
+  builder.Params.otherTermJudgeNo = m.p.otherTermJudgeNo;
   builder.Params.manualFlg   = m.p.manualFlg;
   builder.Params.pan         = m.p.pan;
   builder.Params.returnUrl   = m.p.returnUrl;
@@ -751,7 +751,7 @@ watch(() => m.p.amount      , ()=> updateUrl());
 watch(() => m.p.taxOther    , ()=> updateUrl());
 watch(() => m.p.productCode , ()=> updateUrl());
 watch(() => m.p.slipNo      , ()=> updateUrl());
-watch(() => m.p.termId      , ()=> updateUrl());
+watch(() => m.p.otherTermJudgeNo, ()=> updateUrl());
 watch(() => m.p.manualFlg   , ()=> updateUrl());
 watch(() => m.p.cancelType  , ()=> updateUrl());
 watch(() => m.p.pan         , ()=> updateUrl());

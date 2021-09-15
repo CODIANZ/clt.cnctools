@@ -108,8 +108,8 @@ export class Cnc extends Base {
         if (params.slipNo) {
           kvs.slipNo  = params.slipNo;
         }
-        if (params.termId) {
-          kvs.termId  = params.termId;
+        if (params.otherTermJudgeNo) {
+          kvs.otherTermJudgeNo  = params.otherTermJudgeNo;
         }
         if (params.manualFlg) {
           kvs.manual  = params.manualFlg ? "true" : "false";

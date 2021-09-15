@@ -72,7 +72,7 @@ export abstract class  Base {
       taxOther:     "",
       productCode:  "",
       slipNo:       "",
-      termId:       "",
+      otherTermJudgeNo: "",
       manualFlg:    false,
       pan:          "",
       returnUrl:    "",
