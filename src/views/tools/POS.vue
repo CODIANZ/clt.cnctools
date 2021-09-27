@@ -130,8 +130,8 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'ApprovedSales')">
-        <v-col v-if="m.p.job === 'ApprovedSales'">
+      <v-row v-if="isApprovalNo || isLump">
+        <v-col v-if="isApprovalNo">
           <v-text-field
             v-model="m.p.approvalNo"
             label="承認番号"
@@ -466,8 +466,16 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
         value: "ReservedAuthority"
       },
       {
+        label: "オーソリ予約取消",
+        value: "RefundReservedAuthority"
+      },
+      {
         label: "承認後売上",
         value: "ApprovedSales"
+      },
+      {
+        label: "承認後売上取消",
+        value: "RefundApprovedSales"
       },
       {
         label: "カードチェック",
@@ -817,6 +825,18 @@ export default defineComponent({
       }
       return false;
     });
+    const isApprovalNo = computed(() => {
+      if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'RefundReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'RefundApprovedSales')) {
+          return true;
+      }
+      return false;
+    });
+    const isLump = computed(() => {
+      if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
+          return true;
+      }
+      return false;
+    });
 
     return {
       m,
@@ -835,6 +855,8 @@ export default defineComponent({
       isProductCode,
       isReceiptNumber,
       isRefundType,
+      isApprovalNo,
+      isLump,
       ...validations,
       onExecute,
       onExecuteForNuxt
