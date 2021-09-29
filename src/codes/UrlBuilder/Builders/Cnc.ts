@@ -74,7 +74,7 @@ export class Cnc extends Base {
   protected doLump() {
     const params = this.Params;
     if ((params.moneytype === "Credit" || params.moneytype === "NFC") && (params.job === "Sales" || params.job === "ApprovedSales")) {
-      return {"Lump": params.bLump ? "true" : "false"};
+      return {"lump": params.bLump ? "true" : "false"};
     }
     return undefined;
   }

@@ -138,7 +138,7 @@
             :rules="[required,range(1,999999)]"
           />
         </v-col>
-        <v-col>
+        <v-col v-if="isLump">
           <v-checkbox
             v-model="m.p.bLump"
             label="一括払優先"
@@ -338,13 +338,12 @@ import { defineComponent, computed, reactive, ref, watch } from "@vue/compositio
 import { iform, validations } from "@/codes/FormUtil";
 import { UrlBuilder } from "@/codes/UrlBuilder";
 import { ResultStore } from "@/codes/ResultStore";
+import { mode_t } from "@/codes/UrlBuilder/Builders/Types";
 import dateFormat from "dateformat";
 import { debug } from "debug";
 const LOG = debug("app:POS");
 
 let builder: UrlBuilder.Base | undefined = undefined;
-
-type mode_t = "Pokepos" | "Cnc";
 
 const m = reactive({
   p: UrlBuilder.Base.DefaultParams,
@@ -371,7 +370,7 @@ interface field_item<T> {
 
 const modes: field_item<mode_t>[] = [
   {
-    label: "CNC",
+    label: "CNC(Res互換)",
     value: "Cnc"
   },
   {
@@ -813,7 +812,7 @@ export default defineComponent({
       return false;
     });
     const isReceiptNumber = computed(() => {
-      if ((m.p.job === 'Refund' || (m.p.menu === 'Reprint' && m.p.reprint === 'Slip')) &&
+      if ((m.p.job === 'Refund' || m.p.job === 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales' || (m.p.menu === 'Reprint' && m.p.reprint === 'Slip')) &&
         (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'ID')) {
         return true;
       }
