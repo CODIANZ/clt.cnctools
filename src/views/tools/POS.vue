@@ -130,15 +130,15 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'ApprovedSales')">
-        <v-col v-if="m.p.job === 'ApprovedSales'">
+      <v-row v-if="isApprovalNo || isLump">
+        <v-col v-if="isApprovalNo">
           <v-text-field
             v-model="m.p.approvalNo"
             label="承認番号"
             :rules="[required,range(1,999999)]"
           />
         </v-col>
-        <v-col>
+        <v-col v-if="isLump">
           <v-checkbox
             v-model="m.p.bLump"
             label="一括払優先"
@@ -338,13 +338,12 @@ import { defineComponent, computed, reactive, ref, watch } from "@vue/compositio
 import { iform, validations } from "@/codes/FormUtil";
 import { UrlBuilder } from "@/codes/UrlBuilder";
 import { ResultStore } from "@/codes/ResultStore";
+import { mode_t } from "@/codes/UrlBuilder/Builders/Types";
 import dateFormat from "dateformat";
 import { debug } from "debug";
 const LOG = debug("app:POS");
 
 let builder: UrlBuilder.Base | undefined = undefined;
-
-type mode_t = "Pokepos" | "Cnc";
 
 const m = reactive({
   p: UrlBuilder.Base.DefaultParams,
@@ -371,7 +370,7 @@ interface field_item<T> {
 
 const modes: field_item<mode_t>[] = [
   {
-    label: "CNC",
+    label: "CNC(Res互換)",
     value: "Cnc"
   },
   {
@@ -466,8 +465,16 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
         value: "ReservedAuthority"
       },
       {
+        label: "オーソリ予約取消",
+        value: "RefundReservedAuthority"
+      },
+      {
         label: "承認後売上",
         value: "ApprovedSales"
+      },
+      {
+        label: "承認後売上取消",
+        value: "RefundApprovedSales"
       },
       {
         label: "カードチェック",
@@ -805,7 +812,7 @@ export default defineComponent({
       return false;
     });
     const isReceiptNumber = computed(() => {
-      if ((m.p.job === 'Refund' || (m.p.menu === 'Reprint' && m.p.reprint === 'Slip')) &&
+      if ((m.p.job === 'Refund' || m.p.job === 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales' || (m.p.menu === 'Reprint' && m.p.reprint === 'Slip')) &&
         (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'ID')) {
         return true;
       }
@@ -814,6 +821,18 @@ export default defineComponent({
     const isRefundType = computed(() => {
       if ((m.p.job === 'Refund') && (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC')) {
         return true;
+      }
+      return false;
+    });
+    const isApprovalNo = computed(() => {
+      if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'RefundReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'RefundApprovedSales')) {
+          return true;
+      }
+      return false;
+    });
+    const isLump = computed(() => {
+      if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
+          return true;
       }
       return false;
     });
@@ -835,6 +854,8 @@ export default defineComponent({
       isProductCode,
       isReceiptNumber,
       isRefundType,
+      isApprovalNo,
+      isLump,
       ...validations,
       onExecute,
       onExecuteForNuxt

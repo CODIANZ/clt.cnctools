@@ -32,7 +32,9 @@ export class Cnc extends Base {
     "Sales": "settlement",
     "Refund": "refund",
     "ReservedAuthority": "preapproval",
+    "RefundReservedAuthority": "refundpreapproval",
     "ApprovedSales": "afterapproval",
+    "RefundApprovedSales": "refundafterapproval",
     "CardCheck": "cardcheck",
     "Balance": "balance",
     "Confirm": "confirm",
@@ -72,7 +74,7 @@ export class Cnc extends Base {
   protected doLump() {
     const params = this.Params;
     if ((params.moneytype === "Credit" || params.moneytype === "NFC") && (params.job === "Sales" || params.job === "ApprovedSales")) {
-      return {"Lump": params.bLump ? "true" : "false"};
+      return {"lump": params.bLump ? "true" : "false"};
     }
     return undefined;
   }
