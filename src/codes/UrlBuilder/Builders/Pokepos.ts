@@ -72,6 +72,15 @@ export class Pokepos extends Base {
       else if (params.job === "Refund") {
         kvs.operationDiv = "1";
       }
+      else if (params.job === "ReservedAuthority") {
+        kvs.operationDiv = "3";
+      }
+      else if (params.job === "ApprovedSales") {
+        kvs.operationDiv = "4";
+      }
+      else if (params.job === "CardCheck") {
+        kvs.operationDiv = "5";
+      }
 
       return kvs;
     }
