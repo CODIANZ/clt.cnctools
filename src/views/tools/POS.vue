@@ -702,12 +702,7 @@ function updateLogIdAndReturnUrl() {
   m.p.logid = d;
 
   if (builder) {
-    if(!builder.isEMoney() && m.p.mode === "Pokepos") {
-      m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}?escape=`;
-    }
-    else {
-      m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}`;
-    }
+    m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}`;
   }
   else {
     m.p.returnUrl = "";
