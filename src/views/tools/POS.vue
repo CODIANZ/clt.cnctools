@@ -451,6 +451,30 @@ const moneytypes = computed<field_item<UrlBuilder.moneytype_t>[]>(() =>  {
 
 const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
   if (m.p.moneytype === "Credit") {
+    if (m.p.mode === "Pokepos") {
+      return [
+        {
+          label: "売上",
+          value: "Sales"
+        },
+        {
+          label: "取消返品",
+          value: "Refund"
+        },
+        {
+          label: "オーソリ予約",
+          value: "ReservedAuthority"
+        },
+        {
+          label: "承認後売上",
+          value: "ApprovedSales"
+        },
+        {
+          label: "カードチェック",
+          value: "CardCheck"
+        }
+      ];
+    }
     return [
       {
         label: "売上",
