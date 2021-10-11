@@ -528,6 +528,10 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
         label: "残高照会",
         value: "Balance"
       },
+      {
+        label: "前回取引確認",
+        value: "Confirm"
+      }
     ];
   }
   else if(m.p.moneytype === "QP" || m.p.moneytype === "ID") {
