@@ -104,15 +104,12 @@
             label="印字"
           />
         </v-col>
-<!-- 必要になったら、コメントを削除.
         <v-col>
           <v-checkbox
             v-model="m.p.bSelfMode"
             label="セルフモード"
-            :disabled="!m.b.selfMode"
           />
         </v-col>
--->
         <v-col>
           <v-checkbox
             v-model="m.p.bTraining"
