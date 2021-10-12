@@ -132,7 +132,7 @@
           <v-text-field
             v-model="m.p.approvalNo"
             label="承認番号"
-            :rules="[required,range(1,999999)]"
+            :rules="[required,length(6)]"
           />
         </v-col>
         <v-col v-if="isLump">
