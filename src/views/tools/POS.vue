@@ -104,15 +104,12 @@
             label="印字"
           />
         </v-col>
-<!-- 必要になったら、コメントを削除.
         <v-col>
           <v-checkbox
             v-model="m.p.bSelfMode"
             label="セルフモード"
-            :disabled="!m.b.selfMode"
           />
         </v-col>
--->
         <v-col>
           <v-checkbox
             v-model="m.p.bTraining"
@@ -135,7 +132,7 @@
           <v-text-field
             v-model="m.p.approvalNo"
             label="承認番号"
-            :rules="[required,range(1,999999)]"
+            :rules="[required,length(6)]"
           />
         </v-col>
         <v-col v-if="isLump">
