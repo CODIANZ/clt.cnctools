@@ -97,28 +97,31 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row dense>
         <v-col>
           <v-checkbox
             v-model="m.p.bPrinting"
             label="印字"
+            dense
           />
         </v-col>
         <v-col>
           <v-checkbox
             v-model="m.p.bSelfMode"
             label="セルフモード"
+            dense
           />
         </v-col>
         <v-col>
           <v-checkbox
             v-model="m.p.bTraining"
             label="トレーニング"
+            dense
           />
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.moneytype === 'Suica' && m.p.job === 'Sales'">
+      <v-row v-if="m.p.moneytype === 'Suica' && m.p.job === 'Sales'" dense>
         <v-col>
           <v-checkbox
             v-model="m.p.bWithCash"
@@ -127,7 +130,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="isApprovalNo || isLump">
+      <v-row v-if="isApprovalNo || isLump" dense>
         <v-col v-if="isApprovalNo">
           <v-text-field
             v-model="m.p.approvalNo"
@@ -283,14 +286,14 @@
         />
       </v-row>
 
-      <v-row>
+      <v-row v-if="isDev">
         <v-text-field
           v-model="m.baseUrlForNuxt"
           label="検証用baseURL"
         />
       </v-row>
 
-      <v-row>
+      <v-row v-if="isDev">
         <v-textarea
           v-model="m.computedUrlForNuxt"
           label="生成URL(検証用)"
@@ -302,6 +305,7 @@
       </v-row>
 
       <v-row>
+        <v-col/>
         <v-col>
           <v-btn
             rounded
@@ -313,7 +317,7 @@
           実行 - {{ m.p.logid }}
           </v-btn>
         </v-col>
-        <v-col>
+        <v-col v-if="isDev">
           <v-btn
             rounded
             color="info"
@@ -324,6 +328,7 @@
           実行(検証用) - {{ m.p.logid }}
           </v-btn>
         </v-col>
+        <v-col/>
       </v-row>
 
     </v-form>
@@ -804,6 +809,10 @@ export default defineComponent({
   setup() {
     const form = ref<iform>();
 
+    const isDev = computed(() => {
+      return false;
+    });
+
     const isAmount = computed(() => {
       if (m.p.moneytype === 'Waon') {
         if (m.p.job === 'Sales') {
@@ -869,6 +878,7 @@ export default defineComponent({
       whens,
       details,
       form,
+      isDev,
       isAmount,
       isTaxOther,
       isProductCode,
