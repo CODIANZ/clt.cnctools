@@ -20,7 +20,7 @@ export class PokeposEM extends Pokepos {
         }
     
         if (this.isNeedProductCode() && this.isValidProductCode()) {
-          kvs.productCode = params.productCode;
+          kvs.goodsCode = params.productCode;
         }
   
         if (this.isNeedTaxOther() && this.isNumber(params.taxOther)) {
