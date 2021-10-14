@@ -1,27 +1,14 @@
 <template>
   <v-container>
     <v-col>
-      <v-btn
-        rounded
-        color="warning"
-        dark
-        @click="onEraseAll"
-      >
-        全て削除
-      </v-btn>
-      <v-btn
-        rounded
-        color="primary"
-        dark
-        @click="onSave"
-      >
-        ファイルに保存
-      </v-btn>
+      <v-btn rounded color="warning" dark @click="onEraseAll">全て削除</v-btn>
+      <v-btn rounded color="primary" dark @click="onSave">ファイルに保存</v-btn>
     </v-col>
 
     <v-treeview
+      style="word-break:keep-all;"
       :items="items"
-    ></v-treeview>
+    />
   </v-container>
 </template>
     
@@ -32,6 +19,7 @@ import { ResultStore, resultstore_t } from "@/codes/ResultStore";
 import FileSaver from "file-saver";
 import dateFormat from "dateformat";
 import { debug } from "debug";
+import { Dictionary } from "vue-router/types/router";
 const LOG = debug("app:POSResult");
 
 let item_id = 0;
@@ -137,8 +125,12 @@ function generateItems(data: resultstore_t[]) {
 
       d.children.push(param);
       d.children.push(sendUrl);
-      if(receiveUrl ) d.children.push(receiveUrl);
-      if(receiveData) d.children.push(receiveData);
+      if(receiveUrl) {
+        d.children.push(receiveUrl);
+      }
+      if(receiveData) {
+        d.children.push(receiveData);
+      }
       return d;
     });
   }
@@ -172,13 +164,24 @@ export default defineComponent({
       }
       else{
         new_id          = ctx.root.$route.params.id;
-        const query     = (() => {
-          const jsonresp = ctx.root.$route.query["jsonresp"];
-          if(jsonresp && (typeof jsonresp === "string")){
-            return JSON.parse(jsonresp);
-          }
-          return ctx.root.$route.query;
-        })();
+        var query:{[_: string]: string} = {};
+        const queries = ctx.root.$route.query;
+        if (queries) {
+          const keys = Object.keys(queries);
+          keys.forEach((key) => {
+            const element = queries[key];
+            if (key === "rasResult" || key === "cncResult" || key === "printinfo") {
+              if (element && (typeof element === "string")) {
+                query[key] = JSON.parse(element);
+              }
+            }
+            else {
+              if (element && (typeof element === "string")) {
+                query[key] = element;
+              }
+            }
+          })
+        }
         const fullpath  = ctx.root.$route.fullPath;
         stor.setReceive(new_id, fullpath, query);
       }
