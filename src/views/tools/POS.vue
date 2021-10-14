@@ -153,7 +153,7 @@
             label="金額"
             type="number"
             single-line
-            :rules="[required,range(1,9999999)]"
+            :rules="[range(1,9999999)]"
           />
         </v-col>
         <v-col v-if="(m.p.moneytype === 'Suica'|| m.p.moneytype === 'ID')">
@@ -162,7 +162,7 @@
             label="金額"
             type="number"
             single-line
-            :rules="[required,range(1,99999)]"
+            :rules="[range(1,99999)]"
           />
         </v-col>
         <v-col v-if="(m.p.moneytype === 'QP' || m.p.moneytype === 'Waon' || m.p.moneytype === 'Edy' || m.p.moneytype === 'Nanaco')">
@@ -171,7 +171,7 @@
             label="金額"
             type="number"
             single-line
-            :rules="[required,range(1,999999)]"
+            :rules="[range(1,999999)]"
           />
         </v-col>
         <v-col v-if="isTaxOther">
@@ -201,7 +201,7 @@
             label="伝票番号"
             type="number"
             single-line
-            :rules="[required,length(5)]"
+            :rules="[length(5)]"
           />
         </v-col>
       </v-row>
@@ -213,7 +213,7 @@
             label="端末ID"
             type="number"
             single-line
-            :rules="[required,length(13)]"
+            :rules="[length(13)]"
           />
         </v-col>
         <!-- iD, QUICPay
