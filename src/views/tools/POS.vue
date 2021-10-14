@@ -823,6 +823,9 @@ export default defineComponent({
       return (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales');
     });
     const isTaxOther = computed(() => {
+      if (m.p.mode === "Pokepos" && (m.p.moneytype === "ID")) {
+        return true;
+      }
       if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
         return true;
       }
@@ -835,6 +838,9 @@ export default defineComponent({
       return false;
     });
     const isProductCode = computed(() => {
+      if (m.p.mode === "Pokepos" && (m.p.moneytype === "ID")) {
+        return true;
+      }
       if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
         return true;
       }
