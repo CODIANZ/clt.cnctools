@@ -86,11 +86,9 @@ export class Cnc extends Base {
       const kvs: keyvalue_t = {};
 
       if (params.job === "Sales" || params.job === "ApprovedSales" || params.job === "ReservedAuthority") {
-        if (isNaN(parseInt(params.amount))) {
-          return undefined;
+        if (!isNaN(parseInt(params.amount))) {
+          kvs.amount = params.amount;
         }
-
-        kvs.amount = params.amount;
         if (this.isNeedProductCode() && this.isValidProductCode()) {
           kvs.productCode = params.productCode;
         }
@@ -102,13 +100,7 @@ export class Cnc extends Base {
         }
       }
       else if (params.job === "Refund") {
-        if (params.moneytype === 'Credit' || params.moneytype === 'Cup' || params.moneytype === 'NFC') {
-          if (isNaN(parseInt(params.amount))) {
-            return undefined;
-          }
-        }
-
-        if (params.amount) {
+        if (!isNaN(parseInt(params.amount))) {
           kvs.amount = params.amount;
         }
         if (params.slipNo) {
