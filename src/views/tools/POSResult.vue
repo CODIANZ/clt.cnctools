@@ -163,20 +163,23 @@ export default defineComponent({
         stor.setReceive(new_id, fullpath, ctx.root.$route.query);
       }
       else{
-        new_id          = ctx.root.$route.params.id;
+        new_id = ctx.root.$route.params.id;
         var query:{[_: string]: string} = {};
-        const queries = ctx.root.$route.query;
+        var queries = ctx.root.$route.query;
         if (queries) {
           const keys = Object.keys(queries);
           keys.forEach((key) => {
             const element = queries[key];
             if (key === "rasResult" || key === "cncResult" || key === "printinfo") {
-              if (element && (typeof element === "string")) {
+              if (typeof element === "string") {
                 query[key] = JSON.parse(element);
               }
             }
             else {
-              if (element && (typeof element === "string")) {
+              if (typeof element === "string") {
+                query[key] = element;
+              }
+              else if (typeof element === 'number') {
                 query[key] = element;
               }
             }

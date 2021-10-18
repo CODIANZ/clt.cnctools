@@ -34,9 +34,6 @@ export class PokeposEM extends Pokepos {
 
       if (params.moneytype === "Suica") {
         if (params.job === "Sales") {
-          if (isNaN(parseInt(params.amount))) {
-            return undefined;
-          }
           kvs.operationDiv = "1";
         }
         else if (params.job === "Balance") {
@@ -48,9 +45,6 @@ export class PokeposEM extends Pokepos {
       }
       else if (params.moneytype === "ID" || params.moneytype === "QP") {
         if (params.job === "Sales") {
-          if (isNaN(parseInt(params.amount))) {
-            return undefined;
-          }
           kvs.operationDiv = "1";
         }
         else if (params.job === "Refund") {
