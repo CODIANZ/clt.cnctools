@@ -21,11 +21,11 @@ export class Pokepos extends Base {
       Cup:    "Cup",
       NFC:    "Nfc",
       Suica:  "Suica",
-      ID:     "ID",
+      iD:     "iD",
       QP:     "QP",
-      Waon:   "Waon",
+      WAON:   "WAON",
       Edy:    "Edy",
-      Nanaco: "Nanaco",
+      nanaco: "nanaco",
       All:    "All"
     };
 
@@ -204,14 +204,14 @@ export class Pokepos extends Base {
   public /* abstract */ isNeedProductCode() {
     const tbl: {[_ in moneytype_t]: boolean} = {
       Credit: true,
-      Cup:    true,
+      Cup:    false,
       NFC:    true,
       Suica:  false,
-      ID:     true,
-      QP:     true,
-      Waon:   false,
+      iD:     true,
+      QP:     false,
+      WAON:   false,
       Edy:    false,
-      Nanaco: false,
+      nanaco: false,
       All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
@@ -223,11 +223,11 @@ export class Pokepos extends Base {
       Cup:    true,
       NFC:    true,
       Suica:  false,
-      ID:     true,
-      QP:     true,
-      Waon:   false,
+      iD:     true,
+      QP:     false,
+      WAON:   false,
       Edy:    false,
-      Nanaco: false,
+      nanaco: false,
       All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
@@ -235,15 +235,15 @@ export class Pokepos extends Base {
 
   public /* abstract */ isNeedLump() {
     const tbl: {[_ in moneytype_t]: boolean} = {
-      Credit: true,
+      Credit: false,
       Cup:    false,
       NFC:    false,
       Suica:  false,
-      ID:     false,
+      iD:     false,
       QP:     false,
-      Waon:   false,
+      WAON:   false,
       Edy:    false,
-      Nanaco: false,
+      nanaco: false,
       All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;

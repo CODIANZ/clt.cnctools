@@ -104,7 +104,7 @@
             label="印字"
           />
         </v-col>
-        <v-col>
+        <v-col v-if="isSelfMode">
           <v-checkbox
             v-model="m.p.bSelfMode"
             label="セルフモード"
@@ -116,6 +116,7 @@
             label="トレーニング"
           />
         </v-col>
+        <v-col/>
       </v-row>
 
       <v-row v-if="m.p.moneytype === 'Suica' && m.p.job === 'Sales'">
@@ -143,8 +144,8 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="isAmount">
-        <v-col >
+      <v-row v-if="isAmount || isTaxOther || isProductCode">
+        <v-col v-if="isAmount">
           <v-text-field
             v-model="m.p.amount"
             label="金額"
@@ -186,7 +187,7 @@
       </v-row>
 
       <v-row v-if="m.p.job === 'Refund'">
-        <v-col v-if="m.p.moneytype === 'QP' || m.p.moneytype === 'ID'">
+        <v-col v-if="m.p.moneytype === 'QP' || m.p.moneytype === 'iD'">
           <v-text-field
             v-model="m.p.otherTermJudgeNo"
             label="端末ID"
@@ -399,14 +400,14 @@ const moneytypes = computed<field_item<UrlBuilder.moneytype_t>[]>(() =>  {
     },
     {
       label: "iD",
-      value: "ID"
+      value: "iD"
     }
   ];
 
   if (m.p.mode === "Cnc") {
     items.push({
       label: "WAON",
-      value: "Waon"
+      value: "WAON"
     });
 
     items.push({
@@ -416,7 +417,7 @@ const moneytypes = computed<field_item<UrlBuilder.moneytype_t>[]>(() =>  {
 
     items.push({
       label: "nanaco",
-      value: "Nanaco"
+      value: "nanaco"
     });
   }
 
@@ -515,7 +516,7 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
       }
     ];
   }
-  else if(m.p.moneytype === "QP" || m.p.moneytype === "ID") {
+  else if(m.p.moneytype === "QP" || m.p.moneytype === "iD") {
     return [
       {
         label: "売上",
@@ -531,7 +532,7 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
       }
     ];
   }
-  else if (m.p.moneytype === "Waon") {
+  else if (m.p.moneytype === "WAON") {
     return [
       {
         label: "支払",
@@ -579,7 +580,7 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
       }
     ];
   }
-  else if (m.p.moneytype === "Nanaco") {
+  else if (m.p.moneytype === "nanaco") {
     return [
       {
         label: "支払",
@@ -793,60 +794,79 @@ export default defineComponent({
     });
 
     const isAmount = computed(() => {
-      if (m.p.moneytype === 'Waon') {
-        if (m.p.job === 'Sales') {
-          return true;
+      if (m.p.menu === 'Service') {
+        if (m.p.moneytype === 'QP' || m.p.moneytype === 'iD' || m.p.moneytype === 'WAON') {
+          if (m.p.job === 'Sales') {
+            return true;
+          }
+          return false;
         }
-        return false;
+        return (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales');
       }
-      return (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales');
+      return false;
     });
     const isTaxOther = computed(() => {
-      if (m.p.mode === "Pokepos" && (m.p.moneytype === "ID")) {
-        return true;
-      }
-      if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
-        return true;
-      }
-      else if (m.p.moneytype === 'Cup' && (m.p.job === 'Sales' || m.p.job === 'Refund')) {
-        return true;
-      }
-      else if (m.p.moneytype === 'NFC' && (m.p.job === 'Sales' || m.p.job === 'Refund')) {
-        return true;
+      if (m.p.menu === 'Service') {
+        if (m.p.moneytype === "iD" && (m.p.job === 'Sales')) {
+          return true;
+        }
+        else if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
+          return true;
+        }
+        else if (m.p.moneytype === 'Cup' && (m.p.job === 'Sales' || m.p.job === 'Refund')) {
+          return true;
+        }
+        else if (m.p.moneytype === 'NFC' && (m.p.job === 'Sales' || m.p.job === 'Refund')) {
+          return true;
+        }
       }
       return false;
     });
     const isProductCode = computed(() => {
-      if (m.p.mode === "Pokepos" && (m.p.moneytype === "ID")) {
-        return true;
-      }
-      if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
-        return true;
+      if (m.p.menu === 'Service') {
+        if (m.p.moneytype === "iD" && (m.p.job === 'Sales')) {
+          return true;
+        }
+        else if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
+          return true;
+        }
       }
       return false;
     });
     const isReceiptNumber = computed(() => {
       if ((m.p.job === 'Refund' || m.p.job === 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales' || (m.p.menu === 'Reprint' && m.p.reprint === 'Slip')) &&
-        (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'ID')) {
+        (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'iD')) {
         return true;
       }
       return false;
     });
     const isRefundType = computed(() => {
-      if ((m.p.job === 'Refund') && (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC')) {
-        return true;
+      if (m.p.menu === 'Service') {
+        if ((m.p.job === 'Refund') && (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC')) {
+          return true;
+        }
       }
       return false;
     });
     const isApprovalNo = computed(() => {
-      if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'RefundReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'RefundApprovedSales')) {
+      if (m.p.menu === 'Service') {
+        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'RefundReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'RefundApprovedSales')) {
           return true;
+        }
       }
       return false;
     });
     const isLump = computed(() => {
-      if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
+      if (m.p.menu === 'Service') {
+        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
           return true;
+        }
+      }
+      return false;
+    });
+    const isSelfMode = computed(() => {
+      if (m.p.menu === 'Service') {
+        return true;
       }
       return false;
     });
@@ -871,6 +891,7 @@ export default defineComponent({
       isRefundType,
       isApprovalNo,
       isLump,
+      isSelfMode,
       ...validations,
       onExecute,
       onExecuteForNuxt
