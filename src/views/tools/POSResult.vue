@@ -172,7 +172,7 @@ export default defineComponent({
             const element = queries[key];
             if (key === "rasResult" || key === "cncResult" || key === "printinfo") {
               if (typeof element === "string") {
-                query[key] = JSON.parse(element);
+                query[key] = JSON.parse(decodeURIComponent(element));
               }
             }
             else {
