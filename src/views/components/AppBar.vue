@@ -32,7 +32,7 @@ const items: {
 }[] = [
   {
     icon: "send",
-    title: "POS連携機能テスト",
+    title: "POS連携確認",
     path: "/tools/pos"
   },
   {
@@ -49,7 +49,7 @@ const items: {
 
 const m = reactive({
   drawer: false,
-  title: "POS連携機能テスト"
+  title: "POS連携確認"
 });
 
 export default defineComponent({
