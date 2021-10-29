@@ -20,11 +20,11 @@ export class Cnc extends Base {
     Cup:    "cup",
     NFC:    "nfc",
     Suica:  "suica",
-    ID:     "id",
+    iD:     "id",
     QP:     "quicpay",
-    Waon:   "waon",
+    WAON:   "waon",
     Edy:    "edy",
-    Nanaco: "nanaco",
+    nanaco: "nanaco",
     All:    "all"
   };
 
@@ -225,11 +225,11 @@ export class Cnc extends Base {
       Cup:    true,
       NFC:    true,
       Suica:  false,
-      ID:     true,
-      QP:     true,
-      Waon:   false,
+      iD:     true,
+      QP:     false,
+      WAON:   false,
       Edy:    false,
-      Nanaco: false,
+      nanaco: false,
       All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
@@ -241,11 +241,11 @@ export class Cnc extends Base {
       Cup:    true,
       NFC:    true,
       Suica:  false,
-      ID:     true,
-      QP:     true,
-      Waon:   false,
+      iD:     true,
+      QP:     false,
+      WAON:   false,
       Edy:    false,
-      Nanaco: false,
+      nanaco: false,
       All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
@@ -255,13 +255,13 @@ export class Cnc extends Base {
     const tbl: {[_ in moneytype_t]: boolean} = {
       Credit: true,
       Cup:    false,
-      NFC:    false,
+      NFC:    true,
       Suica:  false,
-      ID:     false,
+      iD:     false,
       QP:     false,
-      Waon:   false,
+      WAON:   false,
       Edy:    false,
-      Nanaco: false,
+      nanaco: false,
       All:    false
     };
     return this.Params.moneytype ? tbl[this.Params.moneytype] : false;

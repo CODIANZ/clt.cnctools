@@ -19,7 +19,6 @@ import { ResultStore, resultstore_t } from "@/codes/ResultStore";
 import FileSaver from "file-saver";
 import dateFormat from "dateformat";
 import { debug } from "debug";
-import { Dictionary } from "vue-router/types/router";
 const LOG = debug("app:POSResult");
 
 let item_id = 0;

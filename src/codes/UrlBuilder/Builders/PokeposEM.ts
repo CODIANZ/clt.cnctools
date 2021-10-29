@@ -43,7 +43,7 @@ export class PokeposEM extends Pokepos {
           kvs.operationDiv = "3";
         }
       }
-      else if (params.moneytype === "ID" || params.moneytype === "QP") {
+      else if (params.moneytype === "iD" || params.moneytype === "QP") {
         if (params.job === "Sales") {
           kvs.operationDiv = "1";
         }
