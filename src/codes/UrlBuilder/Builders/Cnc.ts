@@ -1,3 +1,4 @@
+import { params } from "vee-validate/dist/types/rules/alpha";
 import { Base } from "./Base";
 import { mode_t, menus_t, moneytype_t, keyvalue_t, job_t, journal_t, when_t, reprint_t } from "./Types";
 
@@ -60,20 +61,32 @@ export class Cnc extends Base {
 
 
   protected doTraining() {
-    return {"training": this.Params.bTraining ? "true" : "false"};
+    const params = this.Params;
+    if (params.isUseTraining) {
+      return {"training": params.bTraining ? "true" : "false"};
+    }
+    return undefined;
   }
 
   protected doPrint() {
-    return {"print": this.Params.bPrinting ? "true" : "false"};
+    const params = this.Params;
+    if (params.isUsePrinting) {
+      return {"print": params.bPrinting ? "true" : "false"};
+    }
+    return undefined;
   }
 
   protected doSelfmode() {
-    return {"self": this.Params.bSelfMode ? "true" : "false"};
+    const params = this.Params;
+    if (params.isUseSelfMode) {
+      return {"self": params.bSelfMode ? "true" : "false"};
+    }
+    return undefined;
   }
 
   protected doLump() {
     const params = this.Params;
-    if ((params.moneytype === "Credit" || params.moneytype === "NFC") && (params.job === "Sales" || params.job === "ApprovedSales")) {
+    if (params.isUseLump) {
       return {"lump": params.bLump ? "true" : "false"};
     }
     return undefined;
@@ -85,43 +98,37 @@ export class Cnc extends Base {
       const path = `${this.m_moneytypes[params.moneytype]}-${this.m_jobs[params.job]}`;
       const kvs: keyvalue_t = {};
 
-      if (params.job === "Sales" || params.job === "ApprovedSales" || params.job === "ReservedAuthority") {
-        if (!isNaN(parseInt(params.amount))) {
-          kvs.amount = params.amount;
-        }
-        if (this.isNeedProductCode() && this.isValidProductCode()) {
-          kvs.productCode = params.productCode;
-        }
-        if (this.isNeedTaxOther() && this.isNumber(params.taxOther)) {
-          kvs.taxOtherAmount = params.taxOther;
-        }
-        if (this.isNeedWithCash()) {
-          kvs.withCash = params.bWithCash ? "true" : "false";
-        }
+      if (!isNaN(parseInt(params.amount))) {
+        kvs.amount = params.amount;
       }
-      else if (params.job === "Refund") {
-        if (!isNaN(parseInt(params.amount))) {
-          kvs.amount = params.amount;
-        }
-        if (params.slipNo) {
-          kvs.slipNo = params.slipNo;
-        }
-        if (params.otherTermJudgeNo) {
-          kvs.otherTermJudgeNo = params.otherTermJudgeNo;
-        }
-        if (params.manualFlg) {
-          kvs.manual = params.manualFlg ? "true" : "false";
-        }
-        if (params.pan) {
-          kvs.pan = params.pan;
-        }
-        if (params.cancelType) {
-          kvs.cancelType = params.cancelType;
-        }
+      if (params.productCode) {
+        kvs.productCode = params.productCode;
       }
-      else if (params.job === "Confirm" || params.job === "Balance") {
+      if (params.taxOther) {
+        kvs.taxOtherAmount = params.taxOther;
+      }
+      if (params.isUseWithCash) {
+        kvs.withCash = params.bWithCash ? "true" : "false";
+      }
+      if (params.approvalNumber) {
+        kvs.approvalNo = params.approvalNumber;
+      }
+      if (params.slipNo) {
+        kvs.slipNo = params.slipNo;
+      }
+      if (params.otherTermJudgeNo) {
+        kvs.otherTermJudgeNo = params.otherTermJudgeNo;
+      }
+      if (params.manualFlg) {
+        kvs.manual = params.manualFlg ? "true" : "false";
+      }
+      if (params.pan) {
+        kvs.pan = params.pan;
+      }
+      if (params.cancelType) {
+        kvs.cancelType = params.cancelType;
+      }
 
-      }
       return {path, kvs};
     }
     return undefined;
