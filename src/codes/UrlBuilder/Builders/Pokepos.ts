@@ -38,15 +38,27 @@ export class Pokepos extends Base {
   }
 
   protected doTraining() {
-    return this.Params.bTraining ? {training:"1"} : undefined;
+    const params = this.Params;
+    if (params.isUseTraining) {
+      return params.bTraining ? { training:"1" } : undefined;
+    }
+    return undefined;
   }
 
   protected doPrint() {
-    return {print: this.Params.bPrinting ? "1" : "0"}
+    const params = this.Params;
+    if (params.isUsePrinting) {
+      return {print: params.bPrinting ? "1" : "0"};
+    }
+    return undefined;
   }
 
   protected doSelfmode() {
-    return this.Params.bSelfMode ? {selfmode: "1"} : undefined;
+    const params = this.Params;
+    if (params.isUseSelfMode) {
+      return params.bSelfMode ? {selfmode: "1"} : undefined;
+    }
+    return undefined;
   }
 
   protected doService() {
@@ -58,14 +70,19 @@ export class Pokepos extends Base {
         kvs.amount = params.amount;
       }
   
-      if (this.isNeedProductCode() && this.isValidProductCode()) {
-        kvs.productCode = params.productCode;
-      }
-
-      if (this.isNeedTaxOther() && this.isNumber(params.taxOther)) {
+      if (params.taxOther) {
         kvs.taxOther = params.taxOther;
       }
-      
+      if (params.productCode) {
+        kvs.productCode = params.productCode;
+      }
+      if (params.approvalNumber) {
+        kvs.approvalNo = params.approvalNumber;
+      }
+      if (params.slipNo) {
+        kvs.slipNo = params.slipNo;
+      }
+
       if (params.job === "Sales") {
         kvs.operationDiv = "0";
       }
