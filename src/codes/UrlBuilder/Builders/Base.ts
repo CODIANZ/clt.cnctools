@@ -67,6 +67,7 @@ export abstract class  Base {
       bPrinting:    true,
       bSelfMode:    false,
       bLump:        false,
+      isUseWithCash: false,
       bWithCash:    false,
       amount:       "",
       taxOther:     "",
@@ -75,8 +76,9 @@ export abstract class  Base {
       otherTermJudgeNo: "",
       manualFlg:    false,
       pan:          "",
-      returnUrl:    "",
-      cancelType:   undefined
+      approvalNumber: "",
+      cancelType:   undefined,
+      returnUrl:    ""
     } as params_t;
   }
 }

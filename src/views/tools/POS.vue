@@ -97,92 +97,64 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row dense>
         <v-col>
-          <v-checkbox
-            v-model="m.p.bPrinting"
-            label="印字"
-          />
+          <v-row dense>
+            <v-checkbox v-model="m.p.isUsePrinting" />
+            <v-switch inset v-model="m.p.bPrinting" label="印字" />
+          </v-row>
         </v-col>
         <v-col v-if="isSelfMode">
-          <v-checkbox
-            v-model="m.p.bSelfMode"
-            label="セルフモード"
-          />
+          <v-row dense>
+            <v-checkbox v-model="m.p.isUseSelfMode" />
+            <v-switch inset v-model="m.p.bSelfMode" label="セルフモード" />
+          </v-row>
         </v-col>
         <v-col>
-          <v-checkbox
-            v-model="m.p.bTraining"
-            label="トレーニング"
-          />
+          <v-row dense>
+            <v-checkbox v-model="m.p.isUseTraining" />
+            <v-switch inset v-model="m.p.bTraining" label="トレーニング" />
+          </v-row>
         </v-col>
         <v-col/>
       </v-row>
 
-      <v-row v-if="m.p.moneytype === 'Suica' && m.p.job === 'Sales'">
+      <v-row v-if="m.p.moneytype === 'Suica' && m.p.job === 'Sales'" dense>
         <v-col>
-          <v-checkbox
-            v-model="m.p.bWithCash"
-            label="現金併用"
-          />
+          <v-row dense>
+            <v-checkbox v-model="m.p.isUseWithCash" />
+            <v-switch inset v-model="m.p.bWithCash" label="現金併用" />
+          </v-row>
         </v-col>
       </v-row>
 
       <v-row v-if="isApprovalNo || isLump">
         <v-col v-if="isApprovalNo">
-          <v-text-field
-            v-model="m.p.approvalNo"
-            label="承認番号"
-            :rules="[length(6)]"
-          />
+          <v-text-field v-model="m.p.approvalNumber" label="承認番号" type="text" single-line />
         </v-col>
         <v-col v-if="isLump">
-          <v-checkbox
-            v-model="m.p.bLump"
-            label="一括払優先"
-          />
+          <v-row dense>
+            <v-checkbox v-model="m.p.isUseLump" />
+            <v-switch inset v-model="m.p.bLump" label="一括払優先" />
+          </v-row>
         </v-col>
       </v-row>
 
       <v-row v-if="isAmount || isTaxOther || isProductCode">
         <v-col v-if="isAmount">
-          <v-text-field
-            v-model="m.p.amount"
-            label="金額"
-            type="number"
-            single-line
-            :rules="[range(0,99999999)]"
-          />
+          <v-text-field v-model="m.p.amount" label="金額" type="number" single-line />
         </v-col>
         <v-col v-if="isTaxOther">
-          <v-text-field
-            v-model="m.p.taxOther"
-            label="その他"
-            type="number"
-            single-line
-            :rules="[range(0,99999999)]"
-          />
+          <v-text-field v-model="m.p.taxOther" label="その他" type="number" single-line />
         </v-col>
         <v-col v-if="isProductCode">
-          <v-text-field
-            v-model="m.p.productCode"
-            label="商品コード"
-            type="number"
-            single-line
-            :rules="[length(4)]"
-          />
+          <v-text-field v-model="m.p.productCode" label="商品コード" type="number" single-line />
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row v-if="isReceiptNumber">
         <v-col v-if="isReceiptNumber">
-          <v-text-field
-            v-model="m.p.slipNo"
-            label="伝票番号"
-            type="number"
-            single-line
-            :rules="[length(5)]"
-          />
+          <v-text-field v-model="m.p.slipNo" label="伝票番号" type="number" single-line />
         </v-col>
       </v-row>
 
@@ -223,18 +195,8 @@
             :rules="(/^[0-9]{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$ ^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)"
           />
         </v-col>
-        <v-col v-if="isRefundType"
-          class="d-flex"
-          cols="12"
-          sm="2"
-        >
-          <v-select
-            v-model="m.p.cancelType"
-            :items="refundTypeItems"
-            item-text="label"
-            item-value="value"
-            label="取消区分"
-          />
+        <v-col v-if="isRefundType" class="d-flex" cols="12" sm="2" >
+          <v-select v-model="m.p.cancelType" :items="refundTypeItems" item-text="label" item-value="value" label="取消区分" />
         </v-col>
       </v-row>
 
@@ -323,6 +285,7 @@ import { ResultStore } from "@/codes/ResultStore";
 import { mode_t } from "@/codes/UrlBuilder/Builders/Types";
 import dateFormat from "dateformat";
 import { debug } from "debug";
+
 const LOG = debug("app:POS");
 
 let builder: UrlBuilder.Base | undefined = undefined;
@@ -352,7 +315,7 @@ interface field_item<T> {
 
 const modes: field_item<mode_t>[] = [
   {
-    label: "CNC(Res互換)",
+    label: "CNC",
     value: "Cnc"
   },
   {
@@ -667,11 +630,18 @@ function paramsToBuilder() {
   builder.Params.detail      = m.p.detail;
   builder.Params.reprint     = m.p.reprint;
   builder.Params.when        = m.p.when;
+
+  builder.Params.isUseTraining = m.p.isUseTraining;
   builder.Params.bTraining   = m.p.bTraining;
+  builder.Params.isUsePrinting = m.p.isUsePrinting;
   builder.Params.bPrinting   = m.p.bPrinting;
+  builder.Params.isUseSelfMode = m.p.isUseSelfMode;
   builder.Params.bSelfMode   = m.p.bSelfMode;
+  builder.Params.isUseWithCash = m.p.isUseWithCash;
   builder.Params.bWithCash   = m.p.bWithCash;
+  builder.Params.isUseLump = m.p.isUseLump;
   builder.Params.bLump       = m.p.bLump;
+
   builder.Params.amount      = m.p.amount;
   builder.Params.taxOther    = m.p.taxOther;
   builder.Params.productCode = m.p.productCode;
@@ -679,6 +649,7 @@ function paramsToBuilder() {
   builder.Params.otherTermJudgeNo = m.p.otherTermJudgeNo;
   builder.Params.manualFlg   = m.p.manualFlg;
   builder.Params.pan         = m.p.pan;
+  builder.Params.approvalNumber  = m.p.approvalNumber;
   builder.Params.returnUrl   = m.p.returnUrl;
   builder.Params.cancelType  = m.p.cancelType;
 }
@@ -699,9 +670,9 @@ function updateUrl() {
   if (builder) {
     updateLogIdAndReturnUrl();
     paramsToBuilder();
-    m.b.taxOther    = builder.isNeedTaxOther();
-    m.b.productCode = builder.isNeedProductCode();
-    m.b.withCash   = builder.isNeedWithCash();
+    // m.b.taxOther    = builder.isNeedTaxOther();
+    // m.b.productCode = builder.isNeedProductCode();
+    // m.b.withCash   = builder.isNeedWithCash();
 
     const url = builder.generateUrl(m.useEncode);
     m.b.valid     = url !== undefined;
@@ -743,35 +714,44 @@ function resetParam() {
   m.p.bWithCash = false;
   m.p.bLump = false;
   m.p.otherTermJudgeNo = "";
+  m.p.approvalNumber = "";
+  m.p.slipNo = "";
 }
+
 
 watch(() => m.p.mode        , ()=> changeMode());
 
-watch(() => m.p, ()=> { updateUrl(); });
+// // watch(() => m.p, ()=> { updateUrl(); });
 watch(() => m.p.moneytype, ()=> { changeMode(); });
 
 watch(() => m.p.menu        , ()=> { resetParam(); updateUrl(); });
-watch(() => m.p.moneytype   , ()=> { resetParam(); changeMode(); });
+watch(() => m.p.moneytype   , ()=> { resetParam(); changeMode(); updateUrl(); });
 watch(() => m.p.job         , ()=> { resetParam(); updateUrl(); });
-watch(() => m.p.journal     , ()=> updateUrl());
-watch(() => m.p.detail      , ()=> updateUrl());
-watch(() => m.p.reprint     , ()=> updateUrl());
-watch(() => m.p.when        , ()=> updateUrl());
-watch(() => m.p.bTraining   , ()=> updateUrl());
-watch(() => m.p.bPrinting   , ()=> updateUrl());
-watch(() => m.p.bSelfMode   , ()=> updateUrl());
-watch(() => m.p.bLump       , ()=> updateUrl());
-watch(() => m.p.bWithCash, ()=> updateUrl());
-watch(() => m.p.amount      , ()=> updateUrl());
-watch(() => m.p.taxOther    , ()=> updateUrl());
-watch(() => m.p.productCode , ()=> updateUrl());
-watch(() => m.p.slipNo      , ()=> updateUrl());
-watch(() => m.p.otherTermJudgeNo, ()=> updateUrl());
-watch(() => m.p.manualFlg   , ()=> updateUrl());
-watch(() => m.p.cancelType  , ()=> updateUrl());
-watch(() => m.p.pan         , ()=> updateUrl());
-watch(() => m.p.returnUrl   , ()=> updateUrl());
-watch(() => m.useEncode     , ()=> updateUrl());
+watch(() => m.p.journal     , ()=> { updateUrl(); });
+watch(() => m.p.detail      , ()=> { updateUrl(); });
+watch(() => m.p.reprint     , ()=> { updateUrl(); });
+watch(() => m.p.when        , ()=> { updateUrl(); });
+watch(() => m.p.isUseTraining, ()=> { updateUrl(); });
+watch(() => m.p.bTraining   , ()=> { updateUrl(); });
+watch(() => m.p.isUsePrinting, ()=> { updateUrl(); });
+watch(() => m.p.bPrinting   , ()=> { updateUrl(); });
+watch(() => m.p.isUseSelfMode, ()=> { updateUrl(); });
+watch(() => m.p.bSelfMode   , ()=> { updateUrl(); });
+watch(() => m.p.isUseLump, () => { updateUrl(); });
+watch(() => m.p.bLump       , ()=> { updateUrl(); });
+watch(() => m.p.bWithCash, ()=> { updateUrl(); });
+watch(() => m.p.amount      , ()=> { updateUrl(); });
+watch(() => m.p.taxOther    , ()=> { updateUrl(); });
+watch(() => m.p.productCode , ()=> { updateUrl(); });
+watch(() => m.p.isUseApprovalNumber, () => { updateUrl(); });
+watch(() => m.p.approvalNumber, ()=> { updateUrl(); });
+watch(() => m.p.slipNo, ()=> { updateUrl(); });
+watch(() => m.p.otherTermJudgeNo, ()=> { updateUrl(); });
+watch(() => m.p.manualFlg   , ()=> { updateUrl(); });
+watch(() => m.p.cancelType  , ()=> { updateUrl(); });
+watch(() => m.p.pan         , ()=> { updateUrl(); });
+watch(() => m.p.returnUrl   , ()=> { updateUrl(); });
+watch(() => m.useEncode     , ()=> { updateUrl(); });
 
 function onExecute() {
   const stor = ResultStore.create();
@@ -892,9 +872,10 @@ export default defineComponent({
       isApprovalNo,
       isLump,
       isSelfMode,
-      ...validations,
+      updateUrl,
       onExecute,
-      onExecuteForNuxt
+      onExecuteForNuxt,
+      ...validations
     }
   }
 });

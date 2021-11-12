@@ -18,10 +18,15 @@ export type params_t = {
   detail?:      detail_t;
   reprint?:     reprint_t;
   when?:        when_t;
+  isUseTraining: boolean;
   bTraining:    boolean;
+  isUsePrinting: boolean;
   bPrinting:    boolean;
+  isUseSelfMode: boolean;
   bSelfMode:    boolean;
+  isUseLump:    boolean;       
   bLump:        boolean;
+  isUseWithCash: boolean;
   bWithCash:    boolean;
   amount:       string;
   taxOther:     string;
@@ -30,6 +35,8 @@ export type params_t = {
   otherTermJudgeNo: string;
   manualFlg:    boolean;
   pan:          string;
+  isUseApprovalNumber: boolean;
+  approvalNumber: string;
   cancelType?:  refundtype_t;
   returnUrl:    string;
 };

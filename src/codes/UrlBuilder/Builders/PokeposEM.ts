@@ -5,7 +5,11 @@ export class PokeposEM extends Pokepos {
 
   /* override */
   protected doTraining() {
-    return this.Params.bTraining ? {training:"1"} : undefined;
+    const params = this.Params;
+    if (params.isUseTraining) {
+      return this.Params.bTraining ? {training:"1"} : undefined;
+    }
+    return undefined;
   }
 
   /* override */
