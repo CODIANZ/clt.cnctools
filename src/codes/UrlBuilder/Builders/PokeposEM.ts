@@ -18,24 +18,6 @@ export class PokeposEM extends Pokepos {
     if (params.moneytype && params.job) {
       const kvs: keyvalue_t = {};
 
-      if (params.job === "Sales" || params.job === "Refund") {
-        if (!isNaN(parseInt(params.amount))) {
-          kvs.amount = params.amount;
-        }
-    
-        if (this.isNeedProductCode() && this.isValidProductCode()) {
-          kvs.goodsCode = params.productCode;
-        }
-  
-        if (this.isNeedTaxOther() && this.isNumber(params.taxOther)) {
-          kvs.taxOther = params.taxOther;
-        }
-  
-        if (this.isNeedWithCash()) {
-          kvs.together = params.bWithCash ? "1" : "0";
-        }
-      }
-
       if (params.moneytype === "Suica") {
         if (params.job === "Sales") {
           kvs.operationDiv = "1";
@@ -52,16 +34,43 @@ export class PokeposEM extends Pokepos {
           kvs.operationDiv = "1";
         }
         else if (params.job === "Refund") {
-          if (isNaN(parseInt(params.amount)) || params.slipNo.length === 0 || params.otherTermJudgeNo.length === 0) {
-            return undefined;
-          }
           kvs.operationDiv = "2";
-          kvs.slipNo = params.slipNo;
-          kvs.termId = params.otherTermJudgeNo;
+          if (params.slipNo) {
+            kvs.slipNo = params.slipNo;
+          }
+          if (params.otherTermJudgeNo) {
+            kvs.termId = params.otherTermJudgeNo;
+          }
+          if (params.isUseManualFlg) {
+            kvs.manualFlg = (params.manualFlg) ? "1" : "0";
+          }
         }
         else if (params.job === "Confirm") {
           kvs.operationDiv = "3";
         }
+      }
+
+      if (!isNaN(parseInt(params.amount))) {
+        kvs.amount = params.amount;
+      }
+      if (params.taxOther) {
+        kvs.taxOther = params.taxOther;
+      }
+      if (params.productCode) {
+        kvs.goodsCode = params.productCode;
+      }
+      if (params.isUseWithCash) {
+        kvs.together = params.bWithCash ? "1" : "0";
+      }
+
+      if (params.isUsePrinting) {
+        kvs.print = (params.bPrinting) ? "1" : "0";
+      }
+      if (params.isUseSelfMode) {
+        kvs.selfmode = (params.bSelfMode) ? "1" : "0";
+      }
+      if (params.isUseTraining) {
+        kvs.training = (params.bTraining) ? "1" : "2";
       }
 
       return kvs;
@@ -83,11 +92,23 @@ export class PokeposEM extends Pokepos {
         kvs.operationDiv = "2";
       }
 
-      if (params.detail === "Summary") {
-        kvs.detail = "0";
+      if (params.isUsePrintDetail) {
+        if (params.detail === "Summary") {
+          kvs.detail = "0";
+        }
+        else if (params.detail === "Detail") {
+          kvs.detail = "1";
+        }
       }
-      else if (params.detail === "Detail") {
-        kvs.detail = "1";
+
+      if (params.isUsePrinting) {
+        kvs.print = (params.bPrinting) ? "1" : "0";
+      }
+      if (params.isUseSelfMode) {
+        kvs.selfmode = (params.bSelfMode) ? "1" : "0";
+      }
+      if (params.isUseTraining) {
+        kvs.training = (params.bTraining) ? "1" : "2";
       }
 
       return kvs;
@@ -113,9 +134,6 @@ export class PokeposEM extends Pokepos {
         else if (params.detail === "Detail") {
           kvs.detail = "1";
         }
-        else {
-          return undefined;
-        }
 
         if (params.when === "Last") {
           kvs.target = "0";
@@ -123,9 +141,16 @@ export class PokeposEM extends Pokepos {
         else if (params.when === "BeforeLast") {
           kvs.target = "1";
         }
-        else {
-          return undefined;
-        }
+      }
+
+      if (params.isUsePrinting) {
+        kvs.print = (params.bPrinting) ? "1" : "0";
+      }
+      if (params.isUseSelfMode) {
+        kvs.selfmode = (params.bSelfMode) ? "1" : "0";
+      }
+      if (params.isUseTraining) {
+        kvs.training = (params.bTraining) ? "1" : "2";
       }
 
       return kvs;

@@ -99,6 +99,16 @@ export class Pokepos extends Base {
         kvs.operationDiv = "5";
       }
 
+      if (params.isUsePrinting) {
+        kvs.print = (params.bPrinting) ? "1" : "0";
+      }
+      if (params.isUseSelfMode) {
+        kvs.selfmode = (params.bSelfMode) ? "1" : "0";
+      }
+      if (params.isUseTraining) {
+        kvs.training = (params.bTraining) ? "1" : "2";
+      }
+
       return kvs;
     }
   
@@ -128,14 +138,23 @@ export class Pokepos extends Base {
         }
       }
 
-      if (params.detail === "Summary") {
-        kvs.detail = "0";
+      if (params.isUsePrintDetail) {
+        if (params.detail === "Summary") {
+          kvs.detail = "0";
+        }
+        else if (params.detail === "Detail") {
+          kvs.detail = "1";
+        }
       }
-      else if (params.detail === "Detail") {
-        kvs.detail = "1";
+
+      if (params.isUsePrinting) {
+        kvs.print = (params.bPrinting) ? "1" : "0";
       }
-      else {
-        return undefined;
+      if (params.isUseSelfMode) {
+        kvs.selfmode = (params.bSelfMode) ? "1" : "0";
+      }
+      if (params.isUseTraining) {
+        kvs.training = (params.bTraining) ? "1" : "2";
       }
 
       return kvs;
@@ -159,9 +178,6 @@ export class Pokepos extends Base {
         else if (params.when === "BeforeLast") {
           kvs.reprint = "2";
         }
-        else {
-          return undefined;
-        }
 
         if (params.detail === "Summary") {
           kvs.detail = "0";
@@ -169,10 +185,18 @@ export class Pokepos extends Base {
         else if (params.detail === "Detail") {
           kvs.detail = "1";
         }
-        else {
-          return undefined;
-        }
       }
+
+      if (params.isUsePrinting) {
+        kvs.print = (params.bPrinting) ? "1" : "0";
+      }
+      if (params.isUseSelfMode) {
+        kvs.selfmode = (params.bSelfMode) ? "1" : "0";
+      }
+      if (params.isUseTraining) {
+        kvs.training = (params.bTraining) ? "1" : "2";
+      }
+
       return kvs;
     }
     return undefined;
@@ -213,56 +237,4 @@ export class Pokepos extends Base {
     return path ? `pokepos://${path}` : undefined;
   }
 
-
-  public /* abstract */ isNeedSelfMode() {
-    return true;
-  }
-
-  public /* abstract */ isNeedProductCode() {
-    const tbl: {[_ in moneytype_t]: boolean} = {
-      Credit: true,
-      Cup:    false,
-      NFC:    true,
-      Suica:  false,
-      iD:     true,
-      QP:     false,
-      WAON:   false,
-      Edy:    false,
-      nanaco: false,
-      All:    false
-    };
-    return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
-  }
-
-  public /* abstract */ isNeedTaxOther() {
-    const tbl: {[_ in moneytype_t]: boolean} = {
-      Credit: true,
-      Cup:    true,
-      NFC:    true,
-      Suica:  false,
-      iD:     true,
-      QP:     false,
-      WAON:   false,
-      Edy:    false,
-      nanaco: false,
-      All:    false
-    };
-    return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
-  }
-
-  public /* abstract */ isNeedLump() {
-    const tbl: {[_ in moneytype_t]: boolean} = {
-      Credit: false,
-      Cup:    false,
-      NFC:    false,
-      Suica:  false,
-      iD:     false,
-      QP:     false,
-      WAON:   false,
-      Edy:    false,
-      nanaco: false,
-      All:    false
-    };
-    return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
-  }
 }

@@ -5,9 +5,7 @@
         <v-radio-group v-model="m.p.mode" row>
           <v-radio
             v-for="it in modes"
-            :key="`modes-${it.value}`"
-            :label=it.label
-            :value=it.value
+              :key="`modes-${it.value}`" :label=it.label :value=it.value
           />
         </v-radio-group>
       </v-row>
@@ -16,9 +14,7 @@
         <v-radio-group v-model="m.p.menu" row>
           <v-radio
             v-for="it in menus"
-            :key="`menus-${it.value}`"
-            :label=it.label
-            :value=it.value
+              :key="`menus-${it.value}`" :label=it.label :value=it.value
           />
         </v-radio-group>
       </v-row>
@@ -27,9 +23,7 @@
         <v-radio-group v-model="m.p.reprint" row>
           <v-radio
             v-for="it in reprints"
-            :key="`reprints-${it.value}`"
-            :label=it.label
-            :value=it.value
+              :key="`reprints-${it.value}`" :label=it.label :value=it.value
           />
         </v-radio-group>
       </v-row>
@@ -38,60 +32,53 @@
         <v-radio-group v-model="m.p.moneytype" row>
           <v-radio
             v-for="it in moneytypes"
-            :key="`moneytypes-${it.value}`"
-            :label=it.label
-            :value=it.value
+              :key="`moneytypes-${it.value}`" :label=it.label :value=it.value
           />
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Service'">
+      <v-row v-if="m.p.menu === 'Service'" dense>
         <v-col>
           <v-radio-group v-model="m.p.job" row>
             <v-radio
               v-for="it in jobs"
-              :key="`jobs-${it.value}`"
-              :label=it.label
-              :value=it.value
+                :key="`jobs-${it.value}`" :label=it.label :value=it.value
             />
           </v-radio-group>
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Journal'">
+      <v-row v-if="m.p.menu === 'Journal'" dense>
         <v-col>
           <v-radio-group v-model="m.p.journal" row>
             <v-radio
               v-for="it in journals"
-              :key="`journals-${it.value}`"
-              :label=it.label
-              :value=it.value
+                :key="`journals-${it.value}`" :label=it.label :value=it.value
             />
           </v-radio-group>
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Journal' || (m.p.menu === 'Reprint' && m.p.reprint ==='Journal')">
+      <v-row v-if="isChoicePrintDetail" dense>
         <v-col>
-          <v-radio-group v-model="m.p.detail" row>
-            <v-radio
-              v-for="it in details"
-              :key="`details-${it.value}`"
-              :label=it.label
-              :value=it.value
-            />
-          </v-radio-group>
+          <v-row dense>
+            <v-checkbox v-model="m.p.isUsePrintDetail" />
+            <v-radio-group v-model="m.p.detail" row>
+              <v-radio
+                v-for="it in details"
+                  :key="`details-${it.value}`" :label=it.label  :value=it.value
+              />
+            </v-radio-group>
+          </v-row>
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Reprint' && m.p.reprint === 'Journal'">
+      <v-row v-if="m.p.menu === 'Reprint' && m.p.reprint === 'Journal'" dense>
         <v-col>
           <v-radio-group v-model="m.p.when" row>
             <v-radio
               v-for="it in whens"
-              :key="`whens-${it.value}`"
-              :label=it.label
-              :value=it.value
+                :key="`whens-${it.value}`" :label=it.label :value=it.value
             />
           </v-radio-group>
         </v-col>
@@ -130,7 +117,7 @@
 
       <v-row v-if="isApprovalNo || isLump">
         <v-col v-if="isApprovalNo">
-          <v-text-field v-model="m.p.approvalNumber" label="承認番号" type="text" single-line />
+          <v-text-field v-model="m.p.approvalNumber" label="承認番号" type="text" single-line clearable filled counter />
         </v-col>
         <v-col v-if="isLump">
           <v-row dense>
@@ -142,131 +129,63 @@
 
       <v-row v-if="isAmount || isTaxOther || isProductCode">
         <v-col v-if="isAmount">
-          <v-text-field v-model="m.p.amount" label="金額" type="number" single-line />
+          <v-text-field v-model="m.p.amount" label="金額" type="text" single-line clearable filled counter />
         </v-col>
         <v-col v-if="isTaxOther">
-          <v-text-field v-model="m.p.taxOther" label="その他" type="number" single-line />
+          <v-text-field v-model="m.p.taxOther" label="その他" type="text" single-line clearable filled counter />
         </v-col>
         <v-col v-if="isProductCode">
-          <v-text-field v-model="m.p.productCode" label="商品コード" type="number" single-line />
+          <v-text-field v-model="m.p.productCode" label="商品コード" type="text" single-line clearable filled counter />
         </v-col>
       </v-row>
 
       <v-row v-if="isReceiptNumber">
         <v-col v-if="isReceiptNumber">
-          <v-text-field v-model="m.p.slipNo" label="伝票番号" type="number" single-line />
+          <v-text-field v-model="m.p.slipNo" label="伝票番号" type="text" single-line clearable filled counter />
         </v-col>
       </v-row>
 
       <v-row v-if="m.p.job === 'Refund'">
         <v-col v-if="m.p.moneytype === 'QP' || m.p.moneytype === 'iD'">
-          <v-text-field
-            v-model="m.p.otherTermJudgeNo"
-            label="端末ID"
-            type="number"
-            single-line
-            :rules="[length(13)]"
-          />
+          <v-text-field v-model="m.p.otherTermJudgeNo" label="端末ID" type="text" single-line clearable filled counter />
         </v-col>
-        <!-- iD, QUICPay
-        <v-col>
-          <v-checkbox
-            v-model="m.p.manualFlg"
-            inset
-            label="マニュアル返品"
-          />
-        </v-col>
-        -->
-        <v-col v-if="m.p.moneytype === 'Cup'">
-          <v-text-field
-            v-model="m.p.cupNo"
-            label="銀聯番号"
-            type="number"
-            single-line
-            :rules="(/^[0-9]+$/)"
-          />
-        </v-col>
-        <v-col v-if="m.p.moneytype === 'Cup'">
-          <v-text-field
-            v-model="m.p.SendDate"
-            label="銀聯送信日時"
-            type="number"
-            single-line
-            :rules="(/^[0-9]{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$ ^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/)"
-          />
-        </v-col>
-        <v-col v-if="isRefundType" class="d-flex" cols="12" sm="2" >
-          <v-select v-model="m.p.cancelType" :items="refundTypeItems" item-text="label" item-value="value" label="取消区分" />
+        <v-col v-if="m.p.job === 'Refund' && (m.p.moneytype === 'QP' || m.p.moneytype === 'iD')">
+          <v-row>
+            <v-checkbox v-model="m.p.isUseManualFlg" />
+            <v-switch v-model="m.p.manualFlg" inset label="マニュアル返品" />
+          </v-row>
         </v-col>
       </v-row>
 
       <v-row>
-        <v-checkbox
-          v-model="m.useEncode"
-          label="URLエンコード"
-        />
+        <v-checkbox v-model="m.useEncode" label="URLエンコード" />
       </v-row>
 
       <v-row>
-        <v-text-field
-          dense
-          v-model="m.p.returnUrl"
-          label="戻りURL"
-          :rules="[required]"
-          readonly
-        />
+        <v-text-field dense v-model="m.p.returnUrl" label="戻りURL" :rules="[required]" readonly />
       </v-row>
 
       <v-row>
-        <v-textarea
-          v-model="m.computedUrl"
-          label="生成URL"
-          outlined
-          readonly
-          rows=3
-          auto-grow
-        />
+        <v-textarea v-model="m.computedUrl" label="生成URL" outlined readonly rows=3 auto-grow />
       </v-row>
 
       <v-row v-if="isDev">
-        <v-text-field
-          v-model="m.baseUrlForNuxt"
-          label="検証用baseURL"
-        />
+        <v-text-field v-model="m.baseUrlForNuxt" label="検証用baseURL" />
       </v-row>
 
       <v-row v-if="isDev">
-        <v-textarea
-          v-model="m.computedUrlForNuxt"
-          label="生成URL(検証用)"
-          outlined
-          readonly
-          rows=3
-          auto-grow
-        />
+        <v-textarea v-model="m.computedUrlForNuxt" label="生成URL(検証用)" outlined readonly rows=3 auto-grow />
       </v-row>
 
       <v-row>
         <v-col/>
         <v-col>
-          <v-btn
-            rounded
-            color="primary"
-            dark
-            @click="onExecute"
-            :disabled="!m.b.valid"
-          >
+          <v-btn rounded color="primary" dark :disabled="!m.b.valid" @click="onExecute" >
           実行 - {{ m.p.logid }}
           </v-btn>
         </v-col>
         <v-col v-if="isDev">
-          <v-btn
-            rounded
-            color="info"
-            dark
-            @click="onExecuteForNuxt"
-            :disabled="!m.b.valid"
-          >
+          <v-btn rounded color="info" dark :disabled="!m.b.valid" @click="onExecuteForNuxt" >
           実行(検証用) - {{ m.p.logid }}
           </v-btn>
         </v-col>
@@ -627,6 +546,7 @@ function paramsToBuilder() {
   builder.Params.moneytype   = m.p.moneytype;
   builder.Params.job         = m.p.job;
   builder.Params.journal     = m.p.journal;
+  builder.Params.isUsePrintDetail = m.p.isUsePrintDetail;
   builder.Params.detail      = m.p.detail;
   builder.Params.reprint     = m.p.reprint;
   builder.Params.when        = m.p.when;
@@ -647,6 +567,7 @@ function paramsToBuilder() {
   builder.Params.productCode = m.p.productCode;
   builder.Params.slipNo      = m.p.slipNo;
   builder.Params.otherTermJudgeNo = m.p.otherTermJudgeNo;
+  builder.Params.isUseManualFlg = m.p.isUseManualFlg;
   builder.Params.manualFlg   = m.p.manualFlg;
   builder.Params.pan         = m.p.pan;
   builder.Params.approvalNumber  = m.p.approvalNumber;
@@ -670,9 +591,6 @@ function updateUrl() {
   if (builder) {
     updateLogIdAndReturnUrl();
     paramsToBuilder();
-    // m.b.taxOther    = builder.isNeedTaxOther();
-    // m.b.productCode = builder.isNeedProductCode();
-    // m.b.withCash   = builder.isNeedWithCash();
 
     const url = builder.generateUrl(m.useEncode);
     m.b.valid     = url !== undefined;
@@ -688,7 +606,7 @@ function updateUrl() {
 
 function changeMode() {
   if (m.p.mode === "Pokepos") {
-    if (UrlBuilder.Base.isEMoney(m.p.moneytype)) {
+    if (m.p.moneytype === 'Suica' || m.p.moneytype === 'iD' || m.p.moneytype === 'QP') {
       builder = new UrlBuilder.PokeposEM();
     }
     else {
@@ -703,7 +621,6 @@ function changeMode() {
   }
   if (builder) {
     paramsToBuilder();
-    m.b.selfMode = builder.isNeedSelfMode();
   }
   updateUrl();
 }
@@ -721,13 +638,13 @@ function resetParam() {
 
 watch(() => m.p.mode        , ()=> changeMode());
 
-// // watch(() => m.p, ()=> { updateUrl(); });
 watch(() => m.p.moneytype, ()=> { changeMode(); });
 
 watch(() => m.p.menu        , ()=> { resetParam(); updateUrl(); });
 watch(() => m.p.moneytype   , ()=> { resetParam(); changeMode(); updateUrl(); });
 watch(() => m.p.job         , ()=> { resetParam(); updateUrl(); });
 watch(() => m.p.journal     , ()=> { updateUrl(); });
+watch(() => m.p.isUsePrintDetail, () => { updateUrl(); });
 watch(() => m.p.detail      , ()=> { updateUrl(); });
 watch(() => m.p.reprint     , ()=> { updateUrl(); });
 watch(() => m.p.when        , ()=> { updateUrl(); });
@@ -747,6 +664,7 @@ watch(() => m.p.isUseApprovalNumber, () => { updateUrl(); });
 watch(() => m.p.approvalNumber, ()=> { updateUrl(); });
 watch(() => m.p.slipNo, ()=> { updateUrl(); });
 watch(() => m.p.otherTermJudgeNo, ()=> { updateUrl(); });
+watch(() => m.p.isUseManualFlg, () => { updateUrl(); });
 watch(() => m.p.manualFlg   , ()=> { updateUrl(); });
 watch(() => m.p.cancelType  , ()=> { updateUrl(); });
 watch(() => m.p.pan         , ()=> { updateUrl(); });
@@ -781,47 +699,54 @@ export default defineComponent({
           }
           return false;
         }
-        return (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales');
+        return (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales');
       }
       return false;
     });
     const isTaxOther = computed(() => {
-      if (m.p.menu === 'Service') {
-        if (m.p.moneytype === "iD" && (m.p.job === 'Sales')) {
-          return true;
+      if (m.p.mode === 'Pokepos') {
+        if (m.p.menu === 'Service') {
+          if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' ||  m.p.job === 'ApprovedSales')) {
+            return true;
+          }
         }
-        else if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
-          return true;
-        }
-        else if (m.p.moneytype === 'Cup' && (m.p.job === 'Sales' || m.p.job === 'Refund')) {
-          return true;
-        }
-        else if (m.p.moneytype === 'NFC' && (m.p.job === 'Sales' || m.p.job === 'Refund')) {
-          return true;
+      }
+      else if (m.p.menu === 'Service') {
+        if (m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC' || m.p.moneytype === 'iD') {
+          if (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales') {
+            return true;
+          }
         }
       }
       return false;
     });
     const isProductCode = computed(() => {
-      if (m.p.menu === 'Service') {
-        if (m.p.moneytype === "iD" && (m.p.job === 'Sales')) {
-          return true;
-        }
-        else if (m.p.moneytype === 'Credit' && (m.p.job === 'Sales' || m.p.job === 'Refund' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
+      if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
+        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC' || m.p.moneytype === 'iD') && (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
           return true;
         }
       }
       return false;
     });
     const isReceiptNumber = computed(() => {
-      if ((m.p.job === 'Refund' || m.p.job === 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales' || (m.p.menu === 'Reprint' && m.p.reprint === 'Slip')) &&
-        (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'iD')) {
-        return true;
+      if (m.p.mode === 'Pokepos') {
+        if (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC') {
+          if (m.p.job === 'Refund') {
+            return true;
+          }
+        }
+      }
+      else if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
+        if (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'iD') {
+          if (m.p.job === 'Refund' || m.p.job === 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales') {
+            return true;
+          }
+        }
       }
       return false;
     });
     const isRefundType = computed(() => {
-      if (m.p.menu === 'Service') {
+      if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
         if ((m.p.job === 'Refund') && (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC')) {
           return true;
         }
@@ -830,14 +755,14 @@ export default defineComponent({
     });
     const isApprovalNo = computed(() => {
       if (m.p.menu === 'Service') {
-        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'RefundReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'RefundApprovedSales')) {
+        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'ApprovedSales')) {
           return true;
         }
       }
       return false;
     });
     const isLump = computed(() => {
-      if (m.p.menu === 'Service') {
+      if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
         if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
           return true;
         }
@@ -845,7 +770,13 @@ export default defineComponent({
       return false;
     });
     const isSelfMode = computed(() => {
-      if (m.p.menu === 'Service') {
+      if (m.p.menu === 'Service' || m.p.menu === 'Reprint' || m.p.menu === 'Journal') {
+        return true;
+      }
+      return false;
+    });
+    const isChoicePrintDetail = computed(() => {
+      if (m.p.menu === 'Journal' || (m.p.menu === 'Reprint' && m.p.reprint ==='Journal')) {
         return true;
       }
       return false;
@@ -872,6 +803,7 @@ export default defineComponent({
       isApprovalNo,
       isLump,
       isSelfMode,
+      isChoicePrintDetail,
       updateUrl,
       onExecute,
       onExecuteForNuxt,

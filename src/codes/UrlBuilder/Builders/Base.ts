@@ -22,22 +22,6 @@ export abstract class  Base {
     return `${urlbase}?${getp}`;
   }
 
-  public static isEMoney(moneytype: moneytype_t | undefined): boolean {
-    return !(moneytype === "Credit" || moneytype === "Cup" || moneytype === "NFC");
-  }
-
-  public isEMoney(): boolean {
-    return Base.isEMoney(this.Params.moneytype);
-  }
-
-  public isNeedWithCash(): boolean {
-    return this.Params.moneytype == "Suica" && this.Params.job == "Sales";
-  }
-
-  public abstract isNeedProductCode(): boolean;
-  public abstract isNeedTaxOther(): boolean;
-  public abstract isNeedLump(): boolean;
-
   public isNumber(s: string | undefined): boolean {
     if (s === undefined) {
       return false;
@@ -51,8 +35,6 @@ export abstract class  Base {
   public isValidProductCode(): boolean {
     return this.Params.productCode.match(/^[0-9]{4}$/) != null;
   }
-
-  public abstract isNeedSelfMode(): boolean;
 
   static get DefaultParams() {
     return {
