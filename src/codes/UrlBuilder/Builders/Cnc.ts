@@ -119,7 +119,7 @@ export class Cnc extends Base {
       if (params.otherTermJudgeNo) {
         kvs.otherTermJudgeNo = params.otherTermJudgeNo;
       }
-      if (params.manualFlg) {
+      if (params.isUseManualFlg) {
         kvs.manual = params.manualFlg ? "true" : "false";
       }
       if (params.pan) {
@@ -136,12 +136,12 @@ export class Cnc extends Base {
 
   protected doJournal() {
     const params = this.Params;
-    if (params.moneytype && params.journal && params.detail) {
+    if (params.moneytype && params.journal) {
       const path = `${this.m_moneytypes[params.moneytype]}-journal-${this.m_journals[params.journal]}`;
       const kvs: keyvalue_t = {};
 
-      if (this.Params.detail) {
-        kvs.type = this.Params.detail.toLowerCase();
+      if (params.isUsePrintDetail && params.detail) {
+        kvs.type = params.detail.toLowerCase();
       }
 
       return {path, kvs};
@@ -150,21 +150,22 @@ export class Cnc extends Base {
   }
 
   protected doReprint() {
-    if (this.Params.moneytype && this.Params.reprint) {
-      const path = `${this.m_moneytypes[this.Params.moneytype]}-reprint-${this.m_reprints[this.Params.reprint]}`;
+    const params = this.Params;
+    if (params.moneytype && params.reprint) {
+      const path = `${this.m_moneytypes[params.moneytype]}-reprint-${this.m_reprints[params.reprint]}`;
       const kvs: keyvalue_t = {};
 
-      if (this.Params.reprint === 'Slip') {
-        if (this.Params.slipNo) {
-          kvs.slipNo = this.Params.slipNo;
+      if (params.reprint === 'Slip') {
+        if (params.slipNo) {
+          kvs.slipNo = params.slipNo;
         }
       }
-      else if (this.Params.reprint === 'Journal') {
-        if (this.Params.when) {
-          kvs.when = this.m_whens[this.Params.when];
+      else if (params.reprint === 'Journal') {
+        if (params.when) {
+          kvs.when = this.m_whens[params.when];
         }
-        if (this.Params.detail) {
-          kvs.type = this.Params.detail.toLowerCase();
+        if (params.detail) {
+          kvs.type = params.detail.toLowerCase();
         }
       }
       return {path, kvs};
@@ -226,55 +227,4 @@ export class Cnc extends Base {
     return `pp-cnc://${re.path}`;
   }
 
-  public /* abstract */ isNeedProductCode() {
-    const tbl: {[_ in moneytype_t]: boolean} = {
-      Credit: true,
-      Cup:    true,
-      NFC:    true,
-      Suica:  false,
-      iD:     true,
-      QP:     false,
-      WAON:   false,
-      Edy:    false,
-      nanaco: false,
-      All:    false
-    };
-    return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
-  }
-
-  public /* abstract */ isNeedTaxOther() {
-    const tbl: {[_ in moneytype_t]: boolean} = {
-      Credit: true,
-      Cup:    true,
-      NFC:    true,
-      Suica:  false,
-      iD:     true,
-      QP:     false,
-      WAON:   false,
-      Edy:    false,
-      nanaco: false,
-      All:    false
-    };
-    return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
-  }
-
-  public /* abstract */ isNeedLump() {
-    const tbl: {[_ in moneytype_t]: boolean} = {
-      Credit: true,
-      Cup:    false,
-      NFC:    true,
-      Suica:  false,
-      iD:     false,
-      QP:     false,
-      WAON:   false,
-      Edy:    false,
-      nanaco: false,
-      All:    false
-    };
-    return this.Params.moneytype ? tbl[this.Params.moneytype] : false;
-  }
-
-  public /* abstract */ isNeedSelfMode() {
-    return false;
-  }
 }
