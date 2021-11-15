@@ -15,6 +15,7 @@ export type params_t = {
   moneytype?:   moneytype_t;
   job?:         job_t;
   journal?:     journal_t;
+  isUsePrintDetail: boolean;
   detail?:      detail_t;
   reprint?:     reprint_t;
   when?:        when_t;
@@ -33,6 +34,7 @@ export type params_t = {
   productCode:  string;
   slipNo:       string;
   otherTermJudgeNo: string;
+  isUseManualFlg: boolean;
   manualFlg:    boolean;
   pan:          string;
   isUseApprovalNumber: boolean;
