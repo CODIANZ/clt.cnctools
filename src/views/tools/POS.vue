@@ -166,7 +166,7 @@
       </v-row>
 
       <v-row>
-        <v-textarea v-model="m.computedUrl" label="生成URL" outlined readonly rows=3 auto-grow />
+        <v-textarea v-model="m.computedUrl" label="生成URL" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
       </v-row>
 
       <v-row v-if="isDev">
@@ -174,7 +174,7 @@
       </v-row>
 
       <v-row v-if="isDev">
-        <v-textarea v-model="m.computedUrlForNuxt" label="生成URL(検証用)" outlined readonly rows=3 auto-grow />
+        <v-textarea v-model="m.computedUrlForNuxt" label="生成URL(検証用)" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
       </v-row>
 
       <v-row>
