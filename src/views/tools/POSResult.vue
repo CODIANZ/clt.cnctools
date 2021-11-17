@@ -193,9 +193,9 @@ export default defineComponent({
     return {
       items,
       onEraseAll: () => {
-        if(confirm("全てのログを削除します。よろしいですか？")){
+        if (confirm("全てのログを削除します。よろしいですか？")) {
           stor.eraseAll();
-          ctx.root.$router.replace("/");
+          location.reload();
         }
       },
       onSave: () => {

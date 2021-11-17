@@ -98,7 +98,7 @@ export class Cnc extends Base {
       const path = `${this.m_moneytypes[params.moneytype]}-${this.m_jobs[params.job]}`;
       const kvs: keyvalue_t = {};
 
-      if (!isNaN(parseInt(params.amount))) {
+      if (params.amount) {
         kvs.amount = params.amount;
       }
       if (params.productCode) {

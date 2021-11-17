@@ -50,7 +50,7 @@ export class PokeposEM extends Pokepos {
         }
       }
 
-      if (!isNaN(parseInt(params.amount))) {
+      if (params.amount) {
         kvs.amount = params.amount;
       }
       if (params.taxOther) {
