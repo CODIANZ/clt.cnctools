@@ -5,7 +5,7 @@
       <v-toolbar-title>{{ m.title }}</v-toolbar-title>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="m.drawer" absolute temporary>
+    <v-navigation-drawer v-model="m.drawer" absolute >
       <v-list nav dense>
         <v-list-item-group active-class="deep-purple--text text--accent-4">
 
@@ -39,12 +39,7 @@ const items: {
     icon: "list",
     title: "POS連携結果",
     path: "/tools/posresult/-"
-  },
-  // {
-  //   icon: "vpn_key",
-  //   title: "クライアント証明書をインストール",
-  //   path: "/tools/posresult/-"
-  // }
+  }
 ];
 
 const m = reactive({
@@ -64,6 +59,7 @@ export default defineComponent({
         }
         else {
           m.drawer = false;
+          location.reload();
         }
       }
     };

@@ -66,7 +66,7 @@ export class Pokepos extends Base {
     if (params.moneytype && params.job) {
       const kvs: keyvalue_t = {};
 
-      if (!isNaN(parseInt(params.amount))) {
+      if (params.amount) {
         kvs.amount = params.amount;
       }
   
