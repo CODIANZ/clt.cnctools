@@ -149,10 +149,21 @@
         <v-col v-if="m.p.moneytype === 'QP' || m.p.moneytype === 'iD'">
           <v-text-field v-model="m.p.otherTermJudgeNo" label="端末ID" type="text" single-line clearable filled counter />
         </v-col>
-        <v-col v-if="m.p.job === 'Refund' && (m.p.moneytype === 'QP' || m.p.moneytype === 'iD')">
-          <v-row>
+        <v-col v-if="m.p.moneytype === 'QP' || m.p.moneytype === 'iD'">
+          <v-row dense>
             <v-checkbox v-model="m.p.isUseManualFlg" />
             <v-switch v-model="m.p.manualFlg" inset label="マニュアル返品" />
+          </v-row>
+        </v-col>
+        <v-col v-if="isRefundType">
+          <v-row dense>
+            <v-checkbox v-model="m.p.isUseCancelType" />
+            <v-radio-group v-model="m.p.cancelType" row>
+              <v-radio
+                v-for="it in refundTypeItems"
+                  :key="`refundTypeItems-${it.value}`" :label=it.label :value=it.value
+              />
+            </v-radio-group>
           </v-row>
         </v-col>
       </v-row>
@@ -166,7 +177,7 @@
       </v-row>
 
       <v-row>
-        <v-textarea v-model="m.computedUrl" label="生成URL" outlined readonly rows=3 auto-grow />
+        <v-textarea v-model="m.computedUrl" label="生成URL" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
       </v-row>
 
       <v-row v-if="isDev">
@@ -174,7 +185,7 @@
       </v-row>
 
       <v-row v-if="isDev">
-        <v-textarea v-model="m.computedUrlForNuxt" label="生成URL(検証用)" outlined readonly rows=3 auto-grow />
+        <v-textarea v-model="m.computedUrlForNuxt" label="生成URL(検証用)" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
       </v-row>
 
       <v-row>
@@ -572,6 +583,7 @@ function paramsToBuilder() {
   builder.Params.pan         = m.p.pan;
   builder.Params.approvalNumber  = m.p.approvalNumber;
   builder.Params.returnUrl   = m.p.returnUrl;
+  builder.Params.isUseCancelType = m.p.isUseCancelType;
   builder.Params.cancelType  = m.p.cancelType;
 }
 
@@ -630,6 +642,7 @@ function resetParam() {
   m.p.taxOther = "";
   m.p.bWithCash = false;
   m.p.bLump = false;
+  m.p.cancelType = undefined;
   m.p.otherTermJudgeNo = "";
   m.p.approvalNumber = "";
   m.p.slipNo = "";
@@ -666,6 +679,7 @@ watch(() => m.p.slipNo, ()=> { updateUrl(); });
 watch(() => m.p.otherTermJudgeNo, ()=> { updateUrl(); });
 watch(() => m.p.isUseManualFlg, () => { updateUrl(); });
 watch(() => m.p.manualFlg   , ()=> { updateUrl(); });
+watch(() => m.p.isUseCancelType, () => { updateUrl(); });
 watch(() => m.p.cancelType  , ()=> { updateUrl(); });
 watch(() => m.p.pan         , ()=> { updateUrl(); });
 watch(() => m.p.returnUrl   , ()=> { updateUrl(); });
@@ -747,7 +761,7 @@ export default defineComponent({
     });
     const isRefundType = computed(() => {
       if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
-        if ((m.p.job === 'Refund') && (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC')) {
+        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC') && (m.p.job === 'Refund')) {
           return true;
         }
       }
