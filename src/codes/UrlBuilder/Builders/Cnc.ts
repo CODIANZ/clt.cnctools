@@ -125,7 +125,7 @@ export class Cnc extends Base {
       if (params.pan) {
         kvs.pan = params.pan;
       }
-      if (params.cancelType) {
+      if (params.isUseCancelType && params.cancelType != undefined) {
         kvs.cancelType = params.cancelType;
       }
 

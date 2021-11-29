@@ -39,6 +39,7 @@ export type params_t = {
   pan:          string;
   isUseApprovalNumber: boolean;
   approvalNumber: string;
+  isUseCancelType: boolean;
   cancelType?:  refundtype_t;
   returnUrl:    string;
 };
