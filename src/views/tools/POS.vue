@@ -640,50 +640,16 @@ function changeMode() {
 function resetParam() {
   m.p.amount = "";
   m.p.taxOther = "";
+  m.p.isUseWithCash = false;
   m.p.bWithCash = false;
+  m.p.isUseLump = false;
   m.p.bLump = false;
+  m.p.isUseCancelType = false;
   m.p.cancelType = undefined;
   m.p.otherTermJudgeNo = "";
   m.p.approvalNumber = "";
   m.p.slipNo = "";
 }
-
-
-watch(() => m.p.mode        , ()=> changeMode());
-
-watch(() => m.p.moneytype, ()=> { changeMode(); });
-
-watch(() => m.p.menu        , ()=> { resetParam(); updateUrl(); });
-watch(() => m.p.moneytype   , ()=> { resetParam(); changeMode(); updateUrl(); });
-watch(() => m.p.job         , ()=> { resetParam(); updateUrl(); });
-watch(() => m.p.journal     , ()=> { updateUrl(); });
-watch(() => m.p.isUsePrintDetail, () => { updateUrl(); });
-watch(() => m.p.detail      , ()=> { updateUrl(); });
-watch(() => m.p.reprint     , ()=> { updateUrl(); });
-watch(() => m.p.when        , ()=> { updateUrl(); });
-watch(() => m.p.isUseTraining, ()=> { updateUrl(); });
-watch(() => m.p.bTraining   , ()=> { updateUrl(); });
-watch(() => m.p.isUsePrinting, ()=> { updateUrl(); });
-watch(() => m.p.bPrinting   , ()=> { updateUrl(); });
-watch(() => m.p.isUseSelfMode, ()=> { updateUrl(); });
-watch(() => m.p.bSelfMode   , ()=> { updateUrl(); });
-watch(() => m.p.isUseLump, () => { updateUrl(); });
-watch(() => m.p.bLump       , ()=> { updateUrl(); });
-watch(() => m.p.bWithCash, ()=> { updateUrl(); });
-watch(() => m.p.amount      , ()=> { updateUrl(); });
-watch(() => m.p.taxOther    , ()=> { updateUrl(); });
-watch(() => m.p.productCode , ()=> { updateUrl(); });
-watch(() => m.p.isUseApprovalNumber, () => { updateUrl(); });
-watch(() => m.p.approvalNumber, ()=> { updateUrl(); });
-watch(() => m.p.slipNo, ()=> { updateUrl(); });
-watch(() => m.p.otherTermJudgeNo, ()=> { updateUrl(); });
-watch(() => m.p.isUseManualFlg, () => { updateUrl(); });
-watch(() => m.p.manualFlg   , ()=> { updateUrl(); });
-watch(() => m.p.isUseCancelType, () => { updateUrl(); });
-watch(() => m.p.cancelType  , ()=> { updateUrl(); });
-watch(() => m.p.pan         , ()=> { updateUrl(); });
-watch(() => m.p.returnUrl   , ()=> { updateUrl(); });
-watch(() => m.useEncode     , ()=> { updateUrl(); });
 
 function onExecute() {
   const stor = ResultStore.create();
@@ -697,7 +663,35 @@ function onExecuteForNuxt() {
   open(m.computedUrlForNuxt, "_blank")
 }
 
+
+watch(() => m.p.mode, () => { changeMode(); });
+watch(() => m.p.menu, ()=> { resetParam(); updateUrl(); });
+watch(() => m.p.moneytype, ()=> { changeMode(); updateUrl(); });
+watch(() => m.p.job, ()=> { resetParam(); updateUrl(); });
+
+
 export default defineComponent({
+  created() {
+    this.$watch(() => [
+      m.p.journal, m.p.reprint, m.p.when,
+      m.p.amount, m.p.taxOther, m.p.productCode,
+      m.p.slipNo, m.p.otherTermJudgeNo, m.p.pan,
+      m.p.returnUrl,
+      m.p.isUsePrintDetail, m.p.detail,
+      m.p.isUseTraining, m.p.bTraining,
+      m.p.isUsePrinting, m.p.bPrinting,
+      m.p.isUseSelfMode, m.p.bSelfMode,
+      m.p.isUseLump, m.p.bLump,
+      m.p.isUseWithCash, m.p.bWithCash,
+      m.p.isUseApprovalNumber, m.p.approvalNumber,
+      m.p.isUseManualFlg, m.p.manualFlg,
+      m.p.isUseCancelType, m.p.cancelType,
+      m.useEncode,
+    ],
+     (value, oldValue) => {
+      updateUrl();
+    });
+  },
   setup() {
     const form = ref<iform>();
 
