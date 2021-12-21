@@ -19,7 +19,7 @@ export class Cnc extends Base {
   private m_moneytypes: {[_ in moneytype_t]: string} = {
     Credit: "credit",
     Cup:    "cup",
-    NFC:    "nfc",
+    NFC:    "contactless",
     Suica:  "suica",
     iD:     "id",
     QP:     "quicpay",
@@ -30,15 +30,17 @@ export class Cnc extends Base {
   };
 
   private m_jobs: {[_ in job_t]: string} = {
-    "Sales": "settlement",
-    "Refund": "refund",
-    "ReservedAuthority": "preapproval",
-    "RefundReservedAuthority": "refundpreapproval",
-    "ApprovedSales": "afterapproval",
-    "RefundApprovedSales": "refundafterapproval",
-    "CardCheck": "cardcheck",
-    "Balance": "balance",
-    "Confirm": "confirm",
+    "Sales": "authorizesales",
+    "Refund": "authorizerefund",
+    "ReservedAuthority": "authorizepresales",
+    "RefundReservedAuthority": "authorizepresalesvoid",
+    "ApprovedSales": "authorizecompletion",
+    "RefundApprovedSales": "authorizecompletionvoid",
+    "CardCheck": "checkcard",
+    "SubtractValue": "subtractvalue",
+    "CancelValue": "cancelvalue",
+    "Balance": "readvalue",
+    "Confirm": "outputcompleteevent",
     "History": "history",
     "PointCharge": "pointcharge"
   };
