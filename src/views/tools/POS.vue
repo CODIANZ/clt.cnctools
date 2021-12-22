@@ -640,6 +640,7 @@ function changeMode() {
 function resetParam() {
   m.p.amount = "";
   m.p.taxOther = "";
+  m.p.productCode = "";
   m.p.isUseWithCash = false;
   m.p.bWithCash = false;
   m.p.isUseLump = false;
