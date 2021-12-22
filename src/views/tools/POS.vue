@@ -249,7 +249,7 @@ const modes: field_item<mode_t>[] = [
     value: "Cnc"
   },
   {
-    label: "pokepos互換",
+    label: "pokepos/EM 互換",
     value: "Pokepos"
   }
 ];
@@ -397,7 +397,7 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
     return [
       {
         label: "支払",
-        value: "Sales"
+        value: "SubtractValue"
       },
       {
         label: "残高照会",
@@ -413,11 +413,11 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
     return [
       {
         label: "売上",
-        value: "Sales"
+        value: "SubtractValue"
       },
       {
         label: "取消",
-        value: "Refund"
+        value: "CancelValue"
       },
       {
         label: "前回取引確認",
@@ -429,11 +429,11 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
     return [
       {
         label: "支払",
-        value: "Sales"
+        value: "SubtractValue"
       },
       {
         label: "取消",
-        value: "Refund"
+        value: "CancelValue"
       },
       {
         label: "残高照会",
@@ -457,7 +457,7 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
     return [
       {
         label: "支払",
-        value: "Sales"
+        value: "SubtractValue"
       },
       {
         label: "残高照会",
@@ -477,7 +477,7 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
     return [
       {
         label: "支払",
-        value: "Sales"
+        value: "SubtractValue"
       },
       {
         label: "残高照会",
@@ -640,6 +640,7 @@ function changeMode() {
 function resetParam() {
   m.p.amount = "";
   m.p.taxOther = "";
+  m.p.productCode = "";
   m.p.isUseWithCash = false;
   m.p.bWithCash = false;
   m.p.isUseLump = false;
@@ -701,13 +702,7 @@ export default defineComponent({
 
     const isAmount = computed(() => {
       if (m.p.menu === 'Service') {
-        if (m.p.moneytype === 'QP' || m.p.moneytype === 'iD' || m.p.moneytype === 'WAON') {
-          if (m.p.job === 'Sales') {
-            return true;
-          }
-          return false;
-        }
-        return (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales');
+        return (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'SubtractValue');
       }
       return false;
     });
@@ -721,7 +716,7 @@ export default defineComponent({
       }
       else if (m.p.menu === 'Service') {
         if (m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC' || m.p.moneytype === 'iD') {
-          if (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales') {
+          if (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'SubtractValue') {
             return true;
           }
         }
@@ -746,7 +741,7 @@ export default defineComponent({
       }
       else if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
         if (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'iD') {
-          if (m.p.job === 'Refund' || m.p.job === 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales') {
+          if (m.p.job === 'Refund' || m.p.job === 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales' || m.p.job === 'CancelValue') {
             return true;
           }
         }
