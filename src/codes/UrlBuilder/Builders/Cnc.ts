@@ -142,8 +142,11 @@ export class Cnc extends Base {
       const path = `${this.m_moneytypes[params.moneytype]}-journal-${this.m_journals[params.journal]}`;
       const kvs: keyvalue_t = {};
 
-      if (params.isUsePrintDetail && params.detail) {
+      if (params.isUseDetail && params.detail) {
         kvs.type = params.detail.toLowerCase();
+      }
+      if (params.isUseWhen && params.when) {
+        kvs.when = params.when.toLowerCase();
       }
 
       return {path, kvs};
@@ -163,10 +166,10 @@ export class Cnc extends Base {
         }
       }
       else if (params.reprint === 'Journal') {
-        if (params.when) {
+        if (params.isUseWhen && params.when) {
           kvs.when = this.m_whens[params.when];
         }
-        if (params.detail) {
+        if (params.isUseDetail && params.detail) {
           kvs.type = params.detail.toLowerCase();
         }
       }

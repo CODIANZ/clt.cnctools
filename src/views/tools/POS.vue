@@ -62,7 +62,7 @@
       <v-row v-if="isChoicePrintDetail" dense>
         <v-col>
           <v-row dense>
-            <v-checkbox v-model="m.p.isUsePrintDetail" />
+            <v-checkbox v-model="m.p.isUseDetail" />
             <v-radio-group v-model="m.p.detail" row>
               <v-radio
                 v-for="it in details"
@@ -75,12 +75,15 @@
 
       <v-row v-if="m.p.menu === 'Reprint' && m.p.reprint === 'Journal'" dense>
         <v-col>
-          <v-radio-group v-model="m.p.when" row>
-            <v-radio
-              v-for="it in whens"
-                :key="`whens-${it.value}`" :label=it.label :value=it.value
-            />
-          </v-radio-group>
+          <v-row dense>
+            <v-checkbox v-model="m.p.isUseWhen" />
+            <v-radio-group v-model="m.p.when" row>
+              <v-radio
+                v-for="it in whens"
+                  :key="`whens-${it.value}`" :label=it.label :value=it.value
+              />
+            </v-radio-group>
+          </v-row>
         </v-col>
       </v-row>
 
@@ -557,10 +560,6 @@ function paramsToBuilder() {
   builder.Params.moneytype   = m.p.moneytype;
   builder.Params.job         = m.p.job;
   builder.Params.journal     = m.p.journal;
-  builder.Params.isUsePrintDetail = m.p.isUsePrintDetail;
-  builder.Params.detail      = m.p.detail;
-  builder.Params.reprint     = m.p.reprint;
-  builder.Params.when        = m.p.when;
 
   builder.Params.isUseTraining = m.p.isUseTraining;
   builder.Params.bTraining   = m.p.bTraining;
@@ -585,6 +584,12 @@ function paramsToBuilder() {
   builder.Params.returnUrl   = m.p.returnUrl;
   builder.Params.isUseCancelType = m.p.isUseCancelType;
   builder.Params.cancelType  = m.p.cancelType;
+
+  builder.Params.reprint     = m.p.reprint;
+  builder.Params.isUseDetail = m.p.isUseDetail;
+  builder.Params.detail      = m.p.detail;
+  builder.Params.isUseWhen   = m.p.isUseWhen;
+  builder.Params.when        = m.p.when;
 }
 
 function updateLogIdAndReturnUrl() {
@@ -650,6 +655,8 @@ function resetParam() {
   m.p.otherTermJudgeNo = "";
   m.p.approvalNumber = "";
   m.p.slipNo = "";
+  m.p.isUseWhen = false;
+  m.p.isUseDetail = false;
 }
 
 function onExecute() {
@@ -678,7 +685,6 @@ export default defineComponent({
       m.p.amount, m.p.taxOther, m.p.productCode,
       m.p.slipNo, m.p.otherTermJudgeNo, m.p.pan,
       m.p.returnUrl,
-      m.p.isUsePrintDetail, m.p.detail,
       m.p.isUseTraining, m.p.bTraining,
       m.p.isUsePrinting, m.p.bPrinting,
       m.p.isUseSelfMode, m.p.bSelfMode,
@@ -687,6 +693,8 @@ export default defineComponent({
       m.p.isUseApprovalNumber, m.p.approvalNumber,
       m.p.isUseManualFlg, m.p.manualFlg,
       m.p.isUseCancelType, m.p.cancelType,
+      m.p.isUseDetail, m.p.detail,
+      m.p.isUseWhen, m.p.when,
       m.useEncode,
     ],
      (value, oldValue) => {
