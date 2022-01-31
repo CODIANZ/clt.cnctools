@@ -138,7 +138,7 @@ export class Pokepos extends Base {
         }
       }
 
-      if (params.isUsePrintDetail) {
+      if (params.isUseDetail) {
         if (params.detail === "Summary") {
           kvs.detail = "0";
         }
@@ -172,18 +172,24 @@ export class Pokepos extends Base {
         kvs.operationDiv = "1";
       }
       else if (params.reprint === "Journal") {
-        if (params.when === "Last") {
-          kvs.reprint = "1";
-        }
-        else if (params.when === "BeforeLast") {
-          kvs.reprint = "2";
+        kvs.operationDiv = "0";
+
+        if (params.isUseWhen) {
+          if (params.when === "Last") {
+            kvs.reprint = "1";
+          }
+          else if (params.when === "BeforeLast") {
+            kvs.reprint = "2";
+          }
         }
 
-        if (params.detail === "Summary") {
-          kvs.detail = "0";
-        }
-        else if (params.detail === "Detail") {
-          kvs.detail = "1";
+        if (params.isUseDetail) {
+          if (params.detail === "Summary") {
+            kvs.detail = "0";
+          }
+          else if (params.detail === "Detail") {
+            kvs.detail = "1";
+          }
         }
       }
 
