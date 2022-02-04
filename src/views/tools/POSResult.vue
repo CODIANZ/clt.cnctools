@@ -13,7 +13,7 @@
 </template>
     
 <script lang="ts">
-import { defineComponent, reactive } from "@vue/composition-api";
+import { computed, defineComponent, reactive } from "@vue/composition-api";
 import { mode_t } from '@/codes/UrlBuilder/Builders';
 import { ResultStore, resultstore_t } from "@/codes/ResultStore";
 import FileSaver from "file-saver";
@@ -98,16 +98,9 @@ function generateMap(key: string, value: any): item_t {
 function generateItems(data: resultstore_t[]) {
   try{
     return data.map((it) => {
-      const title =
-          it.param.logid
-        + " ( "
-        + it.param.mode
-        + " / "
-        + it.param.menu
-        + " / "
-        + it.param.moneytype
-        + " )"
-        + ((it.param.logid == new_id) ? "  **NEW" : "");
+      const mtype = (it.param.moneytype !== undefined) ? " / " + it.param.moneytype : "";
+      const newLabel = (it.param.logid == new_id) ? "  **NEW" : "";
+      const title = it.param.logid + " ( " + it.param.mode + " / " + it.param.menu + mtype + " )" + newLabel;
 
       mode = it.param.mode;
 
@@ -117,10 +110,10 @@ function generateItems(data: resultstore_t[]) {
         children: new Array<item_t>()
       };
 
-      const param         = generateMap("param", it.param);
-      const sendUrl       = generateString("send url", it.sendUrl);
-      const receiveUrl    = it.receiveUrl ? generateString("receive url", it.receiveUrl) : undefined;
-      const receiveData   = it.receiveData ? generateMap("receive data", it.receiveData) : undefined;
+      const param = generateMap("param", it.param);
+      const sendUrl = generateString("send url", it.sendUrl);
+      const receiveUrl = it.receiveUrl ? generateString("receive url", it.receiveUrl) : undefined;
+      const receiveData = it.receiveData ? generateMap("receive data", it.receiveData) : undefined;
 
       d.children.push(param);
       d.children.push(sendUrl);
