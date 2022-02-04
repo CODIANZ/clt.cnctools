@@ -28,11 +28,20 @@
         </v-radio-group>
       </v-row>
 
-      <v-row>
+      <v-row v-if="m.p.menu !== 'Menu'">
         <v-radio-group v-model="m.p.moneytype" row>
           <v-radio
             v-for="it in moneytypes"
               :key="`moneytypes-${it.value}`" :label=it.label :value=it.value
+          />
+        </v-radio-group>
+      </v-row>
+
+      <v-row v-if="m.p.menu === 'Menu'">
+        <v-radio-group v-model="m.p.menutype" row>
+          <v-radio
+            v-for="it in menutypes"
+              :key="`menutypes-${it.value}`" :label=it.label :value=it.value
           />
         </v-radio-group>
       </v-row>
@@ -87,7 +96,7 @@
         </v-col>
       </v-row>
 
-      <v-row dense>
+      <v-row v-if="m.p.menu !== 'Menu'" dense>
         <v-col>
           <v-row dense>
             <v-checkbox v-model="m.p.isUsePrinting" />
@@ -269,6 +278,10 @@ const menus: field_item<UrlBuilder.menus_t>[] = [
   {
     label: "再印字",
     value: "Reprint"
+  },
+  {
+    label: "画面呼出",
+    value: "Menu"
   }
 ];
 
@@ -324,6 +337,17 @@ const moneytypes = computed<field_item<UrlBuilder.moneytype_t>[]>(() =>  {
     });
   }
 
+  return items;
+});
+
+
+const menutypes = computed<field_item<UrlBuilder.menutype_t>[]>(() =>  {
+  var items: field_item<UrlBuilder.menutype_t>[] = [
+    {
+      label: "支払選択",
+      value: "Choice"
+    }
+  ];
   return items;
 });
 
@@ -558,6 +582,7 @@ function paramsToBuilder() {
   }
   builder.Params.menu        = m.p.menu;
   builder.Params.moneytype   = m.p.moneytype;
+  builder.Params.menutype    = m.p.menutype;
   builder.Params.job         = m.p.job;
   builder.Params.journal     = m.p.journal;
 
@@ -673,9 +698,10 @@ function onExecuteForNuxt() {
 
 
 watch(() => m.p.mode, () => { changeMode(); });
-watch(() => m.p.menu, ()=> { resetParam(); updateUrl(); });
+watch(() => m.p.menu, () => { resetParam(); updateUrl(); });
 watch(() => m.p.moneytype, ()=> { changeMode(); updateUrl(); });
-watch(() => m.p.job, ()=> { resetParam(); updateUrl(); });
+watch(() => m.p.menutype, () => { resetParam(); updateUrl(); });
+watch(() => m.p.job, () => { resetParam(); updateUrl(); });
 
 
 export default defineComponent({
@@ -711,6 +737,11 @@ export default defineComponent({
     const isAmount = computed(() => {
       if (m.p.menu === 'Service') {
         return (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'SubtractValue');
+      }
+      else if (m.p.menu === 'Menu') {
+        if (m.p.menutype === 'Choice') {
+          return true;
+        }
       }
       return false;
     });
@@ -798,6 +829,7 @@ export default defineComponent({
       modes,
       menus,
       moneytypes,
+      menutypes,
       jobs,
       refundTypeItems,
       journals,

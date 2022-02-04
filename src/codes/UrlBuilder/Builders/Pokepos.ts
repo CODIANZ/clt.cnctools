@@ -13,7 +13,8 @@ export class Pokepos extends Base {
       Service: "Service",
       Journal: "Journal",
       Reprint: "Reprint",
-      Settings: "Settings"
+      Settings: "Settings",
+      Menu: "Menu"
     };
 
     const moneytypes: {[_ in moneytype_t]: string} = {

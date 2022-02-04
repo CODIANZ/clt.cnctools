@@ -13,7 +13,8 @@ export class Cnc extends Base {
     Service: "service",
     Journal: "journal",
     Reprint: "reprint",
-    Settings: "settings"
+    Settings: "settings",
+    Menu:    "Menu"
   };
 
   private m_moneytypes: {[_ in moneytype_t]: string} = {
@@ -178,6 +179,18 @@ export class Cnc extends Base {
     return undefined;
   }
 
+  protected doMenu() {
+    const params = this.Params;
+    let path = "job-menu";
+    const kvs: keyvalue_t = {};
+
+    if (params.amount) {
+      kvs.amount = params.amount;
+      return {path, kvs};
+    }
+    return undefined;
+  }
+
   protected /* abstract */ generateGetParameterSelf(): keyvalue_t | undefined {
     const re  = (() => {
       switch(this.Params.menu){
@@ -189,6 +202,9 @@ export class Cnc extends Base {
 
       case "Reprint":
         return this.doReprint();
+
+      case "Menu":
+        return this.doMenu();
 
       default:
         return undefined;
@@ -212,18 +228,21 @@ export class Cnc extends Base {
   protected  /* abstract */ generateBaseUrlSelf(): string | undefined {
     const re  = (() => {
       switch(this.Params.menu){
-        case "Service": {
+        case "Service":
           return this.doService();
-        }
-        case "Journal": {
+      
+        case "Journal":
           return this.doJournal();
-        }
-        case "Reprint": {
+        
+        case "Reprint":
           return this.doReprint();
-        }
-        default: {
+        
+        case "Menu":
+          return this.doMenu();
+
+        default:
           return undefined;
-        }
+        
       }
     })();
     if(!re) {
