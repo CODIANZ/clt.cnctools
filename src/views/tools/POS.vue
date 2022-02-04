@@ -280,7 +280,7 @@ const menus: field_item<UrlBuilder.menus_t>[] = [
     value: "Reprint"
   },
   {
-    label: "画面呼出",
+    label: "業務メニュー",
     value: "Menu"
   }
 ];
