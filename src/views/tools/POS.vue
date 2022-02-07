@@ -10,7 +10,7 @@
         </v-radio-group>
       </v-row>
 
-      <v-row>
+      <v-row v-if="m.p.mode">
         <v-radio-group v-model="m.p.menu" row>
           <v-radio
             v-for="it in menus"
@@ -28,7 +28,7 @@
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.menu !== 'Menu'">
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu'">
         <v-radio-group v-model="m.p.moneytype" row>
           <v-radio
             v-for="it in moneytypes"
@@ -37,7 +37,7 @@
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Menu'">
+      <v-row v-if="m.p.mode && m.p.menu === 'Menu'">
         <v-radio-group v-model="m.p.menutype" row>
           <v-radio
             v-for="it in menutypes"
@@ -46,7 +46,7 @@
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Service'" dense>
+      <v-row v-if="m.p.menu === 'Service' && jobs && jobs.length > 0" dense>
         <v-col>
           <v-radio-group v-model="m.p.job" row>
             <v-radio
@@ -96,7 +96,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu !== 'Menu'" dense>
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu'" dense>
         <v-col>
           <v-row dense>
             <v-checkbox v-model="m.p.isUsePrinting" />
@@ -256,85 +256,42 @@ interface field_item<T> {
 
 
 const modes: field_item<mode_t>[] = [
-  {
-    label: "CNC",
-    value: "Cnc"
-  },
-  {
-    label: "pokepos/EM 互換",
-    value: "Pokepos"
-  }
+  { label: "CNC", value: "Cnc" },
+  { label: "pokepos/EM 互換", value: "Pokepos" }
 ];
 
-const menus: field_item<UrlBuilder.menus_t>[] = [
-  {
-    label: "決済",
-    value: "Service"
-  },
-  {
-    label: "集計",
-    value: "Journal"
-  },
-  {
-    label: "再印字",
-    value: "Reprint"
-  },
-  {
-    label: "画面呼出",
-    value: "Menu"
-  }
-];
-
-const moneytypes = computed<field_item<UrlBuilder.moneytype_t>[]>(() =>  {
-  var items: field_item<UrlBuilder.moneytype_t>[] = [
-    {
-      label: "クレジット",
-      value: "Credit"
-    },
-    {
-      label: "銀聯",
-      value: "Cup"
-    },
-    {
-      label: "NFC",
-      value: "NFC"
-    },
-    {
-      label: "交通系IC",
-      value: "Suica"
-    },
-    {
-      label: "QUICPay",
-      value: "QP"
-    },
-    {
-      label: "iD",
-      value: "iD"
-    }
+const menus = computed<field_item<UrlBuilder.menus_t>[]>(() => {
+  let result: field_item<UrlBuilder.menus_t>[] = [
+    { label: "決済", value: "Service" },
+    { label: "集計", value: "Journal" },
+    { label: "再印字", value: "Reprint" },
   ];
 
   if (m.p.mode === "Cnc") {
-    items.push({
-      label: "WAON",
-      value: "WAON"
-    });
+    result.push({ label: "業務メニュー", value: "Menu" });
+  }
 
-    items.push({
-      label: "Edy",
-      value: "Edy"
-    });
+  return result;
+});
 
-    items.push({
-      label: "nanaco",
-      value: "nanaco"
-    });
+const moneytypes = computed<field_item<UrlBuilder.moneytype_t>[]>(() =>  {
+  var items: field_item<UrlBuilder.moneytype_t>[] = [
+    { label: "クレジット", value: "Credit" },
+    { label: "銀聯", value: "Cup" },
+    { label: "NFC", value: "NFC" },
+    { label: "交通系IC", value: "Suica" },
+    { label: "QUICPay", value: "QP" },
+    { label: "iD", value: "iD" }
+  ];
+
+  if (m.p.mode === "Cnc") {
+    items.push({ label: "WAON", value: "WAON" });
+    items.push({ label: "Edy", value: "Edy" });
+    items.push({ label: "nanaco", value: "nanaco" });
   }
 
   if (m.p.menu === "Journal" || (m.p.menu === "Reprint" && m.p.reprint === "Journal")) {
-    items.push({
-      label: "全取引",
-      value: "All"
-    });
+    items.push({ label: "全取引", value: "All" });
   }
 
   return items;
@@ -343,10 +300,7 @@ const moneytypes = computed<field_item<UrlBuilder.moneytype_t>[]>(() =>  {
 
 const menutypes = computed<field_item<UrlBuilder.menutype_t>[]>(() =>  {
   var items: field_item<UrlBuilder.menutype_t>[] = [
-    {
-      label: "支払選択",
-      value: "Choice"
-    }
+    { label: "支払選択", value: "Choice" }
   ];
   return items;
 });
@@ -355,165 +309,66 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
   if (m.p.moneytype === "Credit") {
     if (m.p.mode === "Pokepos") {
       return [
-        {
-          label: "売上",
-          value: "Sales"
-        },
-        {
-          label: "取消返品",
-          value: "Refund"
-        },
-        {
-          label: "オーソリ予約",
-          value: "ReservedAuthority"
-        },
-        {
-          label: "承認後売上",
-          value: "ApprovedSales"
-        },
-        {
-          label: "カードチェック",
-          value: "CardCheck"
-        }
+        { label: "売上", value: "Sales" },
+        { label: "取消返品", value: "Refund" },
+        { label: "オーソリ予約", value: "ReservedAuthority" },
+        { label: "承認後売上", value: "ApprovedSales" },
+        { label: "カードチェック", value: "CardCheck" }
       ];
     }
     return [
-      {
-        label: "売上",
-        value: "Sales"
-      },
-      {
-        label: "取消返品",
-        value: "Refund"
-      },
-      {
-        label: "オーソリ予約",
-        value: "ReservedAuthority"
-      },
-      {
-        label: "オーソリ予約取消",
-        value: "RefundReservedAuthority"
-      },
-      {
-        label: "承認後売上",
-        value: "ApprovedSales"
-      },
-      {
-        label: "承認後売上取消",
-        value: "RefundApprovedSales"
-      },
-      {
-        label: "カードチェック",
-        value: "CardCheck"
-      }
+      { label: "売上", value: "Sales" },
+      { label: "取消返品", value: "Refund" },
+      { label: "オーソリ予約", value: "ReservedAuthority" },
+      { label: "オーソリ予約取消", value: "RefundReservedAuthority" },
+      { label: "承認後売上", value: "ApprovedSales" },
+      { label: "承認後売上取消", value: "RefundApprovedSales" },
+      { label: "カードチェック", value: "CardCheck"}
     ];
   }
   else if (m.p.moneytype === "Cup" || m.p.moneytype === "NFC") {
     return [
-      {
-        label: "売上",
-        value: "Sales"
-      },
-      {
-        label: "取消返品",
-        value: "Refund"
-      }
+      { label: "売上", value: "Sales" },
+      { label: "取消返品", value: "Refund" }
     ];
   }
   else if (m.p.moneytype === "Suica") {
     return [
-      {
-        label: "支払",
-        value: "SubtractValue"
-      },
-      {
-        label: "残高照会",
-        value: "Balance"
-      },
-      {
-        label: "前回取引確認",
-        value: "Confirm"
-      }
+      { label: "支払", value: "SubtractValue" },
+      { label: "残高照会", value: "Balance" },
+      { label: "前回取引確認", value: "Confirm" }
     ];
   }
   else if(m.p.moneytype === "QP" || m.p.moneytype === "iD") {
     return [
-      {
-        label: "売上",
-        value: "SubtractValue"
-      },
-      {
-        label: "取消",
-        value: "CancelValue"
-      },
-      {
-        label: "前回取引確認",
-        value: "Confirm"
-      }
+      { label: "売上", value: "SubtractValue" },
+      { label: "取消", value: "CancelValue" },
+      { label: "前回取引確認", value: "Confirm" }
     ];
   }
   else if (m.p.moneytype === "WAON") {
     return [
-      {
-        label: "支払",
-        value: "SubtractValue"
-      },
-      {
-        label: "取消",
-        value: "CancelValue"
-      },
-      {
-        label: "残高照会",
-        value: "Balance"
-      },
-      {
-        label: "履歴照会",
-        value: "History"
-      },
-      {
-        label: "ポイントチャージ",
-        value: "PointCharge"
-      },
-      {
-        label: "前回取引確認",
-        value: "Confirm"
-      }
+      { label: "支払", value: "SubtractValue" },
+      { label: "取消", value: "CancelValue" },
+      { label: "残高照会", value: "Balance" },
+      { label: "履歴照会", value: "History" },
+      { label: "ポイントチャージ", value: "PointCharge" },
+      { label: "前回取引確認", value: "Confirm" }
     ];
   }
   else if (m.p.moneytype === "Edy") {
     return [
-      {
-        label: "支払",
-        value: "SubtractValue"
-      },
-      {
-        label: "残高照会",
-        value: "Balance"
-      },
-      {
-        label: "履歴照会",
-        value: "History"
-      },
-      {
-        label: "前回取引確認",
-        value: "Confirm"
-      }
+      { label: "支払", value: "SubtractValue" },
+      { label: "残高照会", value: "Balance" },
+      { label: "履歴照会", value: "History" },
+      { label: "前回取引確認", value: "Confirm" }
     ];
   }
   else if (m.p.moneytype === "nanaco") {
     return [
-      {
-        label: "支払",
-        value: "SubtractValue"
-      },
-      {
-        label: "残高照会",
-        value: "Balance"
-      },
-      {
-        label: "前回取引確認",
-        value: "Confirm"
-      }
+      { label: "支払", value: "SubtractValue" },
+      { label: "残高照会", value: "Balance" },
+      { label: "前回取引確認", value: "Confirm" }
     ];
   }
   else {
@@ -522,58 +377,28 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
 });
 
 const refundTypeItems: field_item<UrlBuilder.refundtype_t>[] = [
-  {
-    label: "取消",
-    value: "1"
-  },
-  {
-    label: "返品",
-    value: "2"
-  }
+  { label: "取消", value: "1" },
+  { label: "返品", value: "2" }
 ];
 
 const journals: field_item<UrlBuilder.journal_t>[] = [
-  {
-    label: "日計",
-    value: "Total"
-  },
-  {
-    label: "中間計",
-    value: "Intermediate"
-  }
+  { label: "日計", value: "Total" },
+  { label: "中間計", value: "Intermediate" }
 ];
 
 const details: field_item<UrlBuilder.detail_t>[] = [
-  {
-    label: "簡易",
-    value: "Summary"
-  },
-  {
-    label: "詳細",
-    value: "Detail"
-  }
+  { label: "簡易", value: "Summary" },
+  { label: "詳細", value: "Detail" }
 ];
 
 const reprints: field_item<UrlBuilder.reprint_t>[] = [
-  {
-    label: "伝票",
-    value: "Slip"
-  },
-  {
-    label: "日計",
-    value: "Journal"
-  }
+  { label: "伝票", value: "Slip" },
+  { label: "日計", value: "Journal" }
 ];
 
 const whens: field_item<UrlBuilder.when_t>[] = [
-  {
-    label: "前回",
-    value: "Last"
-  },
-  {
-    label: "前々回",
-    value: "BeforeLast"
-  }
+  { label: "前回", value: "Last" },
+  { label: "前々回", value: "BeforeLast" }
 ];
 
 function paramsToBuilder() {
@@ -671,16 +496,22 @@ function resetParam() {
   m.p.amount = "";
   m.p.taxOther = "";
   m.p.productCode = "";
-  m.p.isUseWithCash = false;
   m.p.bWithCash = false;
-  m.p.isUseLump = false;
   m.p.bLump = false;
-  m.p.isUseCancelType = false;
   m.p.cancelType = undefined;
   m.p.otherTermJudgeNo = "";
   m.p.approvalNumber = "";
   m.p.slipNo = "";
+
   m.p.isUseWhen = false;
+  // m.p.isUseTraining = false;
+  // m.p.isUsePrinting = false;
+  // m.p.isUseSelfMode = false;
+  m.p.isUseLump = false;
+  m.p.isUseWithCash = false;
+  m.p.isUseManualFlg = false;
+  m.p.isUseApprovalNumber = false;
+  m.p.isUseCancelType = false;
   m.p.isUseDetail = false;
 }
 
@@ -696,12 +527,14 @@ function onExecuteForNuxt() {
   open(m.computedUrlForNuxt, "_blank")
 }
 
-
+//
+// 値変更監視
+//
 watch(() => m.p.mode, () => { changeMode(); });
-watch(() => m.p.menu, () => { resetParam(); updateUrl(); });
-watch(() => m.p.moneytype, ()=> { changeMode(); updateUrl(); });
-watch(() => m.p.menutype, () => { resetParam(); updateUrl(); });
-watch(() => m.p.job, () => { resetParam(); updateUrl(); });
+watch(() => m.p.menu, () => { resetParam(); });
+watch(() => m.p.moneytype, ()=> { changeMode(); });
+watch(() => m.p.menutype, () => { resetParam(); });
+watch(() => m.p.job, () => { resetParam(); });
 
 
 export default defineComponent({
@@ -723,7 +556,7 @@ export default defineComponent({
       m.p.isUseWhen, m.p.when,
       m.useEncode,
     ],
-     (value, oldValue) => {
+    (value, oldValue) => {
       updateUrl();
     });
   },
