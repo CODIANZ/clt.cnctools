@@ -534,7 +534,7 @@ watch(() => m.p.mode, () => { changeMode(); });
 watch(() => m.p.menu, () => { resetParam(); });
 watch(() => m.p.moneytype, ()=> { changeMode(); });
 watch(() => m.p.menutype, () => { resetParam(); });
-watch(() => m.p.job, () => { updateUrl(); });
+watch(() => m.p.job, () => { resetParam(); updateUrl(); });
 
 
 export default defineComponent({
