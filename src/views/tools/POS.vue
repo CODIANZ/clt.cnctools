@@ -118,7 +118,7 @@
         <v-col/>
       </v-row>
 
-      <v-row v-if="m.p.moneytype === 'Suica' && m.p.job === 'Sales'" dense>
+      <v-row v-if="isWithMoney" dense>
         <v-col>
           <v-row dense>
             <v-checkbox v-model="m.p.isUseWithCash" />
@@ -157,11 +157,11 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.job === 'Refund'">
-        <v-col v-if="m.p.moneytype === 'QP' || m.p.moneytype === 'iD'">
+      <v-row>
+        <v-col v-if="isTerminalID">
           <v-text-field v-model="m.p.otherTermJudgeNo" label="端末ID" type="text" single-line clearable filled counter />
         </v-col>
-        <v-col v-if="m.p.moneytype === 'QP' || m.p.moneytype === 'iD'">
+        <v-col v-if="isManualReturn">
           <v-row dense>
             <v-checkbox v-model="m.p.isUseManualFlg" />
             <v-switch v-model="m.p.manualFlg" inset label="マニュアル返品" />
@@ -644,6 +644,24 @@ export default defineComponent({
       }
       return false;
     });
+    const isWithMoney = computed(() => {
+      if (m.p.moneytype === "Suica" && m.p.job === "SubtractValue") {
+        return true;
+      }
+      return false;
+    });
+    const isTerminalID = computed(() => {
+      if (m.p.job === "CancelValue" && (m.p.moneytype === "iD" || m.p.moneytype === "QP")) {
+        return true;
+      }
+      return false;
+    });
+    const isManualReturn = computed(() => {
+      if (m.p.job === "CancelValue" && (m.p.moneytype === "iD" || m.p.moneytype === "QP")) {
+        return true;
+      }
+      return false;
+    });
     const isSelfMode = computed(() => {
       if (m.p.menu === 'Service' || m.p.menu === 'Reprint' || m.p.menu === 'Journal') {
         return true;
@@ -678,6 +696,9 @@ export default defineComponent({
       isRefundType,
       isApprovalNo,
       isLump,
+      isWithMoney,
+      isTerminalID,
+      isManualReturn,
       isSelfMode,
       isChoicePrintDetail,
       updateUrl,
