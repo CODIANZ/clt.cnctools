@@ -202,16 +202,11 @@
 
       <v-row>
         <v-col/>
-        <v-col>
-          <v-btn rounded color="primary" dark :disabled="!m.b.valid" @click="onExecute" >
-          実行 - {{ m.p.logid }}
-          </v-btn>
-        </v-col>
-        <v-col v-if="isDev">
-          <v-btn rounded color="info" dark :disabled="!m.b.valid" @click="onExecuteForNuxt" >
-          実行(検証用) - {{ m.p.logid }}
-          </v-btn>
-        </v-col>
+        <v-btn rounded color="primary" dark :disabled="!m.b.valid" @click="onExecute" > 実行 - {{ m.p.logid }} </v-btn>
+        <v-col/>
+        <v-btn v-if="isDev" rounded color="info" dark :disabled="!m.b.valid" @click="onExecuteForNuxt" > 実行(検証用) - {{ m.p.logid }} </v-btn>
+        <v-col/>
+        <v-btn color="info" :disabled="!m.b.valid" @click="updateUrl" > Log ID 更新 </v-btn>
         <v-col/>
       </v-row>
 
@@ -527,6 +522,14 @@ function onExecuteForNuxt() {
   open(m.computedUrlForNuxt, "_blank")
 }
 
+function isSalesState() {
+  return (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'SubtractValue');
+}
+
+function isRefundState() {
+  return (m.p.job === 'Refund' || m.p.job === 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales' || m.p.job === 'CancelValue');
+}
+
 //
 // 値変更監視
 //
@@ -569,7 +572,7 @@ export default defineComponent({
 
     const isAmount = computed(() => {
       if (m.p.menu === 'Service') {
-        return (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'SubtractValue');
+        return isSalesState();
       }
       else if (m.p.menu === 'Menu') {
         if (m.p.menutype === 'Choice') {
@@ -581,14 +584,14 @@ export default defineComponent({
     const isTaxOther = computed(() => {
       if (m.p.mode === 'Pokepos') {
         if (m.p.menu === 'Service') {
-          if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' ||  m.p.job === 'ApprovedSales')) {
+          if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC') && isSalesState()) {
             return true;
           }
         }
       }
       else if (m.p.menu === 'Service') {
-        if (m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC' || m.p.moneytype === 'iD') {
-          if (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'SubtractValue') {
+        if (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'iD') {
+          if (isSalesState()) {
             return true;
           }
         }
@@ -597,7 +600,7 @@ export default defineComponent({
     });
     const isProductCode = computed(() => {
       if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
-        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC' || m.p.moneytype === 'iD') && (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
+        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC' || m.p.moneytype === 'iD') && isSalesState()) {
           return true;
         }
       }
@@ -613,7 +616,7 @@ export default defineComponent({
       }
       else if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
         if (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'iD') {
-          if (m.p.job === 'Refund' || m.p.job === 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales' || m.p.job === 'CancelValue') {
+          if (isRefundState()) {
             return true;
           }
         }
@@ -638,7 +641,7 @@ export default defineComponent({
     });
     const isLump = computed(() => {
       if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
-        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales')) {
+        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && isSalesState()) {
           return true;
         }
       }
@@ -651,13 +654,13 @@ export default defineComponent({
       return false;
     });
     const isTerminalID = computed(() => {
-      if (m.p.job === "CancelValue" && (m.p.moneytype === "iD" || m.p.moneytype === "QP")) {
+      if ((m.p.moneytype === "iD" || m.p.moneytype === "QP") && isRefundState()) {
         return true;
       }
       return false;
     });
     const isManualReturn = computed(() => {
-      if (m.p.job === "CancelValue" && (m.p.moneytype === "iD" || m.p.moneytype === "QP")) {
+      if ((m.p.moneytype === "iD" || m.p.moneytype === "QP") && isRefundState()) {
         return true;
       }
       return false;
