@@ -159,7 +159,7 @@
 
       <v-row>
         <v-col v-if="isTerminalID">
-          <v-text-field v-model="m.p.otherTermJudgeNo" label="端末ID" type="text" single-line clearable filled counter />
+          <v-text-field v-model="m.p.otherTermJudgeNo" label="SPRWID" type="text" single-line clearable filled counter />
         </v-col>
         <v-col v-if="isManualReturn">
           <v-row dense>
