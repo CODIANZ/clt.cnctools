@@ -648,7 +648,7 @@ export default defineComponent({
       return false;
     });
     const isWithMoney = computed(() => {
-      if (m.p.moneytype === "Suica" && m.p.job === "SubtractValue") {
+      if ((m.p.moneytype === "Suica" || m.p.moneytype === "nanaco" || m.p.moneytype === "WAON") && m.p.job === "SubtractValue") {
         return true;
       }
       return false;
