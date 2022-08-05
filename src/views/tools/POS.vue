@@ -625,7 +625,7 @@ export default defineComponent({
     });
     const isRefundType = computed(() => {
       if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
-        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC') && (m.p.job === 'Refund')) {
+        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC') && (m.p.job === 'Refund' || m.p.job === 'RefundApprovedSales')) {
           return true;
         }
       }
