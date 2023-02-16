@@ -87,6 +87,14 @@ export class Cnc extends Base {
     return undefined;
   }
 
+  protected doPosExpArea() {
+    const params = this.Params;
+    if (params.isUsePosExpArea) {
+      return {"posExpArea": encodeURIComponent(params.posExpArea)};
+    }
+    return undefined;
+  }
+
   protected doLump() {
     const params = this.Params;
     if (params.isUseLump) {
@@ -221,6 +229,7 @@ export class Cnc extends Base {
       ...this.doPrint(),
       ...this.doSelfmode(),
       ...this.doLump(),
+      ...this.doPosExpArea(),
       return: this.Params.returnUrl
     };
   }

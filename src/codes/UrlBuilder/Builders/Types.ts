@@ -33,6 +33,8 @@ export type params_t = {
   bLump:          boolean;
   isUseWithCash:  boolean;
   bWithCash:      boolean;
+  isUsePosExpArea: boolean;
+  posExpArea:     string;
   amount:         string;
   taxOther:       string;
   productCode:    string;

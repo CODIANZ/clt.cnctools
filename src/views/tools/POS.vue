@@ -97,30 +97,35 @@
       </v-row>
 
       <v-row v-if="m.p.mode && m.p.menu !== 'Menu'" dense>
-        <v-col>
-          <v-row dense>
+        <v-col cols="12" sm="4">
+          <v-row justify="left">
             <v-checkbox v-model="m.p.isUsePrinting" />
             <v-switch inset v-model="m.p.bPrinting" label="印字" />
           </v-row>
         </v-col>
-        <v-col v-if="isSelfMode">
-          <v-row dense>
+        <v-col v-if="isSelfMode" cols="12" sm="4">
+          <v-row justify="left">
             <v-checkbox v-model="m.p.isUseSelfMode" />
             <v-switch inset v-model="m.p.bSelfMode" label="セルフモード" />
           </v-row>
         </v-col>
-        <v-col>
-          <v-row dense>
+        <v-col cols="12" sm="4">
+          <v-row justify="left">
             <v-checkbox v-model="m.p.isUseTraining" />
             <v-switch inset v-model="m.p.bTraining" label="トレーニング" />
           </v-row>
         </v-col>
-        <v-col/>
+        <v-col cols="12">
+          <v-row justify="left">
+            <v-checkbox v-model="m.p.isUsePosExpArea" />
+            <v-text-field v-model="m.p.posExpArea" label="POS拡張データ(45バイト)" type="text" clearable filled counter />
+          </v-row>
+        </v-col>
       </v-row>
 
       <v-row v-if="isWithMoney" dense>
-        <v-col>
-          <v-row dense>
+        <v-col cols="12" sm="4">
+          <v-row justify="left">
             <v-checkbox v-model="m.p.isUseWithCash" />
             <v-switch inset v-model="m.p.bWithCash" label="現金併用" />
           </v-row>
@@ -129,7 +134,7 @@
 
       <v-row v-if="isApprovalNo || isLump">
         <v-col v-if="isApprovalNo">
-          <v-text-field v-model="m.p.approvalNumber" label="承認番号" type="text" single-line clearable filled counter />
+          <v-text-field v-model="m.p.approvalNumber" label="承認番号" type="text" clearable filled counter />
         </v-col>
         <v-col v-if="isLump">
           <v-row dense>
@@ -141,25 +146,25 @@
 
       <v-row v-if="isAmount || isTaxOther || isProductCode">
         <v-col v-if="isAmount">
-          <v-text-field v-model="m.p.amount" label="金額" type="text" single-line clearable filled counter />
+          <v-text-field v-model="m.p.amount" label="金額" type="text" clearable filled counter />
         </v-col>
         <v-col v-if="isTaxOther">
-          <v-text-field v-model="m.p.taxOther" label="その他" type="text" single-line clearable filled counter />
+          <v-text-field v-model="m.p.taxOther" label="その他" type="text" clearable filled counter />
         </v-col>
         <v-col v-if="isProductCode">
-          <v-text-field v-model="m.p.productCode" label="商品コード" type="text" single-line clearable filled counter />
+          <v-text-field v-model="m.p.productCode" label="商品コード" type="text" clearable filled counter />
         </v-col>
       </v-row>
 
       <v-row v-if="isReceiptNumber">
         <v-col v-if="isReceiptNumber">
-          <v-text-field v-model="m.p.slipNo" label="伝票番号" type="text" single-line clearable filled counter />
+          <v-text-field v-model="m.p.slipNo" label="伝票番号" type="text" clearable filled counter />
         </v-col>
       </v-row>
 
       <v-row>
         <v-col v-if="isTerminalID">
-          <v-text-field v-model="m.p.otherTermJudgeNo" label="SPRWID" type="text" single-line clearable filled counter />
+          <v-text-field v-model="m.p.otherTermJudgeNo" label="SPRWID" type="text" clearable filled counter />
         </v-col>
         <v-col v-if="isManualReturn">
           <v-row dense>
@@ -181,33 +186,55 @@
       </v-row>
 
       <v-row>
-        <v-checkbox v-model="m.useEncode" label="URLエンコード" />
+        <v-col cols="6" sm="4">
+          <v-checkbox v-model="m.useEncode" label="URLエンコード" />
+        </v-col>
+        <v-col cols="6" sm="4">
+          <v-checkbox v-model="m.openNewPage" label="別ページで開く" />
+        </v-col>
       </v-row>
 
       <v-row>
-        <v-text-field dense v-model="m.p.returnUrl" label="戻りURL" :rules="[required]" readonly />
+        <v-col cols="12">
+          <v-text-field dense v-model="m.p.returnUrl" label="戻りURL" :rules="[required]" readonly />
+        </v-col>
+      </v-row>
+
+      <v-row v-if="!m.bBrowserCall">
+        <v-col cols="12">
+          <v-textarea v-model="m.computedUrl" label="生成URL" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
+        </v-col>
+        <v-col cols="12">
+          <v-row justify="end">
+            <v-btn color="info" :disabled="!m.b.valid" @click="updateUrl" > Log ID 更新 </v-btn>
+            <v-btn rounded color="primary" dark :disabled="!m.b.valid" @click="onExecute" > 実行 - {{ m.p.logid }} </v-btn>
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="m.bBrowserCall">
+        <v-col cols="12" sm="6">
+            <v-text-field v-model="m.browserCall.nuxtServeUrl" label="Nuxt serve url" type="text" />
+        </v-col>
+        <v-col cols="6" sm="3">
+            <v-text-field v-model="m.browserCall.ipAddress" label="target IP" type="text" />
+        </v-col>
+        <v-col cols="6" sm="3">
+            <v-text-field v-model="m.browserCall.portNumber" label="target Port" type="text" />
+        </v-col>
+        <v-col cols="12">
+          <v-textarea v-model="m.computedBrowserCallUrl" label="生成URL(検証用)" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
+        </v-col>
+        <v-col cols="12">
+          <v-row justify="end">
+            <v-btn color="info" :disabled="!m.b.valid" @click="updateUrl" > Log ID 更新 </v-btn>
+            <v-btn rounded color="info" dark :disabled="!m.b.valid" @click="onExecuteBrowserCall" > 実行(検証用) - {{ m.p.logid }} </v-btn>
+          </v-row>
+        </v-col>
       </v-row>
 
       <v-row>
-        <v-textarea v-model="m.computedUrl" label="生成URL" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
-      </v-row>
-
-      <v-row v-if="isDev">
-        <v-text-field v-model="m.baseUrlForNuxt" label="検証用baseURL" />
-      </v-row>
-
-      <v-row v-if="isDev">
-        <v-textarea v-model="m.computedUrlForNuxt" label="生成URL(検証用)" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
-      </v-row>
-
-      <v-row>
-        <v-col/>
-        <v-btn rounded color="primary" dark :disabled="!m.b.valid" @click="onExecute" > 実行 - {{ m.p.logid }} </v-btn>
-        <v-col/>
-        <v-btn v-if="isDev" rounded color="info" dark :disabled="!m.b.valid" @click="onExecuteForNuxt" > 実行(検証用) - {{ m.p.logid }} </v-btn>
-        <v-col/>
-        <v-btn color="info" :disabled="!m.b.valid" @click="updateUrl" > Log ID 更新 </v-btn>
-        <v-col/>
+        <v-switch v-model="m.bBrowserCall" inset label="ブラウザーURL呼び出し（開発者以外は使用しないでください）" />
       </v-row>
 
     </v-form>
@@ -229,10 +256,16 @@ let builder: UrlBuilder.Base | undefined = undefined;
 
 const m = reactive({
   p: UrlBuilder.Base.DefaultParams,
+  bBrowserCall: false,
   computedUrl: "",
-  baseUrlForNuxt: "http://localhost:3000/#/pos/",
-  computedUrlForNuxt: "",
+  browserCall: {
+    nuxtServeUrl: "http://localhost:3000/",
+    portNumber: "50555",
+    ipAddress: "a.b.c.d"
+  },
+  computedBrowserCallUrl: "",
   useEncode: false,
+  openNewPage: true,
   b: {
     productCode: false,
     taxOther: false,
@@ -416,6 +449,8 @@ function paramsToBuilder() {
   builder.Params.bWithCash   = m.p.bWithCash;
   builder.Params.isUseLump = m.p.isUseLump;
   builder.Params.bLump       = m.p.bLump;
+  builder.Params.isUsePosExpArea  = m.p.isUsePosExpArea;
+  builder.Params.posExpArea       = m.p.posExpArea;
 
   builder.Params.amount      = m.p.amount;
   builder.Params.taxOther    = m.p.taxOther;
@@ -458,11 +493,12 @@ function updateUrl() {
     m.b.valid     = url !== undefined;
     m.computedUrl = url ?? "";
 
-    m.computedUrlForNuxt = m.baseUrlForNuxt+ m.computedUrl.replace(/^[a-z\-]+:\/\//, "") ;
+    m.computedBrowserCallUrl = `${m.browserCall.nuxtServeUrl}?target=${m.browserCall.ipAddress}&port=${m.browserCall.portNumber}#/pos/`
+      + m.computedUrl.replace(/^[a-z\-]+:\/\//, "");
   }
   else {
     m.computedUrl = "";
-    m.computedUrlForNuxt = ""
+    m.computedBrowserCallUrl = ""
   }
 }
 
@@ -502,6 +538,8 @@ function resetParam() {
   // m.p.isUseTraining = false;
   // m.p.isUsePrinting = false;
   // m.p.isUseSelfMode = false;
+  // m.p.isUsePosExpArea = false;
+  // m.p.posExpArea = "";
   m.p.isUseLump = false;
   m.p.isUseWithCash = false;
   m.p.isUseManualFlg = false;
@@ -513,13 +551,23 @@ function resetParam() {
 function onExecute() {
   const stor = ResultStore.create();
   stor.setSend(m.p.logid, m.p, m.computedUrl);
-  location.href = m.computedUrl;
+  if(m.openNewPage){
+    open(m.computedUrl, "_blank")
+  }
+  else{
+    location.href = m.computedUrl;
+  }
 }
 
-function onExecuteForNuxt() {
+function onExecuteBrowserCall() {
   const stor = ResultStore.create();
   stor.setSend(m.p.logid, m.p, m.computedUrl);
-  open(m.computedUrlForNuxt, "_blank")
+  if(m.openNewPage){
+    open(m.computedBrowserCallUrl, "_blank")
+  }
+  else{
+    location.href = m.computedBrowserCallUrl;
+  }
 }
 
 function isSalesState() {
@@ -550,6 +598,7 @@ export default defineComponent({
       m.p.isUseTraining, m.p.bTraining,
       m.p.isUsePrinting, m.p.bPrinting,
       m.p.isUseSelfMode, m.p.bSelfMode,
+      m.p.isUsePosExpArea, m.p.posExpArea,
       m.p.isUseLump, m.p.bLump,
       m.p.isUseWithCash, m.p.bWithCash,
       m.p.isUseApprovalNumber, m.p.approvalNumber,
@@ -558,6 +607,8 @@ export default defineComponent({
       m.p.isUseDetail, m.p.detail,
       m.p.isUseWhen, m.p.when,
       m.useEncode,
+      m.browserCall.nuxtServeUrl,
+      m.browserCall.portNumber, m.browserCall.ipAddress
     ],
     (value, oldValue) => {
       updateUrl();
@@ -565,10 +616,6 @@ export default defineComponent({
   },
   setup() {
     const form = ref<iform>();
-
-    const isDev = computed(() => {
-      return false;
-    });
 
     const isAmount = computed(() => {
       if (m.p.menu === 'Service') {
@@ -691,7 +738,6 @@ export default defineComponent({
       whens,
       details,
       form,
-      isDev,
       isAmount,
       isTaxOther,
       isProductCode,
@@ -706,7 +752,7 @@ export default defineComponent({
       isChoicePrintDetail,
       updateUrl,
       onExecute,
-      onExecuteForNuxt,
+      onExecuteBrowserCall,
       ...validations
     }
   }
