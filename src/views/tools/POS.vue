@@ -494,7 +494,7 @@ function updateUrl() {
     m.computedUrl = url ?? "";
 
     m.computedBrowserCallUrl = `${m.browserCall.nuxtServeUrl}?target=${m.browserCall.ipAddress}&port=${m.browserCall.portNumber}#/pos/`
-      + m.computedUrl.replace(/^[a-z\-]+:\/\//, "");
+      + m.computedUrl.replace(/^[a-z\-]+:\/\//, "") + "&browser=";
   }
   else {
     m.computedUrl = "";
