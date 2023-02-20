@@ -217,10 +217,10 @@
             <v-text-field v-model="m.browserCall.nuxtServeUrl" label="Nuxt serve url" type="text" />
         </v-col>
         <v-col cols="6" sm="3">
-            <v-text-field v-model="m.browserCall.ipAddress" label="target IP" type="text" />
+            <v-text-field v-model="m.browserCall.targetIP" label="target IP" type="text" />
         </v-col>
         <v-col cols="6" sm="3">
-            <v-text-field v-model="m.browserCall.portNumber" label="target Port" type="text" />
+            <v-text-field v-model="m.browserCall.targetPort" label="target Port" type="text" />
         </v-col>
         <v-col cols="12">
           <v-textarea v-model="m.computedBrowserCallUrl" label="生成URL(検証用)" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
@@ -260,8 +260,8 @@ const m = reactive({
   computedUrl: "",
   browserCall: {
     nuxtServeUrl: "http://localhost:3000/",
-    portNumber: "50555",
-    ipAddress: "a.b.c.d"
+    targetPort: "50555",
+    targetIP: "a.b.c.d"
   },
   computedBrowserCallUrl: "",
   useEncode: false,
@@ -493,7 +493,7 @@ function updateUrl() {
     m.b.valid     = url !== undefined;
     m.computedUrl = url ?? "";
 
-    m.computedBrowserCallUrl = `${m.browserCall.nuxtServeUrl}?target=${m.browserCall.ipAddress}&port=${m.browserCall.portNumber}#/pos/`
+    m.computedBrowserCallUrl = `${m.browserCall.nuxtServeUrl}?target=${m.browserCall.targetIP}&port=${m.browserCall.targetPort}#/pos/`
       + m.computedUrl.replace(/^[a-z\-]+:\/\//, "") + "&browser=";
   }
   else {
@@ -608,13 +608,22 @@ export default defineComponent({
       m.p.isUseWhen, m.p.when,
       m.useEncode,
       m.browserCall.nuxtServeUrl,
-      m.browserCall.portNumber, m.browserCall.ipAddress
+      m.browserCall.targetPort, m.browserCall.targetIP
     ],
     (value, oldValue) => {
+      localStorage.setItem("targetIP", m.browserCall.targetIP);
+      localStorage.setItem("targetPort", m.browserCall.targetPort);
       updateUrl();
     });
   },
   setup() {
+    {
+      const tip = localStorage.getItem("targetIP");
+      const tport = localStorage.getItem("targetPort");
+      if(tip) m.browserCall.targetIP = tip;
+      if(tport) m.browserCall.targetPort = tport;
+    }
+
     const form = ref<iform>();
 
     const isAmount = computed(() => {
