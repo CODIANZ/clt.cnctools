@@ -14,7 +14,8 @@ export class Cnc extends Base {
     Journal: "journal",
     Reprint: "reprint",
     Settings: "settings",
-    Menu:    "Menu"
+    Menu:    "Menu",
+    Hello: "hello"
   };
 
   private m_moneytypes: {[_ in moneytype_t]: string} = {
@@ -199,6 +200,13 @@ export class Cnc extends Base {
     return undefined;
   }
 
+  protected doHello() {
+    return {
+      path: "pos-hello",
+      kvs: {} as keyvalue_t
+    };
+  }
+
   protected /* abstract */ generateGetParameterSelf(): keyvalue_t | undefined {
     const re  = (() => {
       switch(this.Params.menu){
@@ -213,6 +221,9 @@ export class Cnc extends Base {
 
       case "Menu":
         return this.doMenu();
+
+      case "Hello":
+        return this.doHello();
 
       default:
         return undefined;
@@ -248,6 +259,9 @@ export class Cnc extends Base {
         
         case "Menu":
           return this.doMenu();
+
+        case "Hello":
+          return this.doHello();
 
         default:
           return undefined;

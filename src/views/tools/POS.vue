@@ -28,7 +28,7 @@
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu'">
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello'">
         <v-radio-group v-model="m.p.moneytype" row>
           <v-radio
             v-for="it in moneytypes"
@@ -96,7 +96,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu'" dense>
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello'" dense>
         <v-col cols="12" sm="4">
           <v-row justify="left">
             <v-checkbox v-model="m.p.isUsePrinting" />
@@ -297,6 +297,7 @@ const menus = computed<field_item<UrlBuilder.menus_t>[]>(() => {
 
   if (m.p.mode === "Cnc") {
     result.push({ label: "業務メニュー", value: "Menu" });
+    result.push({ label: "起動要求", value: "Hello" });
   }
 
   return result;
@@ -582,7 +583,7 @@ function isRefundState() {
 // 値変更監視
 //
 watch(() => m.p.mode, () => { changeMode(); });
-watch(() => m.p.menu, () => { resetParam(); });
+watch(() => m.p.menu, () => { resetParam(); updateUrl(); });
 watch(() => m.p.moneytype, ()=> { changeMode(); });
 watch(() => m.p.menutype, () => { resetParam(); });
 watch(() => m.p.job, () => { resetParam(); updateUrl(); });
