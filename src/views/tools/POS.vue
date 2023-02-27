@@ -534,7 +534,7 @@ function resetParam() {
   m.p.otherTermJudgeNo = "";
   m.p.approvalNumber = "";
   m.p.slipNo = "";
-
+  m.p.moneytype = undefined;
   m.p.isUseWhen = false;
   // m.p.isUseTraining = false;
   // m.p.isUsePrinting = false;
