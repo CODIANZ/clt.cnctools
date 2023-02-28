@@ -223,12 +223,17 @@
             <v-text-field v-model="m.browserCall.targetPort" label="target Port" type="text" />
         </v-col>
         <v-col cols="12">
-          <v-textarea v-model="m.computedBrowserCallUrl" label="生成URL(検証用)" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
+          <v-textarea v-model="m.computedBrowserCallUrl" label="生成URL(検証用)" outlined readonly rows=2 auto-grow style="word-break: break-all;" />
+        </v-col>
+        <v-col cols="12">
+          <v-textarea v-model="m.computedBrowserJavascript" label="JavascriptCode(検証用)" outlined readonly rows=2 auto-grow style="word-break: break-all;" />
         </v-col>
         <v-col cols="12">
           <v-row justify="end">
             <v-btn color="info" :disabled="!m.b.valid" @click="updateUrl" > Log ID 更新 </v-btn>
             <v-btn rounded color="info" dark :disabled="!m.b.valid" @click="onExecuteBrowserCall" > 実行(検証用) - {{ m.p.logid }} </v-btn>
+            <v-btn rounded color="brown" dark :disabled="!m.b.valid" @click="onCopyUrl" > URLコピー</v-btn>
+            <v-btn rounded color="brown" dark :disabled="!m.b.valid" @click="onCopyJavascript" > Javascriptコピー</v-btn>
           </v-row>
         </v-col>
       </v-row>
@@ -264,6 +269,7 @@ const m = reactive({
     targetIP: "a.b.c.d"
   },
   computedBrowserCallUrl: "",
+  computedBrowserJavascript: "",
   useEncode: false,
   openNewPage: true,
   b: {
@@ -496,6 +502,7 @@ function updateUrl() {
 
     m.computedBrowserCallUrl = `${m.browserCall.nuxtServeUrl}?target=${m.browserCall.targetIP}&port=${m.browserCall.targetPort}#/pos/`
       + m.computedUrl.replace(/^[a-z\-]+:\/\//, "") + "&browser=";
+    m.computedBrowserJavascript = `window.posExecute("/pos/${m.computedUrl.replace(/^[a-z\-]+:\/\//, "")}")`
   }
   else {
     m.computedUrl = "";
@@ -569,6 +576,18 @@ function onExecuteBrowserCall() {
   else{
     location.href = m.computedBrowserCallUrl;
   }
+}
+
+function onCopyUrl() {
+  const stor = ResultStore.create();
+  stor.setSend(m.p.logid, m.p, m.computedUrl);
+  navigator.clipboard.writeText(m.computedBrowserCallUrl);
+}
+
+function onCopyJavascript() {
+  const stor = ResultStore.create();
+  stor.setSend(m.p.logid, m.p, m.computedUrl);
+  navigator.clipboard.writeText(m.computedBrowserJavascript);
 }
 
 function isSalesState() {
@@ -763,6 +782,8 @@ export default defineComponent({
       updateUrl,
       onExecute,
       onExecuteBrowserCall,
+      onCopyUrl,
+      onCopyJavascript,
       ...validations
     }
   }
