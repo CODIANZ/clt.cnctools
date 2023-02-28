@@ -15,7 +15,8 @@ export class Cnc extends Base {
     Reprint: "reprint",
     Settings: "settings",
     Menu:    "Menu",
-    Hello: "hello"
+    Hello: "hello",
+    CheckLatest: "checklatest"
   };
 
   private m_moneytypes: {[_ in moneytype_t]: string} = {
@@ -207,6 +208,13 @@ export class Cnc extends Base {
     };
   }
 
+  protected doCheckLatest() {
+    return {
+      path: "pos-checklatest",
+      kvs: {} as keyvalue_t
+    };
+  }
+
   protected /* abstract */ generateGetParameterSelf(): keyvalue_t | undefined {
     const re  = (() => {
       switch(this.Params.menu){
@@ -225,6 +233,9 @@ export class Cnc extends Base {
       case "Hello":
         return this.doHello();
 
+      case "CheckLatest":
+        return this.doCheckLatest();
+  
       default:
         return undefined;
       }
@@ -262,6 +273,9 @@ export class Cnc extends Base {
 
         case "Hello":
           return this.doHello();
+
+        case "CheckLatest":
+          return this.doCheckLatest();
 
         default:
           return undefined;

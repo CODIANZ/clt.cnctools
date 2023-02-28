@@ -28,7 +28,7 @@
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello'">
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckLatest'">
         <v-radio-group v-model="m.p.moneytype" row>
           <v-radio
             v-for="it in moneytypes"
@@ -96,7 +96,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello'" dense>
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckLatest'" dense>
         <v-col cols="12" sm="4">
           <v-row justify="left">
             <v-checkbox v-model="m.p.isUsePrinting" />
@@ -119,6 +119,30 @@
           <v-row justify="left">
             <v-checkbox v-model="m.p.isUsePosExpArea" />
             <v-text-field v-model="m.p.posExpArea" label="POS拡張データ(45バイト)" type="text" clearable filled counter />
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="m.p.mode && m.p.menu === 'CheckLatest'" dense>
+        <v-col cols="12" sm="4">
+          <v-row justify="left">
+            <v-checkbox v-model="m.p.isUsePrinting" />
+            <v-switch inset v-model="m.p.bPrinting" label="印字" />
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="m.p.mode && m.p.menu === 'Menu'" dense>
+        <v-col cols="12" sm="4">
+          <v-row justify="left">
+            <v-checkbox v-model="m.p.isUsePrinting" />
+            <v-switch inset v-model="m.p.bPrinting" label="印字" />
+          </v-row>
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-row justify="left">
+            <v-checkbox v-model="m.p.isUseTraining" />
+            <v-switch inset v-model="m.p.bTraining" label="トレーニング" />
           </v-row>
         </v-col>
       </v-row>
@@ -223,12 +247,17 @@
             <v-text-field v-model="m.browserCall.targetPort" label="target Port" type="text" />
         </v-col>
         <v-col cols="12">
-          <v-textarea v-model="m.computedBrowserCallUrl" label="生成URL(検証用)" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
+          <v-textarea v-model="m.computedBrowserCallUrl" label="生成URL(検証用)" outlined readonly rows=2 auto-grow style="word-break: break-all;" />
+        </v-col>
+        <v-col cols="12">
+          <v-textarea v-model="m.computedBrowserJavascript" label="JavascriptCode(検証用)" outlined readonly rows=2 auto-grow style="word-break: break-all;" />
         </v-col>
         <v-col cols="12">
           <v-row justify="end">
             <v-btn color="info" :disabled="!m.b.valid" @click="updateUrl" > Log ID 更新 </v-btn>
             <v-btn rounded color="info" dark :disabled="!m.b.valid" @click="onExecuteBrowserCall" > 実行(検証用) - {{ m.p.logid }} </v-btn>
+            <v-btn rounded color="brown" dark :disabled="!m.b.valid" @click="onCopyUrl" > URLコピー</v-btn>
+            <v-btn rounded color="brown" dark :disabled="!m.b.valid" @click="onCopyJavascript" > Javascriptコピー</v-btn>
           </v-row>
         </v-col>
       </v-row>
@@ -264,6 +293,7 @@ const m = reactive({
     targetIP: "a.b.c.d"
   },
   computedBrowserCallUrl: "",
+  computedBrowserJavascript: "",
   useEncode: false,
   openNewPage: true,
   b: {
@@ -298,6 +328,7 @@ const menus = computed<field_item<UrlBuilder.menus_t>[]>(() => {
   if (m.p.mode === "Cnc") {
     result.push({ label: "業務メニュー", value: "Menu" });
     result.push({ label: "起動要求", value: "Hello" });
+    result.push({ label: "前回取引確認", value: "CheckLatest" });
   }
 
   return result;
@@ -496,6 +527,7 @@ function updateUrl() {
 
     m.computedBrowserCallUrl = `${m.browserCall.nuxtServeUrl}?target=${m.browserCall.targetIP}&port=${m.browserCall.targetPort}#/pos/`
       + m.computedUrl.replace(/^[a-z\-]+:\/\//, "") + "&browser=";
+    m.computedBrowserJavascript = `window.posExecute("/pos/${m.computedUrl.replace(/^[a-z\-]+:\/\//, "")}")`
   }
   else {
     m.computedUrl = "";
@@ -571,6 +603,18 @@ function onExecuteBrowserCall() {
   }
 }
 
+function onCopyUrl() {
+  const stor = ResultStore.create();
+  stor.setSend(m.p.logid, m.p, m.computedUrl);
+  navigator.clipboard.writeText(m.computedBrowserCallUrl);
+}
+
+function onCopyJavascript() {
+  const stor = ResultStore.create();
+  stor.setSend(m.p.logid, m.p, m.computedUrl);
+  navigator.clipboard.writeText(m.computedBrowserJavascript);
+}
+
 function isSalesState() {
   return (m.p.job === 'Sales' || m.p.job === 'ReservedAuthority' || m.p.job === 'ApprovedSales' || m.p.job === 'SubtractValue');
 }
@@ -586,7 +630,7 @@ watch(() => m.p.mode, () => { changeMode(); });
 watch(() => m.p.menu, () => { resetParam(); updateUrl(); });
 watch(() => m.p.moneytype, ()=> { changeMode(); });
 watch(() => m.p.menutype, () => { resetParam(); });
-watch(() => m.p.job, () => { resetParam(); updateUrl(); });
+watch(() => m.p.job, () => { updateUrl(); });
 
 
 export default defineComponent({
@@ -763,6 +807,8 @@ export default defineComponent({
       updateUrl,
       onExecute,
       onExecuteBrowserCall,
+      onCopyUrl,
+      onCopyJavascript,
       ...validations
     }
   }
