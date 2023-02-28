@@ -28,7 +28,7 @@
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello'">
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckLatest'">
         <v-radio-group v-model="m.p.moneytype" row>
           <v-radio
             v-for="it in moneytypes"
@@ -96,7 +96,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello'" dense>
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckLatest'" dense>
         <v-col cols="12" sm="4">
           <v-row justify="left">
             <v-checkbox v-model="m.p.isUsePrinting" />
@@ -119,6 +119,30 @@
           <v-row justify="left">
             <v-checkbox v-model="m.p.isUsePosExpArea" />
             <v-text-field v-model="m.p.posExpArea" label="POS拡張データ(45バイト)" type="text" clearable filled counter />
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="m.p.mode && m.p.menu === 'CheckLatest'" dense>
+        <v-col cols="12" sm="4">
+          <v-row justify="left">
+            <v-checkbox v-model="m.p.isUsePrinting" />
+            <v-switch inset v-model="m.p.bPrinting" label="印字" />
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="m.p.mode && m.p.menu === 'Menu'" dense>
+        <v-col cols="12" sm="4">
+          <v-row justify="left">
+            <v-checkbox v-model="m.p.isUsePrinting" />
+            <v-switch inset v-model="m.p.bPrinting" label="印字" />
+          </v-row>
+        </v-col>
+        <v-col cols="12" sm="4">
+          <v-row justify="left">
+            <v-checkbox v-model="m.p.isUseTraining" />
+            <v-switch inset v-model="m.p.bTraining" label="トレーニング" />
           </v-row>
         </v-col>
       </v-row>
@@ -304,6 +328,7 @@ const menus = computed<field_item<UrlBuilder.menus_t>[]>(() => {
   if (m.p.mode === "Cnc") {
     result.push({ label: "業務メニュー", value: "Menu" });
     result.push({ label: "起動要求", value: "Hello" });
+    result.push({ label: "前回取引確認", value: "CheckLatest" });
   }
 
   return result;
