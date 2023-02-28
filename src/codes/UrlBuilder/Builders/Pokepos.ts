@@ -15,7 +15,8 @@ export class Pokepos extends Base {
       Reprint: "Reprint",
       Settings: "Settings",
       Menu: "Menu",
-      Hello: "Hello"
+      Hello: "Hello",
+      CheckLatest: "CheckLatest"
     };
 
     const moneytypes: {[_ in moneytype_t]: string} = {
