@@ -28,7 +28,7 @@
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckLatest'">
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted'">
         <v-radio-group v-model="m.p.moneytype" row>
           <v-radio
             v-for="it in moneytypes"
@@ -96,7 +96,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckLatest'" dense>
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted'" dense>
         <v-col cols="12" sm="4">
           <v-row justify="left">
             <v-checkbox v-model="m.p.isUsePrinting" />
@@ -123,7 +123,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu === 'CheckLatest'" dense>
+      <v-row v-if="m.p.mode && m.p.menu === 'CheckInterrupted'" dense>
         <v-col cols="12" sm="4">
           <v-row justify="left">
             <v-checkbox v-model="m.p.isUsePrinting" />
@@ -328,7 +328,7 @@ const menus = computed<field_item<UrlBuilder.menus_t>[]>(() => {
   if (m.p.mode === "Cnc") {
     result.push({ label: "業務メニュー", value: "Menu" });
     result.push({ label: "起動要求", value: "Hello" });
-    result.push({ label: "前回取引確認", value: "CheckLatest" });
+    result.push({ label: "中断業務確認", value: "CheckInterrupted" });
   }
 
   return result;

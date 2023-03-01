@@ -16,7 +16,7 @@ export class Cnc extends Base {
     Settings: "settings",
     Menu:    "Menu",
     Hello: "hello",
-    CheckLatest: "checklatest"
+    CheckInterrupted: "checkinterrupted"
   };
 
   private m_moneytypes: {[_ in moneytype_t]: string} = {
@@ -208,9 +208,9 @@ export class Cnc extends Base {
     };
   }
 
-  protected doCheckLatest() {
+  protected doCheckInterrupted() {
     return {
-      path: "pos-checklatest",
+      path: "pos-checkinterrupted",
       kvs: {} as keyvalue_t
     };
   }
@@ -233,8 +233,8 @@ export class Cnc extends Base {
       case "Hello":
         return this.doHello();
 
-      case "CheckLatest":
-        return this.doCheckLatest();
+      case "CheckInterrupted":
+        return this.doCheckInterrupted();
   
       default:
         return undefined;
@@ -274,8 +274,8 @@ export class Cnc extends Base {
         case "Hello":
           return this.doHello();
 
-        case "CheckLatest":
-          return this.doCheckLatest();
+        case "CheckInterrupted":
+          return this.doCheckInterrupted();
 
         default:
           return undefined;
