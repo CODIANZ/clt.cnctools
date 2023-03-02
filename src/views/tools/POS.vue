@@ -28,7 +28,7 @@
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted'">
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted' && m.p.menu !== 'ClearInterrupted'">
         <v-radio-group v-model="m.p.moneytype" row>
           <v-radio
             v-for="it in moneytypes"
@@ -96,7 +96,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted'" dense>
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted' && m.p.menu !== 'ClearInterrupted'" dense>
         <v-col cols="12" sm="4">
           <v-row justify="left">
             <v-checkbox v-model="m.p.isUsePrinting" />
@@ -329,6 +329,7 @@ const menus = computed<field_item<UrlBuilder.menus_t>[]>(() => {
     result.push({ label: "業務メニュー", value: "Menu" });
     result.push({ label: "起動要求", value: "Hello" });
     result.push({ label: "中断業務確認", value: "CheckInterrupted" });
+    result.push({ label: "中断業務クリア", value: "ClearInterrupted" });
   }
 
   return result;
