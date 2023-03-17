@@ -117,8 +117,8 @@
         </v-col>
         <v-col cols="12">
           <v-row justify="left">
-            <v-checkbox v-model="m.p.isUsePosExpArea" />
-            <v-text-field v-model="m.p.posExpArea" label="POS拡張データ(45バイト)" type="text" clearable filled counter />
+            <v-checkbox v-model="m.p.isUsePosExtendData" />
+            <v-text-field v-model="m.p.posExtendData" label="POS拡張データ(45バイト)" type="text" clearable filled counter />
           </v-row>
         </v-col>
       </v-row>
@@ -482,8 +482,8 @@ function paramsToBuilder() {
   builder.Params.bWithCash   = m.p.bWithCash;
   builder.Params.isUseLump = m.p.isUseLump;
   builder.Params.bLump       = m.p.bLump;
-  builder.Params.isUsePosExpArea  = m.p.isUsePosExpArea;
-  builder.Params.posExpArea       = m.p.posExpArea;
+  builder.Params.isUsePosExtendData  = m.p.isUsePosExtendData;
+  builder.Params.posExtendData       = m.p.posExtendData;
 
   builder.Params.amount      = m.p.amount;
   builder.Params.taxOther    = m.p.taxOther;
@@ -572,8 +572,8 @@ function resetParam() {
   // m.p.isUseTraining = false;
   // m.p.isUsePrinting = false;
   // m.p.isUseSelfMode = false;
-  // m.p.isUsePosExpArea = false;
-  // m.p.posExpArea = "";
+  // m.p.isUsePosExtendData = false;
+  // m.p.posExtendData = "";
   m.p.isUseLump = false;
   m.p.isUseWithCash = false;
   m.p.isUseManualFlg = false;
@@ -644,7 +644,7 @@ export default defineComponent({
       m.p.isUseTraining, m.p.bTraining,
       m.p.isUsePrinting, m.p.bPrinting,
       m.p.isUseSelfMode, m.p.bSelfMode,
-      m.p.isUsePosExpArea, m.p.posExpArea,
+      m.p.isUsePosExtendData, m.p.posExtendData,
       m.p.isUseLump, m.p.bLump,
       m.p.isUseWithCash, m.p.bWithCash,
       m.p.isUseApprovalNumber, m.p.approvalNumber,
