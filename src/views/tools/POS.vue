@@ -397,6 +397,7 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
     return [
       { label: "支払", value: "SubtractValue" },
       { label: "残高照会", value: "Balance" },
+      { label: "取消", value: "CancelValue" },
       { label: "前回取引確認", value: "Confirm" }
     ];
   }
