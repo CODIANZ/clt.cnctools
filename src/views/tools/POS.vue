@@ -394,6 +394,13 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
     ];
   }
   else if (m.p.moneytype === "Suica") {
+    if (m.p.mode === "Pokepos") {
+      return [
+        { label: "支払", value: "SubtractValue" },
+        { label: "残高照会", value: "Balance" },
+        { label: "前回取引確認", value: "Confirm" }
+      ];
+    }
     return [
       { label: "支払", value: "SubtractValue" },
       { label: "残高照会", value: "Balance" },
