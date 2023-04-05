@@ -14,7 +14,10 @@ export class Cnc extends Base {
     Journal: "journal",
     Reprint: "reprint",
     Settings: "settings",
-    Menu:    "Menu"
+    Menu:    "Menu",
+    Hello: "hello",
+    CheckInterrupted: "checkinterrupted",
+    ClearInterrupted: "clearinterrupted"
   };
 
   private m_moneytypes: {[_ in moneytype_t]: string} = {
@@ -83,6 +86,14 @@ export class Cnc extends Base {
     const params = this.Params;
     if (params.isUseSelfMode) {
       return {"self": params.bSelfMode ? "true" : "false"};
+    }
+    return undefined;
+  }
+
+  protected doPosExtendData() {
+    const params = this.Params;
+    if (params.isUsePosExtendData) {
+      return {"posExtendData": encodeURIComponent(params.posExtendData)};
     }
     return undefined;
   }
@@ -191,6 +202,27 @@ export class Cnc extends Base {
     return undefined;
   }
 
+  protected doHello() {
+    return {
+      path: "pos-hello",
+      kvs: {} as keyvalue_t
+    };
+  }
+
+  protected doCheckInterrupted() {
+    return {
+      path: "pos-checkinterrupted",
+      kvs: {} as keyvalue_t
+    };
+  }
+
+  protected doClearInterrupted() {
+    return {
+      path: "pos-clearinterrupted",
+      kvs: {} as keyvalue_t
+    };
+  }
+
   protected /* abstract */ generateGetParameterSelf(): keyvalue_t | undefined {
     const re  = (() => {
       switch(this.Params.menu){
@@ -206,6 +238,15 @@ export class Cnc extends Base {
       case "Menu":
         return this.doMenu();
 
+      case "Hello":
+        return this.doHello();
+
+      case "CheckInterrupted":
+        return this.doCheckInterrupted();
+
+      case "ClearInterrupted":
+        return this.doClearInterrupted();
+    
       default:
         return undefined;
       }
@@ -221,6 +262,7 @@ export class Cnc extends Base {
       ...this.doPrint(),
       ...this.doSelfmode(),
       ...this.doLump(),
+      ...this.doPosExtendData(),
       return: this.Params.returnUrl
     };
   }
@@ -240,6 +282,15 @@ export class Cnc extends Base {
         case "Menu":
           return this.doMenu();
 
+        case "Hello":
+          return this.doHello();
+
+        case "CheckInterrupted":
+          return this.doCheckInterrupted();
+
+        case "ClearInterrupted":
+            return this.doClearInterrupted();
+  
         default:
           return undefined;
         

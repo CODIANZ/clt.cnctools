@@ -57,6 +57,8 @@ export abstract class  Base {
       bLump:        false,
       isUseWithCash: false,
       bWithCash:    false,
+      isUsePosExtendData: false,
+      posExtendData: "",
       amount:       "",
       taxOther:     "",
       productCode:  "",

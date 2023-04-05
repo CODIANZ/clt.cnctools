@@ -1,5 +1,5 @@
 export type mode_t        = "Pokepos" | "Cnc";
-export type menus_t       = "Service" | "Journal" | "Reprint" | "Settings" | "Menu";
+export type menus_t       = "Service" | "Journal" | "Reprint" | "Settings" | "Menu" | "Hello" | "CheckInterrupted" | "ClearInterrupted";
 export type moneytype_t   = "Credit" | "Cup" | "NFC" | "Suica" | "iD" | "QP" | "WAON" | "Edy" | "nanaco" | "All";
 export type job_t         = "Sales" | "Refund" | "ReservedAuthority" | "RefundReservedAuthority" | "ApprovedSales" | "RefundApprovedSales" | "CardCheck" |
 "SubtractValue" | "CancelValue" | "Balance" | "Confirm" | "History" | "PointCharge";
@@ -33,6 +33,8 @@ export type params_t = {
   bLump:          boolean;
   isUseWithCash:  boolean;
   bWithCash:      boolean;
+  isUsePosExtendData: boolean;
+  posExtendData:  string;
   amount:         string;
   taxOther:       string;
   productCode:    string;
