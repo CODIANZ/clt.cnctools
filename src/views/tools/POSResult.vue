@@ -13,12 +13,13 @@
 </template>
     
 <script lang="ts">
-import { computed, defineComponent, reactive } from "@vue/composition-api";
+import { defineComponent } from "@vue/composition-api";
 import { mode_t } from '@/codes/UrlBuilder/Builders';
 import { ResultStore, resultstore_t } from "@/codes/ResultStore";
 import FileSaver from "file-saver";
 import dateFormat from "dateformat";
 import { debug } from "debug";
+
 const LOG = debug("app:POSResult");
 
 let item_id = 0;
@@ -135,14 +136,14 @@ function generateItems(data: resultstore_t[]) {
 export default defineComponent({
   setup(props, ctx) {
     const stor = ResultStore.create();
-    if(ctx.root.$route.params.id == "-"){
+    if (ctx.root.$route.params.id == "-") {
       /* nothing to do */
     }
-    else{
-      if(ctx.root.$route.query.escape){
+    else {
+      if (ctx.root.$route.query.escape) {
         const s = decodeURIComponent(ctx.root.$route.fullPath);
         const m = s.match(/:\/\/pokepos\?(.+)/);
-        if(m){
+        if (m) {
           const query:{[_: string]: string} = {};
           [...m[1].matchAll(/&{0,1}([^=]+)=([^&$]*)/g)]
           .forEach((x, i) => {
@@ -154,28 +155,37 @@ export default defineComponent({
         const fullpath  = ctx.root.$route.fullPath;
         stor.setReceive(new_id, fullpath, ctx.root.$route.query);
       }
-      else{
+      else {
         new_id = ctx.root.$route.params.id;
         var query:{[_: string]: string} = {};
-        var queries = ctx.root.$route.query;
+        const queries = ctx.root.$route.query;
         if (queries) {
           const keys = Object.keys(queries);
           keys.forEach((key) => {
             const element = queries[key];
             if (key === "rasResult" || key === "cncResult" || key === "printinfo") {
-              if (typeof element === "string") {
-                query[key] = JSON.parse(decodeURIComponent(element));
+              if (typeof element == "string") {
+                const decoded = decodeURIComponent(element);
+                if (decoded) {
+                  try {
+                    query[key] = JSON.parse(element);
+                  }
+                  catch (e) {
+                    query[key] = "不明";
+                  }
+                }
+                else {
+                  query[key] = "不明";
+                }
+              }
+              else {
+                query[key] = "不明";
               }
             }
-            else {
-              if (typeof element === "string") {
-                query[key] = element;
-              }
-              else if (typeof element === 'number') {
-                query[key] = element;
-              }
+            else if (typeof element == "string" || typeof element == "number") {
+              query[key] = element;
             }
-          })
+          });
         }
         const fullpath  = ctx.root.$route.fullPath;
         stor.setReceive(new_id, fullpath, query);
