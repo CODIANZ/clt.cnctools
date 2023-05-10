@@ -4,13 +4,13 @@
 
       <v-row>
         <v-col cols="12">
-          <v-combobox
+          <v-select
             v-model="m.moneys"
             :items="money_list"
             label="金種"
             multiple
             chips
-          ></v-combobox>
+          ></v-select>
         </v-col>
       </v-row>
 
