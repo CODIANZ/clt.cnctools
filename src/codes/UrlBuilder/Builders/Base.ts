@@ -3,6 +3,7 @@ import { keyvalue_t, params_t, mode_t, moneytype_t } from "./Types";
 export abstract class  Base {
   private m_params = Base.DefaultParams;
   public get Params() { return this.m_params; }
+  public set Params(param: params_t) { this.m_params = param; }
 
   protected abstract  generateBaseUrlSelf(): string | undefined;
   protected abstract  generateGetParameterSelf(): keyvalue_t | undefined;
