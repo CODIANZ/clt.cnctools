@@ -23,6 +23,7 @@
 </template>
 
 <script lang="ts">
+import { ResultStore } from "@/codes/ResultStore";
 import { defineComponent, reactive } from "@vue/composition-api";
 
 const items: {
@@ -39,6 +40,11 @@ const items: {
     icon: "list",
     title: "POS連携結果",
     path: "/tools/posresult/-"
+  },
+  {
+    icon: "update",
+    title: "連続試験",
+    path: "/tools/poscontinuous/-"
   }
 ];
 
