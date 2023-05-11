@@ -50,23 +50,27 @@ const items: {
 
 const m = reactive({
   drawer: false,
-  title: "POS連携確認"
+  title: "-"
 });
 
 export default defineComponent({
   setup(prop, ctx) {
+    if(ctx.root.$route.path.indexOf("/tools/posresult") >= 0 ){
+      m.title = "POS連携結果";
+    }
+    else if(ctx.root.$route.path.indexOf("/tools/poscontinuous") >= 0){
+      m.title = "連続試験";
+    }
+    else if(ctx.root.$route.path.indexOf("/tools/pos") >= 0 ){
+      m.title = "POS連携確認";
+    }
     return {
       m,
       items,
       onItemClick: (title: string, path: string) => {
-        if (m.title != title) {
-          m.title = title;
-          ctx.root.$router.replace(path);
-        }
-        else {
-          m.drawer = false;
-          location.reload();
-        }
+        m.title = title;
+        ctx.root.$router.replace(path);
+        m.drawer = false;
       }
     };
   }
