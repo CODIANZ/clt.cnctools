@@ -5,7 +5,7 @@
       <v-row>
         <v-col cols="12">
           <v-select
-            v-model="m.moneys"
+            v-model="m.selectedMoneys"
             :items="money_list"
             label="金種"
             multiple
@@ -18,7 +18,7 @@
       <v-row>
         <v-col cols="12">
           <v-row justify="end">
-            <v-btn :disabled="m.moneys.length == 0" rounded color="primary" dark @click="onExecute" > 実行 </v-btn>
+            <v-btn :disabled="m.selectedMoneys.length == 0" rounded color="primary" dark @click="onExecute" > 実行 </v-btn>
             <v-btn :disabled="!m.running" rounded color="primary" dark @click="onAbort" > 中断 </v-btn>            
           </v-row>
         </v-col>
@@ -104,7 +104,7 @@ export default defineComponent({
     };
 
     const m = reactive({
-      moneys: [] as list_item_t[],
+      selectedMoneys: [] as moneytype_t[],
       running: false
     });
 
@@ -169,7 +169,7 @@ export default defineComponent({
       money_list,
       onExecute: () => {
         const cdata : continuous_data_t = {
-          params: m.moneys.map(x => buildParam(x.value)),
+          params: m.selectedMoneys.map(x => buildParam(x)),
           index: 0
         };
         localStorage.setItem("continuous_data", JSON.stringify(cdata));
