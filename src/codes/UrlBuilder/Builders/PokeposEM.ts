@@ -19,7 +19,7 @@ export class PokeposEM extends Pokepos {
       const kvs: keyvalue_t = {};
 
       if (params.moneytype === "Suica") {
-        if (params.job === "Sales") {
+        if (params.job === "SubtractValue") {
           kvs.operationDiv = "1";
         }
         else if (params.job === "Balance") {
@@ -30,10 +30,10 @@ export class PokeposEM extends Pokepos {
         }
       }
       else if (params.moneytype === "iD" || params.moneytype === "QP") {
-        if (params.job === "Sales") {
+        if (params.job === "SubtractValue") {
           kvs.operationDiv = "1";
         }
-        else if (params.job === "Refund") {
+        else if (params.job === "CancelValue") {
           kvs.operationDiv = "2";
           if (params.slipNo) {
             kvs.slipNo = params.slipNo;
