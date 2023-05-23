@@ -7,11 +7,12 @@ export interface iform extends Vue {
 export const validations = {
   required: (v: string | number) => { return !!v || "必ず入力してください"; },
   length: (n: string | number) => { return (v: string) => {
+    const count = Number(n);
     if (v as string) {
-      return v.length <= n || `${n} 文字以内で入力してください`;
+      return v.length <= count || "${n} 文字以内で入力してください";
     }
-    let value: string = "" + v;
-    return value.length <= n || `${n} 文字以内で入力してください`;
+    const value: string = String(v);
+    return value.length <= count || "${n} 文字以内で入力してください";
   }},
   range: (min: number | undefined, max: number | undefined) => { return (v: number) => {
     if(min && max){

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-app-bar>
-      <v-app-bar-nav-icon @click="m.drawer = true"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click="m.drawer = true" />
       <v-toolbar-title>{{ m.title }}</v-toolbar-title>
     </v-app-bar>
 
@@ -9,7 +9,7 @@
       <v-list nav dense>
         <v-list-item-group active-class="deep-purple--text text--accent-4">
 
-          <v-list-item v-for="item in items" :key="item.model" @click="onItemClick(item.title, item.path)">
+          <v-list-item v-for="item in items" :key="item.path" @click="onItemClick(item.title, item.path)">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
@@ -33,12 +33,12 @@ const items: {
 }[] = [
   {
     icon: "send",
-    title: "POS連携確認",
+    title: "POS連携要求",
     path: "/tools/pos"
   },
   {
     icon: "list",
-    title: "POS連携結果",
+    title: "POS結果履歴",
     path: "/tools/posresult/-"
   },
   {

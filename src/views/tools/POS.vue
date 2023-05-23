@@ -1,30 +1,21 @@
 <template>
-  <v-container>
-    <v-form ref="form">
-      <v-row>
-        <v-radio-group v-model="m.p.mode" row>
-          <v-radio
-            v-for="it in modes"
-              :key="`modes-${it.value}`" :label=it.label :value=it.value
-          />
+  <v-form ref="form">
+    <v-container >
+      <v-row no-gutters >
+        <v-radio-group v-model="m.p.mode" row >
+          <v-radio v-for="it in modes" :key="`modes-${it.value}`" :label=it.label :value=it.value />
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.mode">
-        <v-radio-group v-model="m.p.menu" row>
-          <v-radio
-            v-for="it in menus"
-              :key="`menus-${it.value}`" :label=it.label :value=it.value
-          />
+      <v-row v-if="m.p.mode" no-gutters >
+        <v-radio-group v-model="m.p.menu" row >
+          <v-radio v-for="it in menus" :key="`menus-${it.value}`" :label=it.label :value=it.value />
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Reprint'">
+      <v-row v-if="m.p.menu === 'Reprint'" no-gutters >
         <v-radio-group v-model="m.p.reprint" row>
-          <v-radio
-            v-for="it in reprints"
-              :key="`reprints-${it.value}`" :label=it.label :value=it.value
-          />
+          <v-radio v-for="it in reprints" :key="`reprints-${it.value}`" :label=it.label :value=it.value />
         </v-radio-group>
       </v-row>
 
@@ -37,60 +28,45 @@
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu === 'Menu'">
+      <v-row v-if="m.p.mode && m.p.menu === 'Menu'" no-gutters >
         <v-radio-group v-model="m.p.menutype" row>
-          <v-radio
-            v-for="it in menutypes"
-              :key="`menutypes-${it.value}`" :label=it.label :value=it.value
-          />
+          <v-radio v-for="it in menutypes" :key="`menutypes-${it.value}`" :label=it.label :value=it.value />
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Service' && jobs && jobs.length > 0" dense>
+      <v-row v-if="m.p.menu === 'Service' && jobs && jobs.length > 0" no-gutters >
         <v-col>
-          <v-radio-group v-model="m.p.job" row>
-            <v-radio
-              v-for="it in jobs"
-                :key="`jobs-${it.value}`" :label=it.label :value=it.value
-            />
+          <v-radio-group v-model="m.p.job" row >
+            <v-radio v-for="it in jobs" :key="`jobs-${it.value}`" :label=it.label :value=it.value />
           </v-radio-group>
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Journal'" dense>
+      <v-row v-if="m.p.menu === 'Journal'" no-gutters >
         <v-col>
-          <v-radio-group v-model="m.p.journal" row>
-            <v-radio
-              v-for="it in journals"
-                :key="`journals-${it.value}`" :label=it.label :value=it.value
-            />
+          <v-radio-group v-model="m.p.journal" row >
+            <v-radio v-for="it in journals" :key="`journals-${it.value}`" :label=it.label :value=it.value />
           </v-radio-group>
         </v-col>
       </v-row>
 
-      <v-row v-if="isChoicePrintDetail" dense>
+      <v-row v-if="isChoicePrintDetail" no-gutters >
         <v-col>
-          <v-row dense>
+          <v-row dense >
             <v-checkbox v-model="m.p.isUseDetail" />
-            <v-radio-group v-model="m.p.detail" row>
-              <v-radio
-                v-for="it in details"
-                  :key="`details-${it.value}`" :label=it.label  :value=it.value
-              />
+            <v-radio-group v-model="m.p.detail" row >
+              <v-radio v-for="it in details" :key="`details-${it.value}`" :label=it.label  :value=it.value />
             </v-radio-group>
           </v-row>
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Reprint' && m.p.reprint === 'Journal'" dense>
+      <v-row v-if="m.p.menu === 'Reprint' && m.p.reprint === 'Journal'" no-gutters >
         <v-col>
-          <v-row dense>
+          <v-row no-gutters >
             <v-checkbox v-model="m.p.isUseWhen" />
-            <v-radio-group v-model="m.p.when" row>
-              <v-radio
-                v-for="it in whens"
-                  :key="`whens-${it.value}`" :label=it.label :value=it.value
-              />
+            <v-radio-group v-model="m.p.when" row >
+              <v-radio v-for="it in whens" :key="`whens-${it.value}`" :label=it.label :value=it.value />
             </v-radio-group>
           </v-row>
         </v-col>
@@ -103,101 +79,100 @@
             <v-switch inset v-model="m.p.bPrinting" label="印字" />
           </v-row>
         </v-col>
-        <v-col v-if="isSelfMode" cols="12" sm="4">
-          <v-row justify="left">
+        <v-col cols="7">
+          <v-row no-gutters >
             <v-checkbox v-model="m.p.isUseSelfMode" />
             <v-switch inset v-model="m.p.bSelfMode" label="セルフモード" />
           </v-row>
         </v-col>
-        <v-col cols="12" sm="4">
-          <v-row justify="left">
-            <v-checkbox v-model="m.p.isUseTraining" />
-            <v-switch inset v-model="m.p.bTraining" label="トレーニング" />
-          </v-row>
-        </v-col>
-        <v-col cols="12">
-          <v-row justify="left">
-            <v-checkbox v-model="m.p.isUsePosExtendData" />
-            <v-text-field v-model="m.p.posExtendData" label="POS拡張データ(45バイト)" type="text" clearable filled counter />
-          </v-row>
-        </v-col>
-      </v-row>
-
-      <v-row v-if="m.p.mode && m.p.menu === 'CheckInterrupted'" dense>
-        <v-col cols="12" sm="4">
-          <v-row justify="left">
-            <v-checkbox v-model="m.p.isUsePrinting" />
-            <v-switch inset v-model="m.p.bPrinting" label="印字" />
-          </v-row>
-        </v-col>
-      </v-row>
-
-      <v-row v-if="m.p.mode && m.p.menu === 'Menu'" dense>
-        <v-col cols="12" sm="4">
-          <v-row justify="left">
-            <v-checkbox v-model="m.p.isUsePrinting" />
-            <v-switch inset v-model="m.p.bPrinting" label="印字" />
-          </v-row>
-        </v-col>
-        <v-col cols="12" sm="4">
-          <v-row justify="left">
+        <v-col cols="7">
+          <v-row no-gutters >
             <v-checkbox v-model="m.p.isUseTraining" />
             <v-switch inset v-model="m.p.bTraining" label="トレーニング" />
           </v-row>
         </v-col>
       </v-row>
 
-      <v-row v-if="isWithMoney" dense>
-        <v-col cols="12" sm="4">
-          <v-row justify="left">
+      <v-row v-if="m.p.mode && m.p.menu === 'CheckInterrupted'" no-gutters >
+        <v-col>
+          <v-row no-gutters >
+            <v-checkbox v-model="m.p.isUsePrinting" />
+            <v-switch inset v-model="m.p.bPrinting" label="印字" />
+          </v-row>
+        </v-col>
+        <v-spacer />
+      </v-row>
+
+      <v-row v-if="m.p.mode && m.p.menu === 'Menu'" no-gutters >
+        <v-col>
+          <v-row no-gutters >
+            <v-checkbox v-model="m.p.isUsePrinting" />
+            <v-switch inset v-model="m.p.bPrinting" label="印字" />
+          </v-row>
+        </v-col>
+        <v-col>
+          <v-row>
+            <v-checkbox v-model="m.p.isUseTraining" />
+            <v-switch inset v-model="m.p.bTraining" label="トレーニング" />
+          </v-row>
+        </v-col>
+        <v-spacer />
+      </v-row>
+
+      <v-row no-gutters >
+        <v-checkbox v-model="m.p.isUsePosExtendData" />
+        <v-text-field v-model="m.p.posExtendData" label="POS拡張データ(45バイト)" type="text" clearable filled counter />
+      </v-row>
+
+      <v-row v-if="isWithMoney" no-gutters >
+        <v-col>
+          <v-row>
             <v-checkbox v-model="m.p.isUseWithCash" />
             <v-switch inset v-model="m.p.bWithCash" label="現金併用" />
           </v-row>
         </v-col>
       </v-row>
 
-      <v-row v-if="isApprovalNo || isLump">
+      <v-row v-if="isApprovalNo || isLump" no-gutters >
         <v-col v-if="isApprovalNo">
           <v-text-field v-model="m.p.approvalNumber" label="承認番号" type="text" clearable filled counter />
         </v-col>
         <v-col v-if="isLump">
-          <v-row dense>
+          <v-row no-gutters >
             <v-checkbox v-model="m.p.isUseLump" />
             <v-switch inset v-model="m.p.bLump" label="一括払優先" />
           </v-row>
         </v-col>
       </v-row>
 
-      <v-row v-if="isAmount || isTaxOther || isProductCode">
-        <v-col v-if="isAmount">
+      <v-row v-if="isAmount || isTaxOther || isProductCode" dense >
+        <v-col v-if="isAmount" >
           <v-text-field v-model="m.p.amount" label="金額" type="text" clearable filled counter />
         </v-col>
-        <v-col v-if="isTaxOther">
+        <v-col v-if="isTaxOther" >
           <v-text-field v-model="m.p.taxOther" label="その他" type="text" clearable filled counter />
         </v-col>
-        <v-col v-if="isProductCode">
+        <v-col v-if="isProductCode" >
           <v-text-field v-model="m.p.productCode" label="商品コード" type="text" clearable filled counter />
         </v-col>
       </v-row>
 
-      <v-row v-if="isReceiptNumber">
-        <v-col v-if="isReceiptNumber">
-          <v-text-field v-model="m.p.slipNo" label="伝票番号" type="text" clearable filled counter />
-        </v-col>
+      <v-row v-if="isReceiptNumber" no-gutters >
+        <v-text-field v-model="m.p.slipNo" label="伝票番号" type="text" clearable filled counter />
       </v-row>
 
-      <v-row>
+      <v-row no-gutters >
         <v-col v-if="isTerminalID">
           <v-text-field v-model="m.p.otherTermJudgeNo" label="SPRWID" type="text" clearable filled counter />
         </v-col>
         <v-col v-if="isManualReturn">
-          <v-row dense>
+          <v-row no-gutters >
             <v-checkbox v-model="m.p.isUseManualFlg" />
             <v-switch v-model="m.p.manualFlg" inset label="マニュアル返品" />
           </v-row>
         </v-col>
         <v-col v-if="isRefundType">
-          <v-row dense>
+          <v-row no-gutters >
             <v-checkbox v-model="m.p.isUseCancelType" />
             <v-radio-group v-model="m.p.cancelType" row>
               <v-radio
@@ -209,65 +184,64 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col cols="6" sm="4">
-          <v-checkbox v-model="m.useEncode" label="URLエンコード" />
-        </v-col>
-        <v-col cols="6" sm="4">
-          <v-checkbox v-model="m.openNewPage" label="別ページで開く" />
-        </v-col>
+      <v-row no-gutters >
+        <v-checkbox v-model="m.useEncode" label="URLエンコード" />
+        <v-spacer />
+        <v-checkbox v-model="m.openNewPage" label="別ページで開く" />
+        <v-spacer />
       </v-row>
 
-      <v-row>
-        <v-col cols="12">
-          <v-text-field dense v-model="m.p.returnUrl" label="戻りURL" :rules="[required]" readonly />
-        </v-col>
+      <v-row no-gutters >
+        <v-textarea v-model="m.p.returnUrl" label="戻りURL" :rules="[required]" readonly rows="1" auto-grow style="word-break: break-all;" filled />
       </v-row>
 
-      <v-row v-if="!m.bBrowserCall">
-        <v-col cols="12">
-          <v-textarea v-model="m.computedUrl" label="生成URL" outlined readonly rows=3 auto-grow style="word-break: break-all;" />
-        </v-col>
-        <v-col cols="12">
-          <v-row justify="end">
-            <v-btn color="info" :disabled="!m.b.valid" @click="updateUrl" > Log ID 更新 </v-btn>
-            <v-btn rounded color="primary" dark :disabled="!m.b.valid" @click="onExecute" > 実行 - {{ m.p.logid }} </v-btn>
-          </v-row>
-        </v-col>
+      <v-row v-if="!m.bBrowserCall" no-gutters >
+        <v-textarea v-model="m.computedUrl" label="生成URL" outlined readonly rows="1" auto-grow style="word-break: break-all;" filled />
+      </v-row>
+      <v-row v-if="!m.bBrowserCall" no-gutters >
+        <v-spacer />
+        <v-btn color="info" :disabled="!m.b.valid" @click="updateUrl" > Log ID 更新 </v-btn>
+        <v-spacer />
+        <v-btn rounded color="primary" dark :disabled="!m.b.valid" @click="onExecute" > 実行 - {{ m.p.logid }} </v-btn>
+        <v-spacer />
       </v-row>
 
-      <v-row v-if="m.bBrowserCall">
-        <v-col cols="12" sm="6">
-            <v-text-field v-model="m.browserCall.nuxtServeUrl" label="Nuxt serve url" type="text" />
+      <v-row v-if="m.bBrowserCall" no-gutters >
+        <v-col>
+          <v-text-field v-model="m.browserCall.nuxtServeUrl" label="Nuxt serve url" type="text" />
         </v-col>
-        <v-col cols="6" sm="3">
-            <v-text-field v-model="m.browserCall.targetIP" label="target IP" type="text" />
+        <v-col>
+          <v-text-field v-model="m.browserCall.targetIP" label="target IP" type="text" />
         </v-col>
-        <v-col cols="6" sm="3">
-            <v-text-field v-model="m.browserCall.targetPort" label="target Port" type="text" />
-        </v-col>
-        <v-col cols="12">
-          <v-textarea v-model="m.computedBrowserCallUrl" label="生成URL(検証用)" outlined readonly rows=2 auto-grow style="word-break: break-all;" />
-        </v-col>
-        <v-col cols="12">
-          <v-textarea v-model="m.computedBrowserJavascript" label="JavascriptCode(検証用)" outlined readonly rows=2 auto-grow style="word-break: break-all;" />
-        </v-col>
-        <v-col cols="12">
-          <v-row justify="end">
-            <v-btn color="info" :disabled="!m.b.valid" @click="updateUrl" > Log ID 更新 </v-btn>
-            <v-btn rounded color="info" dark :disabled="!m.b.valid" @click="onExecuteBrowserCall" > 実行(検証用) - {{ m.p.logid }} </v-btn>
-            <v-btn rounded color="brown" dark :disabled="!m.b.valid" @click="onCopyUrl" > URLコピー</v-btn>
-            <v-btn rounded color="brown" dark :disabled="!m.b.valid" @click="onCopyJavascript" > Javascriptコピー</v-btn>
-          </v-row>
+        <v-col>
+          <v-text-field v-model="m.browserCall.targetPort" label="target Port" type="text" />
         </v-col>
       </v-row>
+      <v-row v-if="m.bBrowserCall" no-gutters >
+        <v-textarea v-model="m.computedBrowserCallUrl" label="生成URL(検証用)" outlined readonly rows=2 auto-grow style="word-break: break-all;" />
+      </v-row>
+      <v-row v-if="m.bBrowserCall" no-gutters >
+        <v-textarea v-model="m.computedBrowserJavascript" label="JavascriptCode(検証用)" outlined readonly rows=2 auto-grow style="word-break: break-all;" />
+      </v-row>
+      <v-row v-if="m.bBrowserCall" no-gutters >
+        <v-spacer />
+        <v-btn color="info" :disabled="!m.b.valid" @click="updateUrl" > Log ID 更新 </v-btn>
+        <v-spacer />
+        <v-btn rounded color="info" dark :disabled="!m.b.valid" @click="onExecuteBrowserCall" > 実行(検証用) - {{ m.p.logid }} </v-btn>
+        <v-spacer />
+        <v-btn rounded color="brown" dark :disabled="!m.b.valid" @click="onCopyUrl" > URLコピー</v-btn>
+        <v-spacer />
+        <v-btn rounded color="brown" dark :disabled="!m.b.valid" @click="onCopyJavascript" > Javascriptコピー</v-btn>
+        <v-spacer />
+      </v-row>
 
-      <v-row>
+      <v-row no-gutters >
         <v-switch v-model="m.bBrowserCall" inset label="ブラウザーURL呼び出し（開発者以外は使用しないでください）" />
+        <v-spacer />
       </v-row>
 
-    </v-form>
-  </v-container>
+    </v-container>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -394,6 +368,13 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
     ];
   }
   else if (m.p.moneytype === "Suica") {
+    if (m.p.mode === "Pokepos") {
+      return [
+        { label: "支払", value: "SubtractValue" },
+        { label: "残高照会", value: "Balance" },
+        { label: "前回取引確認", value: "Confirm" }
+      ];
+    }
     return [
       { label: "支払", value: "SubtractValue" },
       { label: "残高照会", value: "Balance" },
