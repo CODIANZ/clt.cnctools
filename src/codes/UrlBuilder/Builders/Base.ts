@@ -69,7 +69,10 @@ export abstract class  Base {
       manualFlg:    false,
       pan:          "",
       approvalNumber: "",
+      isUseCancelType: false,
       cancelType:   undefined,
+      isUseCancelImpossible: false,
+      cancelImpossible: false,
       returnUrl:    ""
     } as params_t;
   }

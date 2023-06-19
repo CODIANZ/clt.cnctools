@@ -182,6 +182,12 @@
             </v-radio-group>
           </v-row>
         </v-col>
+        <v-col v-if="isRefund">
+          <v-row no-gutters >
+            <v-checkbox v-model="m.p.isUseCancelImpossible" />
+            <v-switch v-model="m.p.cancelImpossible" inset label="引当無しエラー" />
+          </v-row>
+        </v-col>
       </v-row>
 
       <v-row no-gutters >
@@ -479,6 +485,8 @@ function paramsToBuilder() {
   builder.Params.returnUrl   = m.p.returnUrl;
   builder.Params.isUseCancelType = m.p.isUseCancelType;
   builder.Params.cancelType  = m.p.cancelType;
+  builder.Params.isUseCancelImpossible = m.p.isUseCancelImpossible;
+  builder.Params.cancelImpossible = m.p.cancelImpossible;
 
   builder.Params.reprint     = m.p.reprint;
   builder.Params.isUseDetail = m.p.isUseDetail;
@@ -561,6 +569,7 @@ function resetParam() {
   m.p.isUseManualFlg = false;
   m.p.isUseApprovalNumber = false;
   m.p.isUseCancelType = false;
+  m.p.isUseCancelImpossible = false;
   m.p.isUseDetail = false;
 }
 
@@ -632,6 +641,7 @@ export default defineComponent({
       m.p.isUseApprovalNumber, m.p.approvalNumber,
       m.p.isUseManualFlg, m.p.manualFlg,
       m.p.isUseCancelType, m.p.cancelType,
+      m.p.isUseCancelImpossible, m.p.cancelImpossible,
       m.p.isUseDetail, m.p.detail,
       m.p.isUseWhen, m.p.when,
       m.useEncode,
@@ -703,6 +713,14 @@ export default defineComponent({
           if (isRefundState()) {
             return true;
           }
+        }
+      }
+      return false;
+    });
+    const isRefund = computed(() => {
+      if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
+        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC') && (m.p.job === 'Refund' || m.p.job == 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales')) {
+          return true;
         }
       }
       return false;
@@ -779,6 +797,7 @@ export default defineComponent({
       isTaxOther,
       isProductCode,
       isReceiptNumber,
+      isRefund,
       isRefundType,
       isApprovalNo,
       isLump,

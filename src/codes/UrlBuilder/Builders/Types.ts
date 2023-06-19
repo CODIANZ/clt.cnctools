@@ -29,12 +29,12 @@ export type params_t = {
   bPrinting:      boolean;
   isUseSelfMode:  boolean;
   bSelfMode:      boolean;
-  isUseLump:      boolean;       
-  bLump:          boolean;
+  isUseLump:  boolean;       
+  bLump:      boolean;
   isUseWithCash:  boolean;
   bWithCash:      boolean;
   isUsePosExtendData: boolean;
-  posExtendData:  string;
+  posExtendData:      string;
   amount:         string;
   taxOther:       string;
   productCode:    string;
@@ -44,9 +44,11 @@ export type params_t = {
   manualFlg:      boolean;
   pan:            string;
   isUseApprovalNumber:  boolean;
-  approvalNumber: string;
+  approvalNumber:       string;
   isUseCancelType:  boolean;
-  cancelType?:    refundtype_t;
+  cancelType?:      refundtype_t;
+  isUseCancelImpossible:  boolean;
+  cancelImpossible:       boolean;
   returnUrl:      string;
 };
 
