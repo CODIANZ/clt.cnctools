@@ -195,10 +195,11 @@
         <v-spacer />
         <v-checkbox v-model="m.openNewPage" label="別ページで開く" />
         <v-spacer />
+        <v-checkbox v-model="m.customReturnUrl" label="戻りURLをカスタム" />
       </v-row>
 
       <v-row no-gutters >
-        <v-textarea v-model="m.p.returnUrl" label="戻りURL" :rules="[required]" readonly rows="1" auto-grow style="word-break: break-all;" filled />
+        <v-textarea v-model="m.p.returnUrl" label="戻りURL" :rules="[required]" :readonly="!m.customReturnUrl" rows="1" auto-grow style="word-break: break-all;" filled />
       </v-row>
 
       <v-row v-if="!m.bBrowserCall" no-gutters >
@@ -276,6 +277,7 @@ const m = reactive({
   computedBrowserJavascript: "",
   useEncode: false,
   openNewPage: true,
+  customReturnUrl: false,
   b: {
     productCode: false,
     taxOther: false,
@@ -499,11 +501,13 @@ function updateLogIdAndReturnUrl() {
   const d = dateFormat(new Date(), "yyyymmddHHMMss");
   m.p.logid = d;
 
-  if (builder) {
-    m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}`;
-  }
-  else {
-    m.p.returnUrl = "";
+  if (!m.customReturnUrl) {
+    if (builder) {
+      m.p.returnUrl = `${location.protocol}//${location.host}/tools/posresult/${d}`;
+    }
+    else {
+      m.p.returnUrl = "";
+    }
   }
 }
 
