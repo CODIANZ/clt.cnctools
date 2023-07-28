@@ -45,10 +45,14 @@ export type params_t = {
   pan:            string;
   isUseApprovalNumber:  boolean;
   approvalNumber:       string;
+  isUseSlipNo: boolean;
+  isUseCancelAmount: boolean;
   isUseCancelType:  boolean;
   cancelType?:      refundtype_t;
-  isUseCancelImpossible:  boolean;
-  cancelImpossible:       boolean;
+  isUseCancelPaymentDiv: boolean;
+  cancelPaymentDiv: string;
+  isUseCancelEdit:  boolean;
+  cancelEdit:       boolean;
   returnUrl:      string;
 };
 

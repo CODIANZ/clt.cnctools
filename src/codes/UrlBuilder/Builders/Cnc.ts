@@ -142,8 +142,11 @@ export class Cnc extends Base {
       if (params.isUseCancelType && params.cancelType != undefined) {
         kvs.cancelType = params.cancelType;
       }
-      if (params.isUseCancelImpossible) {
-        kvs.cancelImpossible = params.cancelImpossible ? "true" : "false";
+      if (params.isUseCancelPaymentDiv && params.cancelPaymentDiv.length > 0) {
+        kvs.paymentDiv = params.cancelPaymentDiv;
+      }
+      if (params.isUseCancelEdit) {
+        kvs.edit = params.cancelEdit ? "true" : "false";
       }
 
       return {path, kvs};

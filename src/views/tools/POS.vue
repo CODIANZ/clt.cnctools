@@ -1,50 +1,45 @@
 <template>
   <v-form ref="form">
     <v-container >
-      <v-row no-gutters >
-        <v-radio-group v-model="m.p.mode" row >
+      <v-row class="shrink" >
+        <v-radio-group v-model="m.p.mode" row class="shrink mr-0 mt-0" >
           <v-radio v-for="it in modes" :key="`modes-${it.value}`" :label=it.label :value=it.value />
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.mode" no-gutters >
-        <v-radio-group v-model="m.p.menu" row >
+      <v-row v-if="m.p.mode">
+        <v-radio-group v-model="m.p.menu" row class="shrink mr-0 mt-0" >
           <v-radio v-for="it in menus" :key="`menus-${it.value}`" :label=it.label :value=it.value />
         </v-radio-group>
       </v-row>
 
       <v-row v-if="m.p.menu === 'Reprint'" no-gutters >
-        <v-radio-group v-model="m.p.reprint" row>
+        <v-radio-group v-model="m.p.reprint" row class="shrink mr-0 mt-0" >
           <v-radio v-for="it in reprints" :key="`reprints-${it.value}`" :label=it.label :value=it.value />
         </v-radio-group>
       </v-row>
 
       <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted' /* && m.p.menu !== 'ClearInterrupted' */">
-        <v-radio-group v-model="m.p.moneytype" row>
-          <v-radio
-            v-for="it in moneytypes"
-              :key="`moneytypes-${it.value}`" :label=it.label :value=it.value
-          />
+        <v-radio-group v-model="m.p.moneytype" row class="shrink mr-0 mt-0" >
+          <v-radio v-for="it in moneytypes" :key="`moneytypes-${it.value}`" :label=it.label :value=it.value />
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu === 'Menu'" no-gutters >
-        <v-radio-group v-model="m.p.menutype" row>
+      <v-row v-if="m.p.mode && m.p.menu === 'Menu'" no-gutters class="shrink mr-0 mt-0" >
+        <v-radio-group v-model="m.p.menutype" row class="shrink mr-0 mt-0" >
           <v-radio v-for="it in menutypes" :key="`menutypes-${it.value}`" :label=it.label :value=it.value />
         </v-radio-group>
       </v-row>
 
-      <v-row v-if="m.p.menu === 'Service' && jobs && jobs.length > 0" no-gutters >
-        <v-col>
-          <v-radio-group v-model="m.p.job" row >
-            <v-radio v-for="it in jobs" :key="`jobs-${it.value}`" :label=it.label :value=it.value />
-          </v-radio-group>
-        </v-col>
+      <v-row v-if="m.p.menu === 'Service' && jobs && jobs.length > 0" >
+        <v-radio-group v-model="m.p.job" row class="shrink mr-0 mt-0" >
+          <v-radio v-for="it in jobs" :key="`jobs-${it.value}`" :label=it.label :value=it.value />
+        </v-radio-group>
       </v-row>
 
       <v-row v-if="m.p.menu === 'Journal'" no-gutters >
         <v-col>
-          <v-radio-group v-model="m.p.journal" row >
+          <v-radio-group v-model="m.p.journal" row class="shrink mr-0 mt-0" >
             <v-radio v-for="it in journals" :key="`journals-${it.value}`" :label=it.label :value=it.value />
           </v-radio-group>
         </v-col>
@@ -72,23 +67,23 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted' /* && m.p.menu !== 'ClearInterrupted' */" dense>
-        <v-col cols="12" sm="4">
-          <v-row justify="left">
-            <v-checkbox v-model="m.p.isUsePrinting" />
-            <v-switch inset v-model="m.p.bPrinting" label="印字" />
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted' /* && m.p.menu !== 'ClearInterrupted' */"  class="shrink mr-0 mt-0" dense >
+        <v-col cols="5">
+          <v-row >
+            <v-checkbox v-model="m.p.isUsePrinting" class="shrink mr-2 mt-0" hide-details label="印字" />
+            <v-switch inset v-model="m.p.bPrinting" class="shrink mt-0" hide-details />
           </v-row>
         </v-col>
         <v-col cols="7">
-          <v-row no-gutters >
-            <v-checkbox v-model="m.p.isUseSelfMode" />
-            <v-switch inset v-model="m.p.bSelfMode" label="セルフモード" />
+          <v-row >
+            <v-checkbox v-model="m.p.isUseSelfMode" class="shrink mr-2 mt-0" hide-details label="セルフモード" />
+            <v-switch inset v-model="m.p.bSelfMode" class="shrink mt-0" hide-details />
           </v-row>
         </v-col>
         <v-col cols="7">
-          <v-row no-gutters >
-            <v-checkbox v-model="m.p.isUseTraining" />
-            <v-switch inset v-model="m.p.bTraining" label="トレーニング" />
+          <v-row >
+            <v-checkbox v-model="m.p.isUseTraining" class="shrink mr-2 mt-0" hide-details label="トレーニング" />
+            <v-switch inset v-model="m.p.bTraining" class="shrink mt-0" hide-details />
           </v-row>
         </v-col>
       </v-row>
@@ -96,8 +91,8 @@
       <v-row v-if="m.p.mode && m.p.menu === 'CheckInterrupted'" no-gutters >
         <v-col>
           <v-row no-gutters >
-            <v-checkbox v-model="m.p.isUsePrinting" />
-            <v-switch inset v-model="m.p.bPrinting" label="印字" />
+            <v-checkbox v-model="m.p.isUsePrinting" class="shrink mr-0 mt-0" hide-details />
+            <v-switch inset v-model="m.p.bPrinting" label="印字" class="shrink mr-0 mt-0" hide-details />
           </v-row>
         </v-col>
         <v-spacer />
@@ -106,29 +101,29 @@
       <v-row v-if="m.p.mode && m.p.menu === 'Menu'" no-gutters >
         <v-col>
           <v-row no-gutters >
-            <v-checkbox v-model="m.p.isUsePrinting" />
-            <v-switch inset v-model="m.p.bPrinting" label="印字" />
+            <v-checkbox v-model="m.p.isUsePrinting" class="shrink mr-0 mt-0" hide-details />
+            <v-switch inset v-model="m.p.bPrinting" label="印字" class="shrink mr-0 mt-0" hide-details />
           </v-row>
         </v-col>
         <v-col>
           <v-row>
-            <v-checkbox v-model="m.p.isUseTraining" />
-            <v-switch inset v-model="m.p.bTraining" label="トレーニング" />
+            <v-checkbox v-model="m.p.isUseTraining" class="shrink mr-0 mt-0" hide-details />
+            <v-switch inset v-model="m.p.bTraining" label="トレーニング" class="shrink mr-0 mt-0" hide-details />
           </v-row>
         </v-col>
         <v-spacer />
       </v-row>
 
-      <v-row no-gutters >
-        <v-checkbox v-model="m.p.isUsePosExtendData" />
+      <v-row >
+        <v-checkbox v-model="m.p.isUsePosExtendData" class="shrink mr-0" hide-details />
         <v-text-field v-model="m.p.posExtendData" label="POS拡張データ(45バイト)" type="text" clearable filled counter />
       </v-row>
 
       <v-row v-if="isWithMoney" no-gutters >
         <v-col>
           <v-row>
-            <v-checkbox v-model="m.p.isUseWithCash" />
-            <v-switch inset v-model="m.p.bWithCash" label="現金併用" />
+            <v-checkbox v-model="m.p.isUseWithCash" class="shrink mr-0 mt-0" hide-details />
+            <v-switch inset v-model="m.p.bWithCash" label="現金併用" class="shrink mr-0 mt-0" hide-details />
           </v-row>
         </v-col>
       </v-row>
@@ -139,8 +134,8 @@
         </v-col>
         <v-col v-if="isLump">
           <v-row no-gutters >
-            <v-checkbox v-model="m.p.isUseLump" />
-            <v-switch inset v-model="m.p.bLump" label="一括払優先" />
+            <v-checkbox v-model="m.p.isUseLump" class="shrink mr-0 mt-0" hide-details />
+            <v-switch inset v-model="m.p.bLump" label="一括払優先" class="shrink mr-0 mt-0" hide-details />
           </v-row>
         </v-col>
       </v-row>
@@ -157,8 +152,59 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="isReceiptNumber" no-gutters >
-        <v-text-field v-model="m.p.slipNo" label="伝票番号" type="text" clearable filled counter />
+      <v-row v-if="isExtRefund" >
+        <v-col :cols="getCols('cancelAmount')" class="my-0 py-0" >
+          <v-row>
+            <v-checkbox v-model="m.p.isUseSlipNo" class="shrink mr-0 py-0" hide-details />
+            <v-text-field v-model="m.p.slipNo" type="text" label="伝票番号" clearable filled counter class="ml-0 py-0" />
+          </v-row>
+        </v-col>
+
+        <v-col :cols="getCols('cancelAmount')" class="py-0" >
+          <v-row>
+            <v-checkbox v-model="m.p.isUseCancelAmount" class="shrink mr-0 py-0" hide-details />
+            <v-text-field v-model="m.p.amount" type="text" label="金額" clearable filled counter class="ml-0 py-0" />
+          </v-row>
+        </v-col>
+
+        <v-col :cols="getCols('cancelPaymentDiv')" class="py-0" >
+          <v-row>
+            <v-checkbox v-model="m.p.isUseCancelPaymentDiv" class="shrink mr-0 py-0" hide-details />
+            <v-text-field v-model="m.p.cancelPaymentDiv" label="支払方法" type="text" placeholder="10,21,22,24,31,34,61,63,80" clearable filled counter class="py-0" />
+          </v-row>
+        </v-col>
+
+        <v-col :cols="getCols('cancelType')" class="py-0" >
+          <v-row>
+            <v-checkbox v-model="m.p.isUseCancelType" class="shrink mr-2 mt-0" hide-details label="取消種別" />
+            <v-radio-group v-model="m.p.cancelType" row class="shrink mr-0 mt-0" hide-details >
+              <v-radio v-for="it in refundTypeItems" :key="`refundTypeItems-${it.value}`" :label=it.label :value=it.value class="shrink mt-0" />
+            </v-radio-group>
+          </v-row>
+        </v-col>
+
+        <v-col :cols="getCols('cancelEdit')" class="py-0" >
+          <v-row >
+            <v-checkbox v-model="m.p.isUseCancelEdit" class="shrink mr-2 mt-0" hide-details label="取消編集" />
+            <v-switch v-model="m.p.cancelEdit" inset class="shrink mr-0 mt-0" hide-details />
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row v-else-if="isRefundType" no-gutters>
+        <v-col v-if="isRefundType">
+          <v-row no-gutters >
+            <v-checkbox v-model="m.p.isUseCancelType" class="shrink mr-0 mt-0" hide-details />
+            <v-radio-group v-model="m.p.cancelType" row>
+              <v-radio v-for="it in refundTypeItems" :key="`refundTypeItems-${it.value}`" :label=it.label :value=it.value />
+            </v-radio-group>
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters>
+        <v-row v-if="isReceiptNumber" no-gutters >
+          <v-text-field v-model="m.p.slipNo" label="伝票番号" type="text" clearable filled counter />
+        </v-row>
       </v-row>
 
       <v-row no-gutters >
@@ -167,35 +213,18 @@
         </v-col>
         <v-col v-if="isManualReturn">
           <v-row no-gutters >
-            <v-checkbox v-model="m.p.isUseManualFlg" />
-            <v-switch v-model="m.p.manualFlg" inset label="マニュアル返品" />
-          </v-row>
-        </v-col>
-        <v-col v-if="isRefundType">
-          <v-row no-gutters >
-            <v-checkbox v-model="m.p.isUseCancelType" />
-            <v-radio-group v-model="m.p.cancelType" row>
-              <v-radio
-                v-for="it in refundTypeItems"
-                  :key="`refundTypeItems-${it.value}`" :label=it.label :value=it.value
-              />
-            </v-radio-group>
-          </v-row>
-        </v-col>
-        <v-col v-if="isRefund">
-          <v-row no-gutters >
-            <v-checkbox v-model="m.p.isUseCancelImpossible" />
-            <v-switch v-model="m.p.cancelImpossible" inset label="引当無しエラー" />
+            <v-checkbox v-model="m.p.isUseManualFlg" class="shrink mr-0 mt-0" hide-details />
+            <v-switch v-model="m.p.manualFlg" inset label="マニュアル返品" class="shrink mr-0 mt-0" hide-details />
           </v-row>
         </v-col>
       </v-row>
 
-      <v-row no-gutters >
-        <v-checkbox v-model="m.useEncode" label="URLエンコード" />
+      <v-row class="shrink" >
+        <v-checkbox v-model="m.useEncode" label="URLエンコード" class="shrink mr-0 mt-0" hide-details />
         <v-spacer />
-        <v-checkbox v-model="m.openNewPage" label="別ページで開く" />
+        <v-checkbox v-model="m.openNewPage" label="別ページで開く" class="shrink mr-0 mt-0" hide-details />
         <v-spacer />
-        <v-checkbox v-model="m.customReturnUrl" label="戻りURLをカスタム" />
+        <v-checkbox v-model="m.customReturnUrl" label="戻りURLをカスタム" class="shrink mr-0 mt-0" hide-details />
       </v-row>
 
       <v-row no-gutters >
@@ -452,6 +481,21 @@ const whens: field_item<UrlBuilder.when_t>[] = [
   { label: "前々回", value: "BeforeLast" }
 ];
 
+// Phone デバイスで col を固定させたい場合に記述を追加.
+const phoneCols = new Map<String, String>([
+  ['cancelSlipNo', '10'],
+  ['cancelAmount', '10'],
+]);
+
+// Tablet デバイスで col を固定させたい場合に記述を追加.
+const tabletCols = new Map<String, String>([
+  ['cancelSlipNo', '4'],
+  ['cancelAmount', '4'],
+  ['cancelPaymentDiv', '4'],
+  ['cancelType', '4'],
+  ['cancelEdit', '4'],
+]);
+
 function paramsToBuilder() {
   if (!builder) {
     return;
@@ -487,8 +531,10 @@ function paramsToBuilder() {
   builder.Params.returnUrl   = m.p.returnUrl;
   builder.Params.isUseCancelType = m.p.isUseCancelType;
   builder.Params.cancelType  = m.p.cancelType;
-  builder.Params.isUseCancelImpossible = m.p.isUseCancelImpossible;
-  builder.Params.cancelImpossible = m.p.cancelImpossible;
+  builder.Params.isUseCancelPaymentDiv = m.p.isUseCancelPaymentDiv;
+  builder.Params.cancelPaymentDiv = m.p.cancelPaymentDiv;
+  builder.Params.isUseCancelEdit = m.p.isUseCancelEdit;
+  builder.Params.cancelEdit = m.p.cancelEdit;
 
   builder.Params.reprint     = m.p.reprint;
   builder.Params.isUseDetail = m.p.isUseDetail;
@@ -562,18 +608,15 @@ function resetParam() {
   m.p.approvalNumber = "";
   m.p.slipNo = "";
   m.p.moneytype = undefined;
+  m.p.cancelPaymentDiv = "";
   m.p.isUseWhen = false;
-  // m.p.isUseTraining = false;
-  // m.p.isUsePrinting = false;
-  // m.p.isUseSelfMode = false;
-  // m.p.isUsePosExtendData = false;
-  // m.p.posExtendData = "";
   m.p.isUseLump = false;
   m.p.isUseWithCash = false;
   m.p.isUseManualFlg = false;
   m.p.isUseApprovalNumber = false;
   m.p.isUseCancelType = false;
-  m.p.isUseCancelImpossible = false;
+  m.p.isUseCancelPaymentDiv = false;
+  m.p.isUseCancelEdit = false;
   m.p.isUseDetail = false;
 }
 
@@ -645,7 +688,8 @@ export default defineComponent({
       m.p.isUseApprovalNumber, m.p.approvalNumber,
       m.p.isUseManualFlg, m.p.manualFlg,
       m.p.isUseCancelType, m.p.cancelType,
-      m.p.isUseCancelImpossible, m.p.cancelImpossible,
+      m.p.isUseCancelPaymentDiv, m.p.cancelPaymentDiv,
+      m.p.isUseCancelEdit, m.p.cancelEdit,
       m.p.isUseDetail, m.p.detail,
       m.p.isUseWhen, m.p.when,
       m.useEncode,
@@ -659,6 +703,20 @@ export default defineComponent({
     });
   },
   setup() {
+    const isMobile = (() => {
+      const result = (screen.width <= 760) ? true : false;
+      return result
+    })();
+
+    const getCols = ((type: string) => {
+      if (isMobile) {
+        const result = phoneCols.get(type);
+        return (result) ? result : '12';
+      }
+      const result = tabletCols.get(type);
+      return (result) ? result : '12';
+    });
+
     {
       const tip = localStorage.getItem("targetIP");
       const tport = localStorage.getItem("targetPort");
@@ -667,6 +725,10 @@ export default defineComponent({
     }
 
     const form = ref<iform>();
+
+    const isExtRefund = computed(() => {
+      return ((m.p.mode == 'Cnc' && (m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && m.p.job === 'Refund'));
+    });
 
     const isAmount = computed(() => {
       if (m.p.menu === 'Service') {
@@ -713,9 +775,11 @@ export default defineComponent({
         }
       }
       else if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
-        if (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'iD') {
-          if (isRefundState()) {
-            return true;
+        if (!isExtRefund) {
+          if (m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC' || m.p.moneytype === 'QP' || m.p.moneytype === 'iD') {
+            if (isRefundState()) {
+              return true;
+            }
           }
         }
       }
@@ -723,8 +787,10 @@ export default defineComponent({
     });
     const isRefund = computed(() => {
       if (m.p.mode === 'Cnc' && m.p.menu === 'Service') {
-        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC') && (m.p.job === 'Refund' || m.p.job == 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales')) {
-          return true;
+        if (!isExtRefund) {
+          if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC') && (m.p.job === 'Refund' || m.p.job == 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales')) {
+            return true;
+          }
         }
       }
       return false;
@@ -785,6 +851,8 @@ export default defineComponent({
     });
 
     return {
+      isMobile,
+      getCols,
       m,
       modes,
       menus,
@@ -810,6 +878,7 @@ export default defineComponent({
       isManualReturn,
       isSelfMode,
       isChoicePrintDetail,
+      isExtRefund,
       updateUrl,
       onExecute,
       onExecuteBrowserCall,
