@@ -137,21 +137,21 @@
       <v-row v-if="isExtRefund" >
         <v-col :cols="getCols('cancelSlipNo')" class="mt-0 mb-0 mr-0 pt-0 pb-0 pr-5" >
           <v-row>
-            <v-checkbox v-model="m.p.isUseSlipNo" density="compact" hide-details />
+            <v-checkbox v-model="m.p.isUseSlipNo" hide-details />
             <v-text-field v-model="m.p.slipNo" label="伝票番号" clearable filled counter style="width: 8em;" />
           </v-row>
         </v-col>
 
         <v-col :cols="getCols('cancelAmount')" class="mt-0 mb-0 mr-0 pt-0 pb-0 pr-5" >
           <v-row >
-            <v-checkbox v-model="m.p.isUseCancelAmount" density="compact" hide-details />
+            <v-checkbox v-model="m.p.isUseCancelAmount" hide-details />
             <v-text-field v-model="m.p.amount" label="金額" clearable filled counter style="width: 8em;" />
           </v-row>
         </v-col>
 
         <v-col :cols="getCols('cancelPaymentDiv')" class="mt-0 mb-0 mr-0 pt-0 pb-0" >
           <v-row >
-            <v-checkbox v-model="m.p.isUseCancelPaymentDiv" density="compact" hide-details />
+            <v-checkbox v-model="m.p.isUseCancelPaymentDiv" hide-details />
             <v-text-field v-model="m.p.cancelPaymentDiv" label="支払方法" clearable filled style="width: 6em;" messages="10,21,22,24,31,34,61,63,80" />
           </v-row>
         </v-col>
@@ -921,13 +921,6 @@ export default defineComponent({
 
 <style scoped lans="sass">
 
-.v-container::v-deep {
-  margin-top: 0em;
-  margin-bottom: 0em;
-  padding-top: 0em;
-  padding-bottom: 0em;
-}
-
 .v-row::v-deep {
   margin: 0em;
 }
@@ -949,12 +942,6 @@ export default defineComponent({
 
 .v-input--radio-group::v-deep {
   margin: 0em;
-  padding: 0em;
-}
-
-.v-input--v-radio::v-deep {
-  margin: 0em;
-  padding: 0em;
 }
 
 .v-input--textarea::v-deep {
