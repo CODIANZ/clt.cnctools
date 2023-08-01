@@ -109,7 +109,7 @@
       </v-row>
 
       <v-row v-if="m.p.mode && m.p.mode == 'Cnc'" >
-        <v-checkbox v-model="m.p.isUsePosExtendData" density="compact" hide-details class="pt-3 mr-0 pr-0" />
+        <v-checkbox v-model="m.p.isUsePosExtendData" density="compact" hide-details />
         <v-textarea v-model="m.p.posExtendData" label="POS拡張データ(45バイト)" type="text" clearable filled counter auto-grow rows="1" />
       </v-row>
 
@@ -135,28 +135,28 @@
       </v-row>
 
       <v-row v-if="isExtRefund" >
-        <v-col :cols="getCols('cancelAmount')" class="mt-0 mb-0 pt-0 pb-0" >
-          <v-row >
-            <v-checkbox v-model="m.p.isUseSlipNo" density="compact" hide-details label="伝票番号" />
-            <v-text-field v-model="m.p.slipNo" type="text" class="shrink" clearable filled counter style="width: 10em;" />
+        <v-col :cols="getCols('cancelSlipNo')" class="mt-0 mb-0 mr-0 pt-0 pb-0 pr-5" >
+          <v-row>
+            <v-checkbox v-model="m.p.isUseSlipNo" density="compact" hide-details />
+            <v-text-field v-model="m.p.slipNo" label="伝票番号" clearable filled counter style="width: 8em;" />
           </v-row>
         </v-col>
 
-        <v-col :cols="getCols('cancelAmount')" class="mt-0 mb-0 pt-0 pb-0" >
+        <v-col :cols="getCols('cancelAmount')" class="mt-0 mb-0 mr-0 pt-0 pb-0 pr-5" >
           <v-row >
-            <v-checkbox v-model="m.p.isUseCancelAmount" density="compact" hide-details label="金額" />
-            <v-text-field v-model="m.p.amount" type="text" class="shrink" clearable filled counter style="width: 10em;" />
+            <v-checkbox v-model="m.p.isUseCancelAmount" density="compact" hide-details />
+            <v-text-field v-model="m.p.amount" label="金額" clearable filled counter style="width: 8em;" />
           </v-row>
         </v-col>
 
-        <v-col :cols="getCols('cancelPaymentDiv')" class="mt-0 mb-0 pt-0 pb-0" >
+        <v-col :cols="getCols('cancelPaymentDiv')" class="mt-0 mb-0 mr-0 pt-0 pb-0" >
           <v-row >
-            <v-checkbox v-model="m.p.isUseCancelPaymentDiv" density="compact" hide-details label="支払方法" />
-            <v-text-field v-model="m.p.cancelPaymentDiv" type="text" class="shrink" clearable filled style="width: 11em;" messages="10,21,22,24,31,34,61,63,80" />
+            <v-checkbox v-model="m.p.isUseCancelPaymentDiv" density="compact" hide-details />
+            <v-text-field v-model="m.p.cancelPaymentDiv" label="支払方法" clearable filled style="width: 6em;" messages="10,21,22,24,31,34,61,63,80" />
           </v-row>
         </v-col>
 
-        <v-col :cols="getCols('cancelType')"  class="mt-0 mb-0 pt-0 pb-0">
+        <v-col :cols="getCols('cancelType')" class="mt-0 mb-0 mr-0 pt-0 pb-0">
           <v-row >
             <v-checkbox v-model="m.p.isUseCancelType" hide-details label="取消種別" />
             <v-radio-group v-model="m.p.cancelType" row hide-details >
@@ -165,7 +165,7 @@
           </v-row>
         </v-col>
 
-        <v-col :cols="getCols('cancelEdit')" class="mt-0 mb-0 pt-0 pb-0" >
+        <v-col :cols="getCols('cancelEdit')" class="mt-0 mb-0 mr-0 pt-1 pb-0" >
           <v-row col >
             <v-checkbox v-model="m.p.isUseCancelEdit" hide-details label="取消編集" />
             <v-switch v-model="m.p.cancelEdit" inset hide-details />
@@ -176,13 +176,13 @@
 
       </v-row>
       <v-row v-else-if="isRefund" >
-        <v-col v-if="isReceiptNumber" :cols="getCols('slipNo')" class="ma-0 pa-0" >
+        <v-col v-if="isReceiptNumber" :cols="getCols('slipNo')" class="ma-0 ml-2 mr-1 pa-0" >
           <v-text-field v-model="m.p.slipNo" label="伝票番号" type="text" clearable filled counter />
         </v-col>
-        <v-col v-if="isTerminalID">
+        <v-col v-if="isTerminalID" class="ma-0 pa-0" >
           <v-text-field v-model="m.p.otherTermJudgeNo" label="SPRWID" type="text" clearable filled counter />
         </v-col>
-        <v-col v-if="isRefundType" :cols="getCols('cancelType')" >
+        <v-col v-if="isRefundType" :cols="getCols('cancelType')" class="ma-0 ml-4 pa-0" >
           <v-row col >
             <v-checkbox v-model="m.p.isUseCancelType" label="取消種別" hide-details />
             <v-radio-group v-model="m.p.cancelType" row >
@@ -190,7 +190,7 @@
             </v-radio-group>
           </v-row>
         </v-col>
-        <v-col v-if="isManualReturn" cols="8">
+        <v-col v-if="isManualReturn" cols="8" class="ma-0 pa-0" >
           <v-row >
             <v-checkbox v-model="m.p.isUseManualFlg" label="マニュアル返品" hide-details />
             <v-switch v-model="m.p.manualFlg" inset hide-details />
@@ -484,6 +484,9 @@ const phoneCols = new Map<String, String>([
   ['self', '7'],
   ['training', '7'],
   ['slipNo', '5'],
+  ['cancelSlipNo', '6'],
+  ['cancelAmount', '6'],
+  ['cancelPaymentDiv', '7'],
 ]);
 
 // Tablet デバイスで col を固定させたい場合に記述を追加.
@@ -930,14 +933,18 @@ export default defineComponent({
 }
 
 .v-input--checkbox::v-deep {
-  margin: 0em;
-  margin-top: .2em;
-  margin-right: .5em;
+  margin-top: 0em;
+  margin-left: 0em;
+  margin-right: 0em;
   padding: 0em;
 }
 
 .v-input--switch::v-deep {
-  margin: 0em;
+  margin-top: 0em;
+  margin-left: .5em;
+  margin-right: 0em;
+  margin-bottom: 0em;
+  padding: 0em;
 }
 
 .v-input--radio-group::v-deep {
