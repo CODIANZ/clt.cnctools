@@ -69,10 +69,14 @@ export abstract class  Base {
       manualFlg:    false,
       pan:          "",
       approvalNumber: "",
+      isUseSlipNo: false,
+      isUseCancelAmount: false,
       isUseCancelType: false,
       cancelType:   undefined,
-      isUseCancelImpossible: false,
-      cancelImpossible: false,
+      isUseCancelPaymentDiv: false,
+      cancelPaymentDiv: "",
+      isUseCancelEdit: false,
+      cancelEdit: false,
       returnUrl:    ""
     } as params_t;
   }
