@@ -81,7 +81,9 @@ export abstract class  Base {
       installmentsNumber: "",
       isUseCancelEdit: false,
       cancelEdit: false,
-      returnUrl:    ""
+      returnUrl:    "",
+      isUseResponseMode: false,
+      responseMode: undefined,
     } as params_t;
   }
 }

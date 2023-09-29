@@ -99,6 +99,14 @@ export class Cnc extends Base {
     return undefined;
   }
 
+  protected doResponseMode() {
+    const params = this.Params;
+    if (params.isUseResponseMode && params.responseMode) {
+      return {"responseMode": params.responseMode};
+    }
+    return undefined;
+  }
+
   protected doLump() {
     const params = this.Params;
     if (params.isUseLump) {
@@ -273,6 +281,7 @@ export class Cnc extends Base {
       ...this.doSelfmode(),
       ...this.doLump(),
       ...this.doPosExtendData(),
+      ...this.doResponseMode(),
       return: this.Params.returnUrl
     };
   }

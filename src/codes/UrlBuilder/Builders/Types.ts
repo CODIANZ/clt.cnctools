@@ -9,6 +9,7 @@ export type reprint_t     = "Slip" | "Journal";
 export type when_t        = "Last" | "BeforeLast" | "SlipNo";
 export type refundtype_t  = "1" | "2";
 export type menutype_t    = "Choice";
+export type respmode_t    = "Normal" | "DoubleEncode"; 
 
 export type params_t = {
   logid:          string;
@@ -58,6 +59,8 @@ export type params_t = {
   isUseCancelEdit:  boolean;
   cancelEdit:       boolean;
   returnUrl:      string;
+  isUseResponseMode: boolean;
+  responseMode?: respmode_t;
 };
 
 export type keyvalue_t = {[_: string]: string};

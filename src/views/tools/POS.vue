@@ -59,7 +59,11 @@
         </v-col>
       </v-row>
 
-      <hr />
+      <v-row>
+        <v-col>
+          <v-divider />
+        </v-col>
+      </v-row>
 
       <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted' /* && m.p.menu !== 'ClearInterrupted' */" >
         <v-col :cols="getCols('print')" class="mt-0 mb-0 pt-0 pb-1" >
@@ -113,7 +117,12 @@
         <v-textarea v-model="m.p.posExtendData" label="POS拡張データ(45バイト)" type="text" clearable filled counter auto-grow rows="1" />
       </v-row>
 
-      <v-row v-if="isWithMoney" >
+      <v-row v-if="m.p.mode && m.p.mode == 'Cnc'" no-gutters >
+        <v-checkbox v-model="m.p.isUseResponseMode" />
+        <v-select v-model="m.p.responseMode" label="レスポンスモード" type="text" :items="responseModes" />
+      </v-row>
+
+      <v-row v-if="isWithMoney" no-gutters >
         <v-col>
           <v-row>
             <v-checkbox v-model="m.p.isUseWithCash" density="compact" hide-details />
@@ -231,7 +240,11 @@
         </v-col>
       </v-row>
 
-      <hr />
+      <v-row>
+        <v-col>
+          <v-divider />
+        </v-col>
+      </v-row>
 
       <v-row class="shrink" >
         <v-checkbox v-model="m.useEncode" label="URLエンコード" hide-details />
@@ -287,7 +300,11 @@
 
       <v-row style="height: 1em;" />
 
-      <hr />
+      <v-row>
+        <v-col>
+          <v-divider />
+        </v-col>
+      </v-row>
 
       <v-row >
         <v-switch v-model="m.bBrowserCall" inset label="ブラウザーURL呼び出し（開発者以外は使用しないでください）" />
@@ -303,7 +320,7 @@ import { defineComponent, computed, reactive, ref, watch } from "@vue/compositio
 import { iform, validations } from "@/codes/FormUtil";
 import { UrlBuilder } from "@/codes/UrlBuilder";
 import { ResultStore } from "@/codes/ResultStore";
-import { mode_t } from "@/codes/UrlBuilder/Builders/Types";
+import { mode_t, respmode_t } from "@/codes/UrlBuilder/Builders/Types";
 import dateFormat from "dateformat";
 import { debug } from "debug";
 
@@ -340,7 +357,6 @@ interface field_item<T> {
   label: string;
   value: T;
 }
-
 
 const modes: field_item<mode_t>[] = [
   { label: "CNC", value: "Cnc" },
@@ -537,6 +553,11 @@ const tabletCols = new Map<String, String>([
   ['cancelEdit', '4'],
 ]);
 
+const responseModes: {text: string; value: respmode_t}[] = [
+  {text: "ノーマル", value: "Normal"},
+  {text: "2重エンコード", value: "DoubleEncode"}
+];
+
 function paramsToBuilder() {
   if (!builder) {
     return;
@@ -584,6 +605,9 @@ function paramsToBuilder() {
   builder.Params.detail      = m.p.detail;
   builder.Params.isUseWhen   = m.p.isUseWhen;
   builder.Params.when        = m.p.when;
+
+  builder.Params.isUseResponseMode = m.p.isUseResponseMode;
+  builder.Params.responseMode = m.p.responseMode;
 }
 
 function updateLogIdAndReturnUrl() {
@@ -743,7 +767,8 @@ export default defineComponent({
       m.p.isUseWhen, m.p.when,
       m.useEncode,
       m.browserCall.nuxtServeUrl,
-      m.browserCall.targetPort, m.browserCall.targetIP
+      m.browserCall.targetPort, m.browserCall.targetIP,
+      m.p.isUseResponseMode, m.p.responseMode
     ],
     (value, oldValue) => {
       localStorage.setItem("targetIP", m.browserCall.targetIP);
@@ -946,6 +971,7 @@ export default defineComponent({
       isSelfMode,
       isChoicePrintDetail,
       isExtRefund,
+      responseModes,
       updateUrl,
       onExecute,
       onExecuteBrowserCall,
