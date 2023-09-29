@@ -1,7 +1,7 @@
 export type mode_t        = "Pokepos" | "Cnc";
 export type menus_t       = "Service" | "Journal" | "Reprint" | "Settings" | "Menu" | "Hello" | "CheckInterrupted" | "ClearInterrupted";
 export type moneytype_t   = "Credit" | "Cup" | "NFC" | "Suica" | "iD" | "QP" | "WAON" | "Edy" | "nanaco" | "All";
-export type job_t         = "Sales" | "Refund" | "ReservedAuthority" | "RefundReservedAuthority" | "ApprovedSales" | "RefundApprovedSales" | "CardCheck" |
+export type job_t         = "Sales" | "Refund" | "RefundForce" | "ReservedAuthority" | "RefundReservedAuthority" | "ApprovedSales" | "RefundApprovedSales" | "CardCheck" |
 "SubtractValue" | "CancelValue" | "Balance" | "Confirm" | "History" | "PointCharge";
 export type journal_t     = "Total" | "Intermediate";
 export type detail_t      = "Summary" | "Detail";
@@ -47,10 +47,14 @@ export type params_t = {
   approvalNumber:       string;
   isUseSlipNo: boolean;
   isUseCancelAmount: boolean;
+  isUseTaxOtherAmount: boolean;
+  isUseProductCode: boolean;
   isUseCancelType:  boolean;
   cancelType?:      refundtype_t;
   isUseCancelPaymentDiv: boolean;
   cancelPaymentDiv: string;
+  isUseInstallmentsNumber: boolean;
+  installmentsNumber: string;
   isUseCancelEdit:  boolean;
   cancelEdit:       boolean;
   returnUrl:      string;

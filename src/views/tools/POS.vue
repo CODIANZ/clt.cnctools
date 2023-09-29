@@ -149,10 +149,31 @@
           </v-row>
         </v-col>
 
-        <v-col :cols="getCols('cancelPaymentDiv')" class="mt-0 mb-0 mr-0 pt-0 pb-0" >
+        <v-col :cols="getCols('cancelOtherAmount')" class="mt-0 mb-0 mr-0 pt-1 pb-0" >
+          <v-row >
+            <v-checkbox v-model="m.p.isUseTaxOtherAmount" hide-details />
+            <v-text-field v-model="m.p.taxOther" label="その他" clearable filled counter style="width: 8em;" />
+          </v-row>
+        </v-col>
+
+        <v-col :cols="getCols('productCode')" class="mt-0 mb-0 mr-0 pt-0 pb-0 pr-5" >
+          <v-row >
+            <v-checkbox v-model="m.p.isUseProductCode" hide-details />
+            <v-text-field v-model="m.p.productCode" label="商品コード" clearable filled counter style="width: 8em;" />
+          </v-row>
+        </v-col>
+
+        <v-col :cols="getCols('cancelPaymentDiv')" class="mt-0 mb-0 mr-0 pt-0 pb-0 pr-5" >
           <v-row >
             <v-checkbox v-model="m.p.isUseCancelPaymentDiv" hide-details />
             <v-text-field v-model="m.p.cancelPaymentDiv" label="支払方法" clearable filled style="width: 6em;" messages="10,21,22,24,31,34,61,63,80" />
+          </v-row>
+        </v-col>
+
+        <v-col :cols="getCols('installmentsNumber')" class="mt-0 mb-0 mr-0 pt-0 pb-0 pr-5" >
+          <v-row >
+            <v-checkbox v-model="m.p.isUseInstallmentsNumber" hide-details />
+            <v-text-field v-model="m.p.installmentsNumber" label="分割回数" clearable filled counter style="width: 8em;" />
           </v-row>
         </v-col>
 
@@ -388,6 +409,7 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
     return [
       { label: "売上", value: "Sales" },
       { label: "取消返品", value: "Refund" },
+      { label: "強制取消返品", value: "RefundForce" },
       { label: "オーソリ予約", value: "ReservedAuthority" },
       { label: "オーソリ予約取消", value: "RefundReservedAuthority" },
       { label: "承認後売上", value: "ApprovedSales" },
@@ -395,10 +417,17 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
       { label: "カードチェック", value: "CardCheck"}
     ];
   }
-  else if (m.p.moneytype === "Cup" || m.p.moneytype === "NFC") {
+  else if (m.p.moneytype === "Cup") {
     return [
       { label: "売上", value: "Sales" },
       { label: "取消返品", value: "Refund" }
+    ];
+  }
+  else if (m.p.moneytype === "NFC") {
+    return [
+      { label: "売上", value: "Sales" },
+      { label: "取消返品", value: "Refund" },
+      { label: "強制取消返品", value: "RefundForce" },
     ];
   }
   else if (m.p.moneytype === "Suica") {
@@ -486,7 +515,10 @@ const phoneCols = new Map<String, String>([
   ['slipNo', '5'],
   ['cancelSlipNo', '6'],
   ['cancelAmount', '6'],
+  ['cancelOtherAmount', '6'],
+  ['productCode', '6'],
   ['cancelPaymentDiv', '7'],
+  ['installmentsNumber', '6'],
 ]);
 
 // Tablet デバイスで col を固定させたい場合に記述を追加.
@@ -497,7 +529,10 @@ const tabletCols = new Map<String, String>([
   ['slipNo', '6'],
   ['cancelSlipNo', '4'],
   ['cancelAmount', '4'],
+  ['cancelOtherAmount', '4'],
+  ['productCode', '4'],
   ['cancelPaymentDiv', '4'],
+  ['installmentsNumber', '4'],
   ['cancelType', '4'],
   ['cancelEdit', '4'],
 ]);
@@ -539,6 +574,8 @@ function paramsToBuilder() {
   builder.Params.cancelType  = m.p.cancelType;
   builder.Params.isUseCancelPaymentDiv = m.p.isUseCancelPaymentDiv;
   builder.Params.cancelPaymentDiv = m.p.cancelPaymentDiv;
+  builder.Params.isUseInstallmentsNumber = m.p.isUseInstallmentsNumber;
+  builder.Params.installmentsNumber = m.p.installmentsNumber;
   builder.Params.isUseCancelEdit = m.p.isUseCancelEdit;
   builder.Params.cancelEdit = m.p.cancelEdit;
 
@@ -574,6 +611,7 @@ function updateUrl() {
 
     m.computedBrowserCallUrl = `${m.browserCall.nuxtServeUrl}?target=${m.browserCall.targetIP}&port=${m.browserCall.targetPort}#/pos/`
       + m.computedUrl.replace(/^[a-z\-]+:\/\//, "") + "&browser=";
+    console.log(`${m.computedUrl}`);
     m.computedBrowserJavascript = `window.posExecute("/pos/${m.computedUrl.replace(/^[a-z\-]+:\/\//, "")}")`
   }
   else {
@@ -669,7 +707,7 @@ function isSalesState() {
 }
 
 function isRefundState() {
-  return (m.p.job === 'Refund' || m.p.job === 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales' || m.p.job === 'CancelValue');
+  return (m.p.job === 'Refund' || m.p.job === 'RefundForce' || m.p.job === 'RefundReservedAuthority' || m.p.job === 'RefundApprovedSales' || m.p.job === 'CancelValue');
 }
 
 //
@@ -699,6 +737,7 @@ export default defineComponent({
       m.p.isUseManualFlg, m.p.manualFlg,
       m.p.isUseCancelType, m.p.cancelType,
       m.p.isUseCancelPaymentDiv, m.p.cancelPaymentDiv,
+      m.p.installmentsNumber,
       m.p.isUseCancelEdit, m.p.cancelEdit,
       m.p.isUseDetail, m.p.detail,
       m.p.isUseWhen, m.p.when,
@@ -737,7 +776,7 @@ export default defineComponent({
     const form = ref<iform>();
 
     const isExtRefund = computed(() => {
-      return ((m.p.mode == 'Cnc' && (m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && m.p.job === 'Refund'));
+      return ((m.p.mode == 'Cnc' && (m.p.moneytype === 'Credit' || m.p.moneytype === 'NFC') && m.p.job === 'RefundForce'));
     });
 
     const isAmount = computed(() => {
@@ -823,7 +862,7 @@ export default defineComponent({
     });
     const isRefundType = computed(() => {
       if (m.p.mode === 'Cnc') {
-        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC') && (m.p.job === 'Refund' || m.p.job === 'RefundApprovedSales')) {
+        if ((m.p.moneytype === 'Credit' || m.p.moneytype === 'Cup' || m.p.moneytype === 'NFC') && (m.p.job === 'Refund' || m.p.job === 'RefundForce' || m.p.job === 'RefundApprovedSales')) {
           return true;
         }
       }
