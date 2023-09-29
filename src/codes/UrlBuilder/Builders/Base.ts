@@ -69,8 +69,21 @@ export abstract class  Base {
       manualFlg:    false,
       pan:          "",
       approvalNumber: "",
+      isUseSlipNo: false,
+      isUseCancelAmount: false,
+      isUseTaxOtherAmount: false,
+      isUseProductCode: false,
+      isUseCancelType: false,
       cancelType:   undefined,
-      returnUrl:    ""
+      isUseCancelPaymentDiv: false,
+      cancelPaymentDiv: "",
+      isUseInstallmentsNumber: false,
+      installmentsNumber: "",
+      isUseCancelEdit: false,
+      cancelEdit: false,
+      returnUrl:    "",
+      isUseResponseMode: false,
+      responseMode: undefined,
     } as params_t;
   }
 }

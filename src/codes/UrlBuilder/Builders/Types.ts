@@ -1,7 +1,7 @@
 export type mode_t        = "Pokepos" | "Cnc";
 export type menus_t       = "Service" | "Journal" | "Reprint" | "Settings" | "Menu" | "Hello" | "CheckInterrupted" | "ClearInterrupted";
 export type moneytype_t   = "Credit" | "Cup" | "NFC" | "Suica" | "iD" | "QP" | "WAON" | "Edy" | "nanaco" | "All";
-export type job_t         = "Sales" | "Refund" | "ReservedAuthority" | "RefundReservedAuthority" | "ApprovedSales" | "RefundApprovedSales" | "CardCheck" |
+export type job_t         = "Sales" | "Refund" | "RefundForce" | "ReservedAuthority" | "RefundReservedAuthority" | "ApprovedSales" | "RefundApprovedSales" | "CardCheck" |
 "SubtractValue" | "CancelValue" | "Balance" | "Confirm" | "History" | "PointCharge";
 export type journal_t     = "Total" | "Intermediate";
 export type detail_t      = "Summary" | "Detail";
@@ -9,6 +9,7 @@ export type reprint_t     = "Slip" | "Journal";
 export type when_t        = "Last" | "BeforeLast" | "SlipNo";
 export type refundtype_t  = "1" | "2";
 export type menutype_t    = "Choice";
+export type respmode_t    = "Normal" | "DoubleEncode"; 
 
 export type params_t = {
   logid:          string;
@@ -29,12 +30,12 @@ export type params_t = {
   bPrinting:      boolean;
   isUseSelfMode:  boolean;
   bSelfMode:      boolean;
-  isUseLump:      boolean;       
-  bLump:          boolean;
+  isUseLump:  boolean;       
+  bLump:      boolean;
   isUseWithCash:  boolean;
   bWithCash:      boolean;
   isUsePosExtendData: boolean;
-  posExtendData:  string;
+  posExtendData:      string;
   amount:         string;
   taxOther:       string;
   productCode:    string;
@@ -44,10 +45,22 @@ export type params_t = {
   manualFlg:      boolean;
   pan:            string;
   isUseApprovalNumber:  boolean;
-  approvalNumber: string;
+  approvalNumber:       string;
+  isUseSlipNo: boolean;
+  isUseCancelAmount: boolean;
+  isUseTaxOtherAmount: boolean;
+  isUseProductCode: boolean;
   isUseCancelType:  boolean;
-  cancelType?:    refundtype_t;
+  cancelType?:      refundtype_t;
+  isUseCancelPaymentDiv: boolean;
+  cancelPaymentDiv: string;
+  isUseInstallmentsNumber: boolean;
+  installmentsNumber: string;
+  isUseCancelEdit:  boolean;
+  cancelEdit:       boolean;
   returnUrl:      string;
+  isUseResponseMode: boolean;
+  responseMode?: respmode_t;
 };
 
 export type keyvalue_t = {[_: string]: string};

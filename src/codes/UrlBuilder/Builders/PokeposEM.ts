@@ -120,6 +120,9 @@ export class PokeposEM extends Pokepos {
   /* override */
   protected doReprint() {
     const params = this.Params;
+    if (!params.moneytype || (params.moneytype != 'Suica' && params.moneytype != 'QP' && params.moneytype != 'iD')) {
+      return undefined;
+    }
     if (params.reprint && params.moneytype) {
       const kvs: keyvalue_t = {};
 

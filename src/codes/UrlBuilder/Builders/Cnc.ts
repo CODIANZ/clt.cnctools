@@ -36,6 +36,7 @@ export class Cnc extends Base {
   private m_jobs: {[_ in job_t]: string} = {
     "Sales": "authorizesales",
     "Refund": "authorizerefund",
+    "RefundForce": "authorizerefundforce",
     "ReservedAuthority": "authorizepresales",
     "RefundReservedAuthority": "authorizepresalesvoid",
     "ApprovedSales": "authorizecompletion",
@@ -98,6 +99,14 @@ export class Cnc extends Base {
     return undefined;
   }
 
+  protected doResponseMode() {
+    const params = this.Params;
+    if (params.isUseResponseMode && params.responseMode) {
+      return {"responseMode": params.responseMode};
+    }
+    return undefined;
+  }
+
   protected doLump() {
     const params = this.Params;
     if (params.isUseLump) {
@@ -141,6 +150,15 @@ export class Cnc extends Base {
       }
       if (params.isUseCancelType && params.cancelType != undefined) {
         kvs.cancelType = params.cancelType;
+      }
+      if (params.isUseCancelPaymentDiv && params.cancelPaymentDiv.length > 0) {
+        kvs.paymentDiv = params.cancelPaymentDiv;
+      }
+      if (params.isUseInstallmentsNumber && params.installmentsNumber.length > 0) {
+        kvs.installmentsNumber = params.installmentsNumber;
+      }
+      if (params.isUseCancelEdit) {
+        kvs.edit = params.cancelEdit ? "true" : "false";
       }
 
       return {path, kvs};
@@ -263,6 +281,7 @@ export class Cnc extends Base {
       ...this.doSelfmode(),
       ...this.doLump(),
       ...this.doPosExtendData(),
+      ...this.doResponseMode(),
       return: this.Params.returnUrl
     };
   }

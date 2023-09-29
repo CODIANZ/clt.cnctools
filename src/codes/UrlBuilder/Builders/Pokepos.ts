@@ -169,6 +169,9 @@ export class Pokepos extends Base {
 
   protected doReprint() {
     const params = this.Params;
+    if (!params.moneytype || (params.moneytype != 'Credit' && params.moneytype != 'Cup' && params.moneytype != 'NFC')) {
+      return undefined;
+    }
     if (params.reprint && params.moneytype) {
       const kvs: keyvalue_t = {};
 
