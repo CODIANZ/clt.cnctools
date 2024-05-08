@@ -24,6 +24,7 @@ export class Cnc extends Base {
     Credit: "credit",
     Cup:    "cup",
     NFC:    "contactless",
+    Code:   "code",
     Suica:  "suica",
     iD:     "id",
     QP:     "quicpay",
