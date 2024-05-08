@@ -1,6 +1,6 @@
 export type mode_t        = "Pokepos" | "Cnc";
 export type menus_t       = "Service" | "Journal" | "Reprint" | "Settings" | "Menu" | "Hello" | "CheckInterrupted" | "ClearInterrupted";
-export type moneytype_t   = "Credit" | "Cup" | "NFC" | "Suica" | "iD" | "QP" | "WAON" | "Edy" | "nanaco" | "All";
+export type moneytype_t   = "Credit" | "Cup" | "NFC" | "Code" | "Suica" | "iD" | "QP" | "WAON" | "Edy" | "nanaco" | "All";
 export type job_t         = "Sales" | "Refund" | "RefundForce" | "ReservedAuthority" | "RefundReservedAuthority" | "ApprovedSales" | "RefundApprovedSales" | "CardCheck" |
 "SubtractValue" | "CancelValue" | "Balance" | "Confirm" | "History" | "PointCharge";
 export type journal_t     = "Total" | "Intermediate";

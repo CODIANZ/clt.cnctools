@@ -385,9 +385,10 @@ const moneytypes = computed<field_item<UrlBuilder.moneytype_t>[]>(() =>  {
     { label: "クレジット", value: "Credit" },
     { label: "銀聯", value: "Cup" },
     { label: "NFC", value: "NFC" },
+    { label: "コード決済", value: "Code"},
     { label: "交通系IC", value: "Suica" },
     { label: "QUICPay", value: "QP" },
-    { label: "iD", value: "iD" }
+    { label: "iD", value: "iD" },
   ];
 
   if (m.p.mode === "Cnc") {
@@ -491,6 +492,12 @@ const jobs = computed<field_item<UrlBuilder.job_t>[]>(() =>  {
       { label: "支払", value: "SubtractValue" },
       { label: "残高照会", value: "Balance" },
       { label: "前回取引確認", value: "Confirm" }
+    ];
+  }
+  else if(m.p.moneytype === "Code"){
+    return [
+      { label: "売上", value: "Sales" },
+      { label: "取消返品", value: "Refund" },
     ];
   }
   else {
