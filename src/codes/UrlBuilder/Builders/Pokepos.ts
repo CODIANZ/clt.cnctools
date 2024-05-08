@@ -24,6 +24,7 @@ export class Pokepos extends Base {
       Credit: "Credit",
       Cup:    "Cup",
       NFC:    "Nfc",
+      Code:   "Code",
       Suica:  "Suica",
       iD:     "iD",
       QP:     "QP",
