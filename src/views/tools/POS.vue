@@ -828,7 +828,8 @@ export default defineComponent({
       }
       else {
         if (m.p.menu === 'Service') {
-          return isSalesState();
+          const isCodeCnRefund = m.p.moneytype === "Code" && m.p.job === "Refund";
+          return isSalesState() || isCodeCnRefund;
         }
         else if (m.p.menu === 'Menu') {
           if (m.p.menutype === 'Choice') {
