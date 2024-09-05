@@ -29,7 +29,7 @@
           <v-radio v-for="it in menutypes" :key="`menutypes-${it.value}`" :label=it.label :value=it.value />
         </v-radio-group>
       </v-row>
-      <v-row v-else-if="m.p.mode && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted' /* && m.p.menu !== 'ClearInterrupted' */">
+      <v-row v-else-if="m.p.mode && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted' && m.p.menu !== 'StatusCheck' /* && m.p.menu !== 'ClearInterrupted' */">
         <v-radio-group v-model="m.p.moneytype" row >
           <v-radio v-for="it in moneytypes" :key="`moneytypes-${it.value}`" :label=it.label :value=it.value />
         </v-radio-group>
@@ -65,7 +65,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted' /* && m.p.menu !== 'ClearInterrupted' */" >
+      <v-row v-if="m.p.mode && m.p.menu !== 'Menu' && m.p.menu !== 'Hello' && m.p.menu !== 'CheckInterrupted' && m.p.menu !== 'StatusCheck' /* && m.p.menu !== 'ClearInterrupted' */" >
         <v-col :cols="getCols('print')" class="mt-0 mb-0 pt-0 pb-1" >
           <v-row >
             <v-checkbox v-model="m.p.isUsePrinting" label="印字" hide-details />
@@ -375,6 +375,7 @@ const menus = computed<field_item<UrlBuilder.menus_t>[]>(() => {
     result.push({ label: "起動要求", value: "Hello" });
     result.push({ label: "中断業務確認", value: "CheckInterrupted" });
     // result.push({ label: "中断業務クリア", value: "ClearInterrupted" });
+    result.push({ label: "状態確認", value: "StatusCheck" });
   }
 
   return result;

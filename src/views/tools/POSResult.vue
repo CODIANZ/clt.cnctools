@@ -163,7 +163,7 @@ export default defineComponent({
           const keys = Object.keys(queries);
           keys.forEach((key) => {
             const element = queries[key];
-            if (key === "rasResult" || key === "cncResult" || key === "printinfo") {
+            if (key === "rasResult" || key === "cncResult" || key === "printinfo" || key === "statusCheckResult") {
               if (typeof element == "string") {
                 const decoded = decodeURIComponent(element);
                 if (decoded) {

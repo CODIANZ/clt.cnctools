@@ -17,7 +17,8 @@ export class Pokepos extends Base {
       Menu: "Menu",
       Hello: "Hello",
       CheckInterrupted: "CheckInterrupted",
-      ClearInterrupted: "ClearInterrupted"
+      ClearInterrupted: "ClearInterrupted",
+      StatusCheck: "statuscheck",
     };
 
     const moneytypes: {[_ in moneytype_t]: string} = {

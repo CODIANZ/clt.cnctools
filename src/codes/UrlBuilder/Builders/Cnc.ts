@@ -17,7 +17,8 @@ export class Cnc extends Base {
     Menu:    "Menu",
     Hello: "hello",
     CheckInterrupted: "checkinterrupted",
-    ClearInterrupted: "clearinterrupted"
+    ClearInterrupted: "clearinterrupted",
+    StatusCheck: "statuscheck",
   };
 
   private m_moneytypes: {[_ in moneytype_t]: string} = {
@@ -242,6 +243,13 @@ export class Cnc extends Base {
     };
   }
 
+  protected doHStatusCheck() {
+    return {
+      path: "all-statuscheck",
+      kvs: {} as keyvalue_t
+    };
+  }
+
   protected /* abstract */ generateGetParameterSelf(): keyvalue_t | undefined {
     const re  = (() => {
       switch(this.Params.menu){
@@ -266,6 +274,9 @@ export class Cnc extends Base {
       case "ClearInterrupted":
         return this.doClearInterrupted();
     
+      case "StatusCheck":
+        return this.doHStatusCheck();
+
       default:
         return undefined;
       }
@@ -310,7 +321,10 @@ export class Cnc extends Base {
 
         case "ClearInterrupted":
             return this.doClearInterrupted();
-  
+
+        case "StatusCheck":
+          return this.doHStatusCheck();
+
         default:
           return undefined;
         
